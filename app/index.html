@@ -425,11 +425,23 @@ h1 #brandTitle{font-family:var(--f-body);font-weight:800;font-size:10.5px;letter
 /* filtros selecionados bem visíveis também no modo escuro */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"],:root:not([data-theme="light"]) .st-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}}
 :root[data-theme="dark"] .chip[aria-pressed="true"],:root[data-theme="dark"] .st-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-/* quadro no computador: todas as colunas à vista, quebrando para a linha de baixo */
+/* quadro no computador: tudo numa linha, sem rolar para o lado.
+Coluna vazia fica estreita; as que têm OS dividem o resto. */
 @media (min-width:761px){
-.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px 16px;overflow-x:visible;align-items:start}
-.col{max-height:none;min-width:0}
+.board{display:flex;gap:12px;overflow-x:visible;align-items:flex-start}
+.col{flex:1 1 0;min-width:0;max-height:none}
+.col-h{min-height:56px;align-items:flex-start}
 .col-b{overflow:visible}
+.board:has(.card) .col:has(.empty-col){flex:0 0 132px}
+.board:has(.card) .col:has(.empty-col) .col-h h2{font-size:13px;color:var(--muted);line-height:1.25}
+.board:has(.card) .col:has(.empty-col) .empty-col{padding:10px 6px;font-size:0;min-height:44px}
+.board:has(.card) .col:has(.empty-col) .empty-col::after{content:"vazio";font-size:12px;color:var(--muted)}
+.card .c-tags,.card .meta{flex-wrap:wrap}
+}
+@media (min-width:761px) and (max-width:1100px){
+.board{flex-wrap:wrap}
+.col{flex:1 1 260px}
+.board:has(.card) .col:has(.empty-col){flex:1 1 160px}
 }
 /* "Liberar a loja": botão Ver junto do texto */
 .nowbtn .go{margin-left:18px;background:var(--brand);color:var(--brand-ink);padding:9px 16px;border-radius:12px;font-weight:800;font-size:14px;flex:0 0 auto}
