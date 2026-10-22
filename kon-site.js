@@ -1,6 +1,7 @@
 /* Kon no site: tira dúvidas de quem ainda não é cliente (respostas prontas, sem IA) */
 (function(){
 const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim().replace(/\s+/g," ");
+const SCR=document.currentScript||{dataset:{}};const SB_URL=SCR.dataset.sbUrl||"",SB_KEY=SCR.dataset.sbKey||"";
 const W=((document.currentScript&&document.currentScript.dataset.whatsapp)||"").replace(/\D/g,"");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function konSVG(cls=""){return `<svg class="kon-svg ${cls}" viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="konNotch${cls}"><rect x="0" y="0" width="64" height="64" fill="#fff"/><rect x="29.3" y="-2" width="5.4" height="7.5" rx="1" fill="#000"/></mask></defs>
@@ -42,30 +43,71 @@ function responder(q){const t=new Set(tok(q));let best=null,bs=0;
   return best}
 const ACOES={cadastro:["Testar 14 dias grátis","/cadastro"],entrar:["Entrar","/entrar"],planos:["Ver os planos","#planos"],como:["Ver como funciona","#como"],
   contato:W?["Falar no WhatsApp","https://wa.me/"+W+"?text="+encodeURIComponent("Oi! Tenho uma dúvida sobre o Konserta.")]:null};
-let msgs=[],aberto=false;
+let msgs=[],aberto=false,modo="kon",hum=null,humMsgs=[],ocupado=false,etapa=null;
+try{hum=JSON.parse(localStorage.getItem("konserta.humano")||"null")}catch(_){}
+async function rpc(fn,args){const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(args)});const j=await r.json().catch(()=>null);if(!r.ok)throw new Error((j&&j.message)||"erro");return j}
 const fab=document.createElement("button");fab.type="button";fab.className="ks-fab";fab.setAttribute("aria-label","Tirar dúvidas com o Kon");fab.innerHTML=konSVG("sfab");
 const dica=document.createElement("div");dica.className="ks-dica";dica.hidden=true;dica.textContent="Dúvidas? Pergunta pro Kon!";
 const box=document.createElement("section");box.className="ks";box.hidden=true;box.setAttribute("aria-label","Kon, assistente do Konserta");
-box.innerHTML=`<div class="ks-h">${konSVG("shead")}<div><b>Kon</b><small>tira dúvidas sobre o Konserta</small></div><button type="button" class="ks-x" aria-label="Fechar">✕</button></div>
+box.innerHTML=`<div class="ks-h">${konSVG("shead")}<div><b>Kon</b><small class="ks-st">tira dúvidas sobre o Konserta</small></div><button type="button" class="ks-hum">Falar com uma pessoa</button><button type="button" class="ks-x" aria-label="Fechar">✕</button></div>
 <div class="ks-msgs" aria-live="polite"></div><div class="ks-sug"></div>
 <form class="ks-f" autocomplete="off"><input placeholder="Pergunte ao Kon…" aria-label="Sua pergunta" maxlength="300"><button type="submit" aria-label="Enviar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form>`;
 document.body.append(fab,dica,box);
 const $m=box.querySelector(".ks-msgs"),$s=box.querySelector(".ks-sug"),$i=box.querySelector("input");
 function fmt(m){let h=esc(m.r).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>");const A=m.a&&ACOES[m.a];if(A)h+=`<a class="ks-acao" href="${esc(A[1])}"${/^https/.test(A[1])?' target="_blank" rel="noopener"':""}>${esc(A[0])} →</a>`;return h}
 function render(digitando){
+  box.querySelector(".ks-hum").textContent=modo==="humano"?"← Kon":"Falar com uma pessoa";
+  if(modo==="humano"){humRender(digitando);return}
+  box.querySelector(".ks-st").textContent="tira dúvidas sobre o Konserta";$i.placeholder="Pergunte ao Kon…";
   $m.innerHTML=msgs.map(m=>m.eu?`<div class="ks-m ks-eu"><div class="ks-b">${esc(m.eu)}</div></div>`:`<div class="ks-m"><span class="ks-av">${konSVG("smini")}</span><div class="ks-b">${fmt(m)}</div></div>`).join("")+(digitando?`<div class="ks-m"><span class="ks-av">${konSVG("smini")}</span><div class="ks-b ks-dig"><i></i><i></i><i></i></div></div>`:"");
-  $s.innerHTML=msgs.filter(m=>m.eu).length<3?["Quanto custa?","Como é o teste grátis?","Preciso largar meu sistema de OS?","Serve pra oficina?","Meus técnicos conseguem usar?"].map(s=>`<button type="button">${esc(s)}</button>`).join(""):"";
+  $s.innerHTML=msgs.filter(m=>m.eu).length<3?["Quanto custa?","Como é o teste grátis?","Preciso largar meu sistema de OS?","Serve pra oficina?","Meus técnicos conseguem usar?","Falar com uma pessoa"].map(s=>`<button type="button">${esc(s)}</button>`).join(""):"";
   $m.scrollTop=$m.scrollHeight}
 function abrir(){aberto=true;box.hidden=false;dica.hidden=true;document.body.classList.add("ks-on");try{localStorage.setItem("konserta.kon.site","1")}catch(_){}
   if(!msgs.length)msgs.push({r:"Oi! Eu sou o **Kon**, o ajudante do Konserta. 🔧\nPosso te explicar como o app funciona, os planos e o teste grátis. Pergunta aí!"});
   render();if(matchMedia("(min-width:761px)").matches)setTimeout(()=>$i.focus(),50)}
 function fechar(){aberto=false;box.hidden=true;document.body.classList.remove("ks-on")}
-function perguntar(q){q=String(q||"").trim().slice(0,300);if(!q)return;msgs.push({eu:q});render(true);setTimeout(()=>{msgs.push(responder(q));render()},500)}
+function perguntar(q){q=String(q||"").trim().slice(0,1000);if(!q)return;
+  if(modo==="humano"){humEnviar(q);return}
+  if(/\b(humano|pessoa|atendente|vendedor|consultor|suporte|falar com alguem|falar com voces)\b/.test(norm(q))){msgs.push({eu:q});humEntrar();return}msgs.push({eu:q});render(true);setTimeout(()=>{msgs.push(responder(q));render()},500)}
 fab.onclick=()=>aberto?fechar():abrir();box.querySelector(".ks-x").onclick=fechar;
-$s.addEventListener("click",e=>{const b=e.target.closest("button");if(b)perguntar(b.textContent)});
+$s.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.textContent==="Falar com uma pessoa"){humEntrar();return}perguntar(b.textContent)});
+box.querySelector(".ks-hum").onclick=()=>modo==="humano"?(modo="kon",render()):humEntrar();
 box.querySelector("form").addEventListener("submit",e=>{e.preventDefault();const v=$i.value;$i.value="";perguntar(v)});
+box.addEventListener("submit",e=>{if(!e.target.classList.contains("ks-ctt"))return;e.preventDefault();const f=e.target;const n=f.querySelector("[name=n]").value.trim(),c=f.querySelector("[name=c]").value.trim();
+  if(!n||c.length<6){f.querySelector(".ks-err").textContent="Coloque seu nome e um WhatsApp ou e-mail pra gente te responder.";return}
+  etapa={nome:n,contato:c};try{localStorage.setItem("konserta.humano.ctt",JSON.stringify(etapa))}catch(_){}render();$i.focus()});
 box.addEventListener("click",e=>{const a=e.target.closest(".ks-acao");if(a&&a.getAttribute("href").startsWith("#")&&!matchMedia("(min-width:761px)").matches)fechar()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&aberto)fechar()});
 let visto=false;try{visto=!!localStorage.getItem("konserta.kon.site")}catch(_){}
 if(!visto)setTimeout(()=>{if(!aberto){dica.hidden=false;setTimeout(()=>dica.hidden=true,10000)}},6000);
+
+/* ---- Falar com uma pessoa ---- */
+try{etapa=JSON.parse(localStorage.getItem("konserta.humano.ctt")||"null")}catch(_){}
+function quando(t){return new Date(t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
+function humRender(dig){
+  box.querySelector(".ks-st").textContent="equipe Konserta";$i.placeholder="Escreva para a equipe…";$s.innerHTML="";
+  const wa=W?`<a class="ks-acao" href="https://wa.me/${W}?text=${encodeURIComponent("Oi! Tenho uma dúvida sobre o Konserta.")}" target="_blank" rel="noopener">Ou chamar no WhatsApp →</a>`:"";
+  let h=`<div class="ks-m"><span class="ks-av">${konSVG("smini")}</span><div class="ks-b">${hum?"Esta é a sua conversa com a <b>equipe do Konserta</b>. As respostas aparecem aqui, e também mandamos no contato que você deixou.":"Claro! Uma pessoa da <b>equipe do Konserta</b> vai te responder. Deixa seu nome e um WhatsApp ou e-mail, e depois escreve sua dúvida."}${wa}</div></div>`;
+  if(!hum&&!etapa)h+=`<form class="ks-ctt"><input name="n" placeholder="Seu nome" maxlength="80" autocomplete="name"><input name="c" placeholder="WhatsApp ou e-mail" maxlength="120" autocomplete="email"><div class="ks-err"></div><button type="submit">Continuar</button></form>`;
+  h+=humMsgs.map(m=>m.de==="konserta"?`<div class="ks-m"><span class="ks-av ks-eq">K</span><div class="ks-b ks-hb"><small>Equipe Konserta · ${quando(m.em)}</small>${esc(m.texto).replace(/\n/g,"<br>")}</div></div>`:`<div class="ks-m ks-eu"><div class="ks-b">${esc(m.texto).replace(/\n/g,"<br>")}</div></div>`).join("");
+  if(hum&&hum.status==="fechado")h+=`<div class="ks-fim">Atendimento encerrado. Se escrever de novo, abrimos outro.</div>`;
+  if(dig)h+=`<div class="ks-m ks-eu"><div class="ks-b ks-dig"><i></i><i></i><i></i></div></div>`;
+  $m.innerHTML=h;$m.scrollTop=$m.scrollHeight;
+  box.querySelector(".ks-f").hidden=!hum&&!etapa;
+}
+async function humCarregar(){if(!hum)return;try{const d=await rpc("humano_ver",{p_id:hum.id,p_token:hum.token});if(d){hum.status=d.status;humMsgs=d.msgs||[]}else{hum=null;humMsgs=[];try{localStorage.removeItem("konserta.humano")}catch(_){}}}catch(_){}fab.classList.remove("tem-resposta")}
+async function humEntrar(){modo="humano";if(!aberto)abrir();render();await humCarregar();render()}
+async function humEnviar(q){
+  if(ocupado)return;ocupado=true;render(true);
+  try{
+    if(!hum||hum.status==="fechado"){const d=await rpc("humano_abrir",{p_nome:(etapa&&etapa.nome)||"",p_contato:(etapa&&etapa.contato)||"",p_texto:q,p_empresa:null});hum={id:d.id,token:d.token,status:"aberto"};try{localStorage.setItem("konserta.humano",JSON.stringify(hum))}catch(_){}}
+    else await rpc("humano_enviar",{p_id:hum.id,p_token:hum.token,p_texto:q});
+    await humCarregar();
+  }catch(e){humMsgs.push({de:"konserta",texto:/muit/.test(e.message)?"Muitas mensagens agora. Espere um pouco e tente de novo.":"Não consegui enviar agora. Tente de novo em instantes.",em:Date.now()})}
+  ocupado=false;render();
+}
+async function humChecar(){if(!hum)return;try{const n=await rpc("humano_novas",{p_id:hum.id,p_token:hum.token});
+  if(aberto&&modo==="humano"){await humCarregar();render()}else if(n>0){fab.classList.add("tem-resposta");if(!aberto){dica.textContent="A equipe Konserta te respondeu!";dica.hidden=false}}}catch(_){}}
+if(hum)setTimeout(humChecar,2500);
+setInterval(()=>{if(document.visibilityState==="visible"&&hum&&(aberto&&modo==="humano"||!humChecar._t||Date.now()-humChecar._t>60000)){humChecar._t=Date.now();humChecar()}},15000);
 })();

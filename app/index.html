@@ -577,6 +577,14 @@ body.kon-on .kon-fab{display:none}
 }
 @media (prefers-reduced-motion:reduce){.kon-svg .kon-olhos,.kon,.kon-dig i{animation:none}}
 .kon[hidden],.kon-fab[hidden],.kon-dica[hidden]{display:none}
+.kon-eq{width:28px;height:28px;border-radius:9px;background:var(--graf);color:var(--brand);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:15px}
+.kon-hb{border-color:color-mix(in srgb,var(--brand) 55%,var(--line));background:var(--brand-soft)}
+.kon-hb small{display:block;font-size:11px;font-weight:800;color:var(--brand-fg);margin-bottom:3px}
+.kon-fim{align-self:center;font-size:12.5px;color:var(--muted);background:var(--surface2);border-radius:99px;padding:6px 12px}
+#konHumBtn{background:var(--brand);color:var(--brand-ink)}
+#konHumBtn.novo::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bad);margin-left:6px}
+.kon-fab.tem-resposta::after{content:"1";position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--bad);color:#fff;font:800 12px/20px var(--f-body);text-align:center;box-shadow:0 0 0 2px var(--bg)}
+@media (max-width:420px){.kon-h .kx button[data-kon="limpar"]{display:none}}
 </style>
 </head>
 <body style="margin:0">
@@ -2230,7 +2238,7 @@ const KON_FAQ=[
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
 cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Agenda",()=>true,()=>{agForm=null;openAgenda()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
 conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()]};
-let kon={aberto:false,msgs:[],ocupado:false,ia:null};
+let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
 function konChave(){return "konserta.kon."+(KS.uid||"")}
 try{}catch(_){}
 const konTok=x=>norm(x).replace(/[^\p{L}\p{N} ]/gu," ").split(" ").filter(w=>w.length>1&&!["de","da","do","um","uma","o","a","e","eu","me","meu","minha","como","que","pra","para","no","na","em","com","se","ta","esta","to","faco","fazer"].includes(w)).map(w=>w.slice(0,5));
@@ -2249,14 +2257,17 @@ return h;
 }
 function konSugestoes(){const s=["Como abro uma OS?","Como mando um orçamento?","O que é o Liberar a loja?","Como instalo no celular?"];
 if(pode("equipe"))s.splice(2,0,"Como cadastro um funcionário?");else s.splice(2,0,"Por que não vejo um botão?");
-return s}
+s.push("Falar com uma pessoa");return s}
 function konRender(){
 const box=$("#konMsgs");if(!box)return;
+const hb=$("#konHumBtn");if(hb){hb.textContent=kon.modo==="humano"?"← Kon":"Falar com uma pessoa";hb.classList.toggle("novo",kon.modo!=="humano"&&kon.humNovas>0)}
+if(kon.modo==="humano"){humRender();return}
 box.innerHTML=kon.msgs.map(m=>m.de==="kon"?`<div class="kon-m kon-de"><span class="kon-av">${konSVG("mini")}</span><div class="kon-b">${konFmt(m.texto)}</div></div>`:`<div class="kon-m kon-eu"><div class="kon-b">${esc(m.texto)}</div></div>`).join("")
 +(kon.ocupado?`<div class="kon-m kon-de"><span class="kon-av">${konSVG("mini")}</span><div class="kon-b kon-dig"><i></i><i></i><i></i></div></div>`:"");
 const sg=$("#konSug");if(sg)sg.innerHTML=kon.msgs.filter(m=>m.de==="eu").length<2?konSugestoes().map(s=>`<button type="button" data-konsug="${esc(s)}">${esc(s)}</button>`).join(""):"";
 box.scrollTop=box.scrollHeight;
 const st=$("#konStatus");if(st)st.textContent=kon.ia===true?"assistente com IA":"guia rápido do Konserta";
+const ip=$("#konIn");if(ip)ip.placeholder="Pergunte ao Kon…";
 try{localStorage.setItem(konChave(),JSON.stringify(kon.msgs.slice(-30)))}catch(_){}
 }
 function konAbrir(){
@@ -2267,9 +2278,11 @@ kon.aberto=true;$("#kon").hidden=false;$("#konFab").classList.add("on");document
 try{localStorage.setItem("konserta.kon.visto","1")}catch(_){}const d=$("#konDica");if(d)d.hidden=true;
 konRender();setTimeout(()=>{if(matchMedia("(min-width:761px)").matches)$("#konIn")?.focus()},50);
 }
-function konFechar(){kon.aberto=false;$("#kon").hidden=true;$("#konFab").classList.remove("on");document.body.classList.remove("kon-on")}
+function konFechar(){kon.aberto=false;kon.modo="kon";$("#kon").hidden=true;$("#konFab").classList.remove("on");document.body.classList.remove("kon-on")}
 async function konPerguntar(q){
 q=String(q||"").trim().slice(0,600);if(!q||kon.ocupado)return;
+if(kon.modo==="humano"){humEnviar(q);return}
+if(/\b(humano|pessoa|atendente de verdade|alguem de verdade|suporte|falar com alguem|falar com voces|reclamacao)\b/.test(norm(q))){kon.msgs.push({de:"eu",texto:q});humEntrar();return}
 kon.msgs.push({de:"eu",texto:q});kon.ocupado=true;konRender();
 let resp=null;
 if(kon.ia!==false){
@@ -2287,15 +2300,57 @@ const t=e.target.closest("#konFab,[data-kon],[data-konsug],[data-konacao]");if(!
 if(t.id==="konFab"){kon.aberto?konFechar():konAbrir();return}
 if(t.dataset.kon==="fechar"){konFechar();return}
 if(t.dataset.kon==="limpar"){kon.msgs=[];try{localStorage.removeItem(konChave())}catch(_){}konAbrir();return}
-if(t.dataset.konsug){konPerguntar(t.dataset.konsug);return}
+if(t.dataset.konsug){if(t.dataset.konsug==="Falar com uma pessoa"){humEntrar();return}konPerguntar(t.dataset.konsug);return}
+if(t.dataset.kon==="humano"){kon.modo==="humano"?humSair():humEntrar();return}
 if(t.dataset.konacao){const A=KON_ACOES[t.dataset.konacao];if(A&&A[1]()){if(!matchMedia("(min-width:761px)").matches)konFechar();A[2]()}return}
 });
 document.addEventListener("submit",e=>{if(e.target.id!=="konForm")return;e.preventDefault();const i=$("#konIn");const v=i.value;i.value="";konPerguntar(v)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&kon.aberto)konFechar()});
-function konMostrar(){const f=$("#konFab");if(!f)return;f.hidden=!me;
+function konMostrar(){const f=$("#konFab");if(!f)return;f.hidden=!me;if(me&&!konMostrar._h){konMostrar._h=1;setTimeout(humChecar,1500)}
 let visto=false;try{visto=!!localStorage.getItem("konserta.kon.visto")}catch(_){}
 const d=$("#konDica");if(d&&me&&!visto&&!kon.aberto){d.hidden=false;setTimeout(()=>{d.hidden=true},9000)}}
-(function(){const f=$("#konFab");if(f)f.innerHTML=konSVG("fab");const h=$("#konHead");if(h)h.innerHTML=konSVG("head")+`<div><b>Kon</b><small id="konStatus">guia rápido do Konserta</small></div><div class="kx"><button type="button" data-kon="limpar" title="Começar conversa nova">Nova</button><button type="button" data-kon="fechar" aria-label="Fechar">✕</button></div>`})();
+/* ---- Falar com uma pessoa (equipe Konserta) ---- */
+const KSELO=`<span class="kon-eq">K</span>`;
+function humRender(){
+const box=$("#konMsgs");const W=((window.KONSERTA&&KONSERTA.whatsapp)||"").replace(/\D/g,"");
+const intro=`<div class="kon-m kon-de"><span class="kon-av">${konSVG("mini")}</span><div class="kon-b">${kon.hum?"Esta é a sua conversa com a <b>equipe do Konserta</b>. Quando responderem, a resposta aparece aqui e eu te aviso no meu botão.":"Beleza! Escreva aqui embaixo o que você precisa, com o máximo de detalhe. Eu passo pra <b>equipe do Konserta</b>, e a resposta aparece aqui mesmo. Eu te aviso no meu botão quando chegar."}${W?`<a class="kon-acao" href="https://wa.me/${W}?text=${encodeURIComponent("Oi! Sou "+(me?me.nome:"")+" ("+(empresa.nome||"")+") e preciso de ajuda com o Konserta.")}" target="_blank" rel="noopener">Ou chamar no WhatsApp →</a>`:""}</div></div>`;
+box.innerHTML=intro+kon.humMsgs.map(m=>m.de==="konserta"?`<div class="kon-m kon-de"><span class="kon-av">${KSELO}</span><div class="kon-b kon-hb"><small>Equipe Konserta · ${new Date(m.em).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</small>${esc(m.texto).replace(/\n/g,"<br>")}</div></div>`:`<div class="kon-m kon-eu"><div class="kon-b">${esc(m.texto).replace(/\n/g,"<br>")}</div></div>`).join("")
++(kon.hum&&kon.hum.status==="fechado"?`<div class="kon-fim">Atendimento encerrado. Se escrever de novo, abrimos outro.</div>`:"")
++(kon.ocupado?`<div class="kon-m kon-eu"><div class="kon-b kon-dig"><i></i><i></i><i></i></div></div>`:"");
+$("#konSug").innerHTML="";box.scrollTop=box.scrollHeight;
+const st=$("#konStatus");if(st)st.textContent="conversa com a equipe Konserta";
+const ip=$("#konIn");if(ip)ip.placeholder="Escreva para a equipe…";
+}
+async function humCarregar(){
+if(!kon.hum)return;
+try{const {data}=await sb.rpc("humano_ver",{p_id:kon.hum.id,p_token:null});if(data){kon.hum.status=data.status;kon.humMsgs=data.msgs||[];kon.humNovas=0;humBadge()}}catch(_){}
+}
+async function humEntrar(){
+kon.modo="humano";if(!kon.aberto)konAbrir();
+try{const {data}=await sb.rpc("humano_meu");if(data&&data.id){kon.hum={id:data.id,status:data.status};await humCarregar()}}catch(_){}
+konRender();setTimeout(()=>$("#konIn")?.focus(),50);
+}
+function humSair(){kon.modo="kon";konRender()}
+async function humEnviar(q){
+kon.ocupado=true;konRender();
+try{
+if(!kon.hum||kon.hum.status==="fechado"){
+const {data,error}=await sb.rpc("humano_abrir",{p_nome:me?me.nome:"",p_contato:KS.email||"",p_texto:q,p_empresa:KS.eid||null});
+if(error)throw error;kon.hum={id:data.id,status:"aberto"};
+}else{const {error}=await sb.rpc("humano_enviar",{p_id:kon.hum.id,p_token:null,p_texto:q});if(error)throw error}
+await humCarregar();toast("Mensagem enviada para a equipe Konserta");
+}catch(e){toast(String(e.message||"").includes("muit")?"Muitas mensagens agora. Espere um pouco.":"Não enviou. Tente de novo.")}
+kon.ocupado=false;konRender();
+}
+function humBadge(){const f=$("#konFab");if(f)f.classList.toggle("tem-resposta",kon.humNovas>0);const d=$("#konDica");
+if(d&&kon.humNovas>0&&!kon.aberto){d.textContent="A equipe Konserta te respondeu!";d.hidden=false}}
+async function humChecar(){
+if(!me)return;
+try{const {data}=await sb.rpc("humano_meu");if(data&&data.id){kon.hum=kon.hum&&kon.hum.id===data.id?kon.hum:{id:data.id,status:data.status};kon.hum.status=data.status;
+if(kon.aberto&&kon.modo==="humano"){await humCarregar();konRender()}else{kon.humNovas=data.nao_lidas||0;humBadge();if(kon.aberto)konRender()}}}catch(_){}
+}
+setInterval(()=>{if(document.visibilityState!=="visible")return;if(kon.aberto&&kon.modo==="humano")humChecar();else if(!humChecar._t||Date.now()-humChecar._t>120000){humChecar._t=Date.now();humChecar()}},15000);
+(function(){const f=$("#konFab");if(f)f.innerHTML=konSVG("fab");const h=$("#konHead");if(h)h.innerHTML=konSVG("head")+`<div><b>Kon</b><small id="konStatus">guia rápido do Konserta</small></div><div class="kx"><button type="button" data-kon="humano" id="konHumBtn">Falar com uma pessoa</button><button type="button" data-kon="limpar" title="Começar conversa nova">Nova</button><button type="button" data-kon="fechar" aria-label="Fechar">✕</button></div>`})();
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}

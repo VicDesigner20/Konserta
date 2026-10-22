@@ -31,3 +31,14 @@
 @media (max-width:760px){.ks-fab{right:14px;bottom:14px;width:56px;height:56px;border-radius:19px}.ks-dica{right:80px;bottom:24px}
   .ks{inset:0;width:auto;height:auto;border-radius:0}body.ks-on .ks-fab{display:none}}
 @media (prefers-reduced-motion:reduce){.kon-svg .kon-olhos,.ks-dig i{animation:none}}
+.ks-hum{margin-left:auto;background:#ffb21e;color:#141414;border:0;border-radius:10px;padding:8px 11px;font:800 12.5px "Manrope",sans-serif;cursor:pointer;white-space:nowrap}
+.ks-hum+.ks-x{margin-left:6px}
+.ks-eq{display:grid;place-items:center;background:#141414;color:#ffb21e;border-radius:9px;font:800 15px "Sora",sans-serif}
+.ks-hb{background:#fff7e3;border-color:#f3d79a}.ks-hb small{display:block;font-size:11px;font-weight:800;color:#8a5a00;margin-bottom:3px}
+.ks-fim{align-self:center;font-size:12.5px;color:#69645a;background:#ebe7de;border-radius:99px;padding:6px 12px}
+.ks-ctt{display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid #e4dfd4;border-radius:16px;padding:12px;margin-left:36px}
+.ks-ctt input{font:inherit;font-size:15px;border:0;border-radius:11px;background:#f0ede6;padding:10px 12px;color:#141414}
+.ks-ctt button{font:800 14px "Manrope",sans-serif;border:0;border-radius:11px;background:#ffb21e;color:#141414;padding:10px;cursor:pointer}
+.ks-err{color:#bf3624;font-size:13px;font-weight:700}.ks-err:empty{display:none}
+.ks-f[hidden]{display:none}
+.ks-fab{position:fixed}.ks-fab.tem-resposta::after{content:"1";position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:#e5482f;color:#fff;font:800 12px/20px "Manrope",sans-serif;text-align:center}
