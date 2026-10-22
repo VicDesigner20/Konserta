@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Painel Konserta</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#f4f2ed;--card:#fff;--ink:#141414;--muted:#69645a;--line:#e4dfd4;--soft:#f0ede6;--amber:#ffb21e;--graf:#141414;--ok:#1d7a45;--warn:#9a6a00;--bad:#bf3624;
+  --display:"Sora",system-ui,sans-serif;--body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#121211;--card:#1b1b19;--ink:#efece6;--muted:#a39d91;--line:#2f2e2a;--soft:#232320;--ok:#53c084;--warn:#e6b23c;--bad:#f06a52}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+[hidden]{display:none!important}
+.top{background:var(--graf);color:#fff;padding:14px max(16px,env(safe-area-inset-right)) 14px max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.top b{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.03em}
+.top .tag{background:var(--amber);color:var(--graf);font-weight:800;font-size:11px;letter-spacing:.08em;border-radius:6px;padding:3px 8px}
+.top a,.top button{margin-left:auto;color:#fff;border:1px solid #3a3a36;background:transparent;border-radius:10px;padding:8px 12px;font:600 14px var(--body);text-decoration:none;cursor:pointer}
+.top a+button{margin-left:0}
+main{max-width:1200px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat small{display:block;color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.stat b{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bar input,.bar select{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.bar input{flex:1 1 240px;min-width:0}
+.list{display:flex;flex-direction:column;gap:12px}
+.emp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.emp-h{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.emp-h .n{flex:1 1 260px;min-width:0}
+.emp-h .n b{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.02em;display:block}
+.emp-h .n span{color:var(--muted);font-size:13.5px;overflow-wrap:anywhere}
+.pill{display:inline-flex;font-size:12px;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap}
+.p-teste{background:color-mix(in srgb,var(--amber) 22%,transparent);color:var(--warn)}
+.p-fim{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.p-plano{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.nums{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.nums b{color:var(--ink);font-family:var(--mono);font-weight:500}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:12px}
+.acts .lbl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
+.btn{font:700 13.5px var(--body);border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn.on{background:var(--graf);color:var(--amber);border-color:var(--graf)}
+.btn.dark{background:var(--graf);color:#fff;border-color:var(--graf)}
+select.btn{padding:7px 10px}
+.sep{width:1px;align-self:stretch;background:var(--line);margin:0 4px}
+.empty,.msg{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:24px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--graf);color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;z-index:9}
+.mono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<header class="top">
+  <img src="/icon.svg" width="32" height="32" alt="">
+  <b>Painel Konserta</b><span class="tag">SÓ VOCÊ</span>
+  <a href="/app">Abrir o app</a><button type="button" id="sair">Sair</button>
+</header>
+<main>
+  <div class="msg" id="msg">Carregando…</div>
+  <section id="painel" hidden style="display:flex;flex-direction:column;gap:18px">
+    <div class="stats" id="stats"></div>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Buscar empresa, dono, e-mail…" aria-label="Buscar">
+      <select id="filtro" aria-label="Filtrar">
+        <option value="">Todas</option><option value="teste">Em teste</option><option value="fim">Teste acabado</option><option value="plano">Assinantes</option>
+      </select>
+      <button class="btn" type="button" id="recarregar">Atualizar</button>
+    </div>
+    <div class="list" id="lista"></div>
+  </section>
+</main>
+<div class="toast" id="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/config.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const D=86400000;
+// Módulos que podem ser ligados por empresa. Para criar um novo, adicione aqui e no app.
+const MODULOS=[{k:"financas",t:"Finanças"}];
+const PLANOS=["Bancada","Completo","Equipe"];
+const RAMOS={assistencia:"Assistência técnica",mecanica:"Mecânica",marcenaria:"Marcenaria",ar:"Ar-condicionado"};
+let lista=[];
+const fmt=t=>t?new Date(t).toLocaleDateString("pt-BR"):"—";
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200)}
+function situacao(e){if(e.plano)return "plano";return Date.parse(e.trial_ate)>Date.now()?"teste":"fim"}
+
+function render(){
+  const tot=lista.length,teste=lista.filter(e=>situacao(e)==="teste").length,plano=lista.filter(e=>e.plano).length;
+  const os=lista.reduce((a,e)=>a+Number(e.os||0),0);
+  const ativas=lista.filter(e=>e.ultima_atividade&&Date.now()-Date.parse(e.ultima_atividade)<7*D).length;
+  $("#stats").innerHTML=[["Empresas",tot],["Em teste",teste],["Assinantes",plano],["Ativas (7 dias)",ativas],["OS no total",os]]
+    .map(([l,v])=>`<div class="stat"><small>${l}</small><b>${v}</b></div>`).join("");
+  const q=$("#q").value.trim().toLowerCase(),f=$("#filtro").value;
+  const vis=lista.filter(e=>(!f||situacao(e)===f)&&(!q||[e.nome,e.dono_nome,e.dono_email,e.telefone].join(" ").toLowerCase().includes(q)));
+  $("#lista").innerHTML=vis.length?vis.map(e=>{
+    const s=situacao(e),dias=Math.ceil((Date.parse(e.trial_ate)-Date.now())/D);
+    const pill=s==="plano"?`<span class="pill p-plano">Plano ${esc(e.plano)}</span>`:s==="teste"?`<span class="pill p-teste">Teste: ${dias} ${dias===1?"dia":"dias"}</span>`:`<span class="pill p-fim">Teste acabou ${fmt(e.trial_ate)}</span>`;
+    const tel=String(e.telefone||"").replace(/\D/g,"");
+    const rec=e.recursos||{};
+    return `<article class="emp" data-id="${e.id}">
+      <div class="emp-h"><div class="n"><b>${esc(e.nome||"Sem nome")}</b><span>${esc(e.dono_nome||"")} · ${esc(e.dono_email||"")}${e.telefone?" · "+esc(e.telefone):""}</span></div>${pill}</div>
+      <div class="nums"><span>${esc(RAMOS[e.segmento]||e.segmento||"—")} · ${e.tem_sistema?"tem sistema de OS":"OS completa"}</span><span>Criada <b>${fmt(e.criado_em)}</b></span><span>Técnicos <b>${e.membros}</b>${e.pendentes?` (+${e.pendentes} aguardando)`:""}</span><span>OS <b>${e.os}</b></span><span>Estoque <b>${e.estoque}</b></span><span>Cotações <b>${e.cotacoes}</b></span><span>Última atividade <b>${fmt(e.ultima_atividade)}</b></span><span>Código <b class="mono">${esc(e.codigo)}</b></span></div>
+      <div class="acts">
+        <span class="lbl">Teste</span><button class="btn" data-dias="7">+7 dias</button><button class="btn" data-dias="30">+30 dias</button>
+        <span class="sep"></span><span class="lbl">Plano</span>
+        <select class="btn" data-plano aria-label="Plano">${["",...PLANOS].map(p=>`<option value="${p}" ${(e.plano||"")===p?"selected":""}>${p||"Sem plano"}</option>`).join("")}</select>
+        <span class="sep"></span><span class="lbl">Módulos</span>
+        ${MODULOS.map(m=>`<button class="btn ${rec[m.k]?"on":""}" data-mod="${m.k}" aria-pressed="${!!rec[m.k]}">${m.t} ${rec[m.k]?"ligado":"desligado"}</button>`).join("")}
+        ${tel.length>=10?`<span class="sep"></span><a class="btn dark" href="https://wa.me/${tel.length<=11?"55"+tel:tel}" target="_blank" rel="noopener">WhatsApp</a>`:""}
+      </div></article>`}).join(""):`<div class="empty">Nenhuma empresa encontrada.</div>`;
+}
+async function carregar(){
+  const {data,error}=await sb.rpc("admin_empresas");
+  if(error){$("#msg").hidden=false;$("#painel").hidden=true;$("#msg").textContent="Não deu para carregar: "+error.message;return}
+  lista=data||[];render();
+}
+async function atualizar(id,args,ok){
+  const {error}=await sb.rpc("admin_atualizar_empresa",{e:id,...args});
+  if(error){toast("Não salvou: "+error.message);return}
+  toast(ok);await carregar();
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const card=b.closest(".emp");const id=card&&card.dataset.id;const emp=lista.find(x=>x.id===id);
+  if(b.id==="recarregar"){carregar();return}
+  if(b.id==="sair"){sb.auth.signOut().then(()=>location.replace("/entrar"));return}
+  if(!emp)return;
+  if(b.dataset.dias){const base=Math.max(Date.now(),Date.parse(emp.trial_ate));atualizar(id,{novo_trial:new Date(base+Number(b.dataset.dias)*D).toISOString()},"Teste estendido em "+b.dataset.dias+" dias");return}
+  if(b.dataset.mod){const r={...(emp.recursos||{})};r[b.dataset.mod]=!r[b.dataset.mod];if(!r[b.dataset.mod])delete r[b.dataset.mod];atualizar(id,{novos_recursos:r},"Módulo "+(r[b.dataset.mod]?"ligado":"desligado"));return}
+});
+document.addEventListener("change",e=>{
+  if(e.target.matches("[data-plano]")){const id=e.target.closest(".emp").dataset.id;const v=e.target.value;atualizar(id,v?{novo_plano:v}:{limpar_plano:true},v?"Plano "+v+" ativado":"Plano removido")}
+  if(e.target.id==="filtro")render();
+});
+$("#q").addEventListener("input",render);
+(async()=>{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){location.replace("/entrar");return}
+  const {data:ok}=await sb.rpc("sou_admin_konserta");
+  if(!ok){$("#msg").textContent="Esta página é restrita.";return}
+  $("#msg").hidden=true;$("#painel").hidden=false;$("#painel").style.display="flex";
+  await carregar();
+})();
+</script>
+</body>
+</html>
