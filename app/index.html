@@ -425,6 +425,18 @@ h1 #brandTitle{font-family:var(--f-body);font-weight:800;font-size:10.5px;letter
 /* filtros selecionados bem visíveis também no modo escuro */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"],:root:not([data-theme="light"]) .st-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}}
 :root[data-theme="dark"] .chip[aria-pressed="true"],:root[data-theme="dark"] .st-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* quadro no computador: todas as colunas à vista, quebrando para a linha de baixo */
+@media (min-width:761px){
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px 16px;overflow-x:visible;align-items:start}
+.col{max-height:none;min-width:0}
+.col-b{overflow:visible}
+}
+/* "Liberar a loja": botão Ver junto do texto */
+.nowbtn .go{margin-left:18px;background:var(--brand);color:var(--brand-ink);padding:9px 16px;border-radius:12px;font-weight:800;font-size:14px;flex:0 0 auto}
+.nowbtn:hover .go{filter:brightness(1.08)}
+@media (min-width:761px){.nowbtn{justify-content:flex-start}.nowbtn>span:nth-child(2){flex:0 1 auto}}
+@media (max-width:760px){.nowbtn .go{margin-left:auto;padding:8px 12px}}
+@media (max-width:760px){.go-x{display:none}}
 /* ===== Painel da Loja ===== */
 .lj-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px;border-radius:20px;border:0;cursor:pointer;
 background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--brand) 38%,transparent),transparent 60%),var(--graf);color:#fff;box-shadow:var(--shadow);font:inherit}
@@ -1269,7 +1281,7 @@ const bar=$("#nowbar");if(!me||!loaded){bar.hidden=true;return}
 const L=nowLists();const n=L.sair.length+Math.min(L.rap.length,5);
 if(!L.total){bar.hidden=true;return}
 bar.hidden=false;
-bar.innerHTML=`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver →</span></button>`;
+bar.innerHTML=`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver<span class="go-x"> o que fazer</span> →</span></button>`;
 }
 function recItem(o,i,why,actions){
 return `<div class="rec"><div class="rec-top"><span class="rec-n">${i}</span><div class="rec-t"><b>${o.num?"#"+esc(o.num)+" · ":""}${esc(o.cliente||"")}</b><small>${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))}</small></div></div>
