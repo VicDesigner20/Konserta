@@ -532,6 +532,51 @@ background:radial-gradient(90% 120% at 100% 0%,color-mix(in srgb,var(--brand) 55
 .lj-venc{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
 .pp .pill{font-size:10px;vertical-align:middle}
 .login-card .fld input{width:100%}
+/* ===== Kon ===== */
+.kon-fab{position:fixed;right:22px;bottom:22px;z-index:36;width:62px;height:62px;border-radius:22px;border:0;padding:6px;cursor:pointer;background:var(--graf);box-shadow:0 12px 28px -8px rgba(0,0,0,.45),0 0 0 4px var(--bg);transition:transform .15s}
+.kon-fab:hover{transform:translateY(-2px) rotate(-3deg)}
+.kon-fab .kon-svg{width:100%;height:100%}
+.kon-fab.on{background:var(--brand)}
+.kon-svg .kon-olhos{transform-origin:32px 33.7px;animation:konPisca 5s infinite}
+@keyframes konPisca{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}}
+.kon-dica{position:fixed;right:96px;bottom:34px;z-index:36;background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px 14px 4px 14px;padding:9px 13px;font-size:13.5px;font-weight:700;max-width:220px}
+.kon{position:fixed;right:22px;bottom:96px;z-index:45;width:min(390px,calc(100vw - 32px));height:min(600px,calc(100vh - 130px));display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow-lg);overflow:hidden;animation:konSobe .18s ease-out}
+@keyframes konSobe{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.kon-h{display:flex;align-items:center;gap:11px;padding:13px 14px;background:radial-gradient(120% 160% at 100% 0%,color-mix(in srgb,var(--brand) 45%,transparent),transparent 60%),var(--graf);color:#fff}
+.kon-h .kon-svg{width:44px;height:44px;flex:0 0 auto}
+.kon-h b{display:block;font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.02em}
+.kon-h small{display:flex;align-items:center;gap:6px;color:#c9c3b6;font-size:12px}
+.kon-h small::before{content:"";width:7px;height:7px;border-radius:50%;background:#53c084}
+.kon-h .kx{margin-left:auto;display:flex;gap:6px}
+.kon-h .kx button{background:rgba(255,255,255,.1);color:#fff;border:0;border-radius:10px;padding:7px 10px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.kon-msgs{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.kon-m{display:flex;gap:8px;align-items:flex-end;max-width:92%}
+.kon-eu{align-self:flex-end}
+.kon-av{width:28px;height:28px;flex:0 0 auto}.kon-av .kon-svg{width:28px;height:28px}
+.kon-b{padding:10px 13px;border-radius:16px;font-size:14.5px;line-height:1.5;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px;overflow-wrap:anywhere}
+.kon-eu .kon-b{background:var(--graf);color:#fff;border-color:var(--graf);border-bottom-left-radius:16px;border-bottom-right-radius:5px}
+.kon-acao{display:block;margin-top:9px;font:inherit;font-weight:800;font-size:13.5px;background:var(--brand);color:var(--brand-ink);border:0;border-radius:11px;padding:8px 12px;cursor:pointer}
+.kon-dig{display:flex;gap:4px;align-items:center;padding:14px}
+.kon-dig i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:konDig 1s infinite}
+.kon-dig i:nth-child(2){animation-delay:.15s}.kon-dig i:nth-child(3){animation-delay:.3s}
+@keyframes konDig{0%,60%,100%{opacity:.25;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+.kon-sug{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 12px 8px}
+.kon-sug:empty{display:none}
+.kon-sug button{flex:0 0 auto;font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
+.kon-sug button:hover{border-color:var(--brand)}
+.kon-f{display:flex;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
+.kon-f input{flex:1;font:inherit;font-size:15px;border:0;border-radius:12px;background:var(--surface2);padding:11px 12px;color:var(--ink);min-width:0}
+.kon-f input:focus{outline:2px solid var(--brand)}
+.kon-f button{border:0;border-radius:12px;background:var(--brand);color:var(--brand-ink);width:46px;cursor:pointer;display:grid;place-items:center}
+.kon-nota{font-size:11px;color:var(--muted);text-align:center;padding:0 12px 8px}
+@media (max-width:760px){
+.kon-fab{right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:19px}
+.kon-dica{right:78px;bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.kon{inset:0;width:auto;height:auto;border-radius:0;border:0;padding-top:env(safe-area-inset-top,0px)}
+body.kon-on .kon-fab{display:none}
+}
+@media (prefers-reduced-motion:reduce){.kon-svg .kon-olhos,.kon,.kon-dig i{animation:none}}
+.kon[hidden],.kon-fab[hidden],.kon-dica[hidden]{display:none}
 </style>
 </head>
 <body style="margin:0">
@@ -556,6 +601,14 @@ background:radial-gradient(90% 120% at 100% 0%,color-mix(in srgb,var(--brand) 55
 <div class="chips" id="chips" role="group" aria-label="Filtrar por tipo de atendimento"></div>
 <div class="tabs" id="tabs" role="tablist" aria-label="Status"></div>
 </header>
+<button type="button" class="kon-fab" id="konFab" hidden aria-label="Falar com o Kon, o assistente"></button>
+<div class="kon-dica" id="konDica" hidden>Oi! Sou o Kon. Precisa de ajuda?</div>
+<section class="kon" id="kon" hidden aria-label="Kon, assistente do Konserta">
+<div class="kon-h" id="konHead"></div>
+<div class="kon-msgs" id="konMsgs" aria-live="polite"></div>
+<div class="kon-sug" id="konSug"></div>
+<form class="kon-f" id="konForm" autocomplete="off"><input id="konIn" placeholder="Pergunte ao Kon…" aria-label="Sua pergunta" maxlength="600"><button type="submit" aria-label="Enviar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button></form>
+</section>
 <nav class="bnav" id="bnav" aria-label="Navegação">
 <button class="bn" type="button" data-nav="board" aria-current="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z"/></svg>Quadro</button>
 <button class="bn" type="button" data-nav="stock"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg>Estoque<span class="badge-n" id="stockN2" hidden>0</span></button>
@@ -1840,7 +1893,7 @@ function papelDe(u){return PAPEIS[u&&u.papel]||PAPEIS.tecnico}
 function applyPerms(){
 const vis=(sel,ok)=>{const el=document.querySelector(sel);if(el)el.hidden=!ok};
 vis("#btnNew",pode("editar_os"));vis("#btnCot",pode("cotacoes"));vis("#btnShop",pode("compras"));
-vis('.bn[data-nav="shop"]',pode("compras"));vis("#btnLoja",pode("equipe"));
+vis('.bn[data-nav="shop"]',pode("compras"));vis("#btnLoja",pode("equipe"));konMostrar();
 vis("#btnFin",!!(KS.recursos&&KS.recursos.financas)&&pode("financas"));
 }
 async function chamarEquipe(body){
@@ -2142,6 +2195,107 @@ if(id==="fornForm"){const nome=$("#g_nome").value.trim();if(!nome){$("#g_nome").
 const d={nome,vendedor:$("#g_vend").value.trim(),telefone:$("#g_tel").value.trim(),telefone2:$("#g_tel2").value.trim(),oque:$("#g_oq").value.trim(),site:$("#g_site").value.trim(),obs:$("#g_obs").value.trim(),atualizadoEm:Date.now()};
 try{await cadCols.fornecedores.doc(agForm.id).set(d);agForm=null;toast("Contato salvo")}catch(_){toast("Não salvou. Tente de novo.")}openAgenda();return}
 });
+/* ---------- Kon: o assistente do Konserta ---------- */
+function konSVG(cls=""){return `<svg class="kon-svg ${cls}" viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="konNotch${cls}"><rect x="0" y="0" width="64" height="64" fill="#fff"/><rect x="29.3" y="-2" width="5.4" height="7.5" rx="1" fill="#000"/></mask></defs>
+<g mask="url(#konNotch${cls})"><circle cx="32" cy="6.5" r="6" fill="#141414"/></g><rect x="30" y="8" width="4" height="9" rx="1.5" fill="#141414"/>
+<circle cx="6.5" cy="37" r="3.6" fill="#141414"/><circle cx="57.5" cy="37" r="3.6" fill="#141414"/>
+<rect x="6" y="15" width="52" height="44" rx="17" fill="#FFB21E"/><rect x="13" y="22" width="38" height="27" rx="11" fill="#141414"/>
+<g class="kon-olhos"><rect x="21" y="29" width="6" height="9.5" rx="3" fill="#FFB21E"/><rect x="37" y="29" width="6" height="9.5" rx="3" fill="#FFB21E"/></g>
+<path class="kon-boca" d="M26 42.5q6 4.2 12 0" stroke="#FFB21E" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+<circle cx="17" cy="53" r="2.2" fill="#e09a10"/><circle cx="47" cy="53" r="2.2" fill="#e09a10"/></svg>`}
+const KON_FAQ=[
+{k:["nova os","criar os","abrir os","abro os","abre os","abro uma os","fazer os","cadastrar os","nova ordem","adicionar aparelho","chegou aparelho","registrar aparelho","lancar os"],r:"Pra abrir uma OS:\n1. No computador, toque em **Nova OS** no topo. No celular, toque no **+** amarelo no meio da barra de baixo e escolha **Nova OS**.\n2. Preencha cliente, telefone, aparelho e defeito.\n3. Escolha o tipo de atendimento e, se quiser, a prioridade.\n4. Salve. A OS aparece na coluna do status que você escolheu.",a:"nova_os"},
+{k:["status","mudar status","mover os","passar para","coluna","bancada","pronto","aguardando"],r:"Pra mudar o status:\n1. Toque no cartão da OS.\n2. Em **Status**, toque no novo (Fila de Análise, Aguardando Aprovação, Aguardando Peças, Em Bancada, Pronto, Devolvido sem Reparo ou Entregue).\nNo celular, os status são as abas do topo; a selecionada fica amarela."},
+{k:["orcamento","orçamento","mao de obra","valor","preco do servico","mandar orcamento","enviar orcamento"],r:"O orçamento fica dentro da OS, em 3 passos:\n1. **Monte**: toque em **+ Mão de obra** ou **+ Peça** e coloque o valor (pode digitar 1200, 1.200 ou 1.200,00).\n2. **Envie** pro cliente por WhatsApp, imagem ou PDF. A OS vai sozinha pra Aguardando Aprovação.\n3. Marque se o cliente **aprovou** ou **recusou**. Aprovou, a OS vai pra Em Bancada (ou Aguardando Peças, se faltar peça).\nO orçamento aparece pra quem usa a OS completa do Konserta."},
+{k:["cotacao","cotação","preco antes","quanto fica","quanto custa"],r:"A cotação é pra quando o cliente quer saber o preço antes de deixar o aparelho:\n1. Toque em **Cotações** no topo (ou **+** → **Nova cotação**).\n2. Monte os itens e envie em PDF ou WhatsApp.\n3. Se ele aprovar, a cotação vira OS com um toque.",a:"cotacoes"},
+{k:["estoque","peca no estoque","baixa","prateleira","item do estoque","repor"],r:"No **Estoque** você cadastra cada item com quantidade, mínimo e onde fica. Quando o item fica abaixo do mínimo, aparece o número vermelho.\nPra usar uma peça numa OS: abra a OS, vá em **Peças** e puxe do estoque. A baixa é automática.",a:"estoque"},
+{k:["compras","comprar","lista de compras","encomendada","encomendar","pecas que faltam","fornecedor lista"],r:"Em **Compras** ficam juntas todas as peças que precisam ser compradas, as encomendadas e as que chegaram, de todas as OS, mais o que está abaixo do mínimo no estoque. Use **Copiar lista para o fornecedor** pra mandar de uma vez.",a:"compras"},
+{k:["agenda","fornecedor","telefone do fornecedor","contato","vendedor","distribuidora"],r:"A **Agenda de fornecedores** guarda o contato de quem te vende peça: o que vende, vendedor, telefones e site, com botões **Ligar** e **WhatsApp**. Dá pra buscar pela peça (ex.: \"resistência\"). Fica no botão **Agenda**, no **+** ou dentro de Compras.",a:"agenda"},
+{k:["liberar a loja","loja cheia","cheia","lotada","lotado","espaco","sem espaco","esvaziar","acumulado","muito aparelho","o que fazer primeiro","consertos rapidos","prioridade do dia"],r:"O **Liberar a loja** é o cartão escuro no topo do quadro. Toque em **Ver o que fazer**:\n1. **Pode sair hoje**: prontos e devolvidos esperando retirada, com botão pra avisar o cliente no WhatsApp.\n2. **Consertos rápidos**: o que dá pra fazer agora pra abrir espaço.\nMarcar o tempo estimado (Rápido, Médio, Demorado) nas OS deixa a sugestão mais certeira.",a:"liberar"},
+{k:["funcionario","adicionar pessoa","cadastrar tecnico","cadastro tecnico","cadastrar pessoa","equipe","convidar","pai","filho","irmao","colega","novo usuario","acesso","login para"],r:"Quem cadastra a equipe é o dono (ou quem tem a permissão Gerenciar a equipe):\n1. Abra o **Painel da Loja** → aba **Acessos**.\n2. Toque em **Adicionar pessoa**: nome, e-mail e função.\n3. Escolha como mandar o acesso: **convite por e-mail** (mais seguro) ou **senha provisória** pro WhatsApp, que vale só 5 minutos.\nNo primeiro acesso, a pessoa é obrigada a criar a própria senha.",a:"loja"},
+{k:["funcao","permissao","papel","nao consigo","nao aparece","sumiu","sem permissao","bloqueado","nao vejo"],r:"Cada pessoa tem uma função: **Dono** (pode tudo), **Gerente**, **Atendente**, **Técnico** (vê só as próprias OS) e **Financeiro**. Se um botão não aparece pra você, é a sua função que não libera. Quem muda isso é o dono ou o gerente, no **Painel da Loja** → **Acessos** → **Editar função**."},
+{k:["senha provisoria","senha venceu","senha expirou","5 minutos","nova senha","trocar senha","esqueci","esqueci minha senha","recuperar senha"],r:"Se esqueceu a sua senha, toque em **Esqueci minha senha** na tela de entrada; chega um link no e-mail.\nSe a senha provisória venceu (ela vale só 5 minutos), peça pro dono gerar outra em **Painel da Loja** → **Acessos** → **Nova senha**."},
+{k:["ferias","folga","atestado","falta","ausencia"],r:"No **Painel da Loja** → **Férias e folgas** você lança férias, folga, atestado ou falta com as datas. Quem está fora hoje aparece no **Resumo**.",a:"loja"},
+{k:["comissao","comissão","porcentagem","percentual"],r:"A comissão sai da mão de obra:\n1. Ao lançar **+ Mão de obra** numa OS, aparece o campo **Comissão (%)**, já preenchido.\n2. O percentual vem da ficha do técnico ou do padrão da loja.\n3. No **Painel da Loja** → **Comissões** você vê o total do mês por técnico, das OS **entregues**.",a:"loja"},
+{k:["ficha","cadastro de funcionario","admissao","aniversario","cpf"],r:"No **Painel da Loja** → **Funcionários** cada pessoa tem uma ficha: cargo, telefone, CPF, admissão, aniversário, comissão e observações. Até quem não usa o app pode ter ficha.",a:"loja"},
+{k:["pdf","imprimir","impressao","comprovante","termo","garantia impressa"],r:"Dentro da OS, em **Imprimir / PDF**, tem a OS de entrada, o Orçamento e o comprovante de entrega. Garantia, prazo de retirada e o termo você ajusta em **Conta** → **OS impressa**."},
+{k:["foto","video","midia","imagem do defeito"],r:"Abra a OS e vá em **Fotos e vídeos** → **Foto ou vídeo**. No celular abre direto a câmera ou a galeria. Vídeo vai até 20 MB (uns 20 a 40 segundos)."},
+{k:["logo","cor","perfil da empresa","cnpj","endereco","nome da empresa"],r:"Em **Conta** → **Perfil da empresa** você coloca o logo, a cor do app, CNPJ, telefone, e-mail, endereço e horário. Isso aparece no orçamento e nos PDFs. A cor pode ser puxada do logo.",a:"conta"},
+{k:["instalar","celular","iphone","android","tela inicial","aplicativo","app no celular"],r:"Pra ter o Konserta como aplicativo:\n- **iPhone**: abra no Safari → botão **Compartilhar** → **Adicionar à Tela de Início**.\n- **Android**: no Chrome → menu **⋮** → **Instalar app** (ou Adicionar à tela inicial)."},
+{k:["apagar os","excluir os","deletar","zerar","apagar tudo"],r:"Pra apagar uma OS: abra a OS e, lá no fim, **Apagar OS do quadro**. Pra começar do zero: **Conta** → **Zerar OS** (pede pra digitar APAGAR). Apagar depende da sua função; técnico normalmente não apaga."},
+{k:["buscar","procurar","achar os","pesquisar","filtro"],r:"Use o campo **Buscar** no topo: procura por cliente, número da OS ou marca. Os botões Todos, Particular, Garantia e Seguradora filtram por tipo. E em **Meus aparelhos** dá pra ver o quadro de outra pessoa, se a sua função deixar."},
+{k:["teste","assinar","plano","preco","pagar","mensalidade","quanto custa o konserta"],r:"Você tem 14 dias grátis. Pra assinar, toque em **Assinar** no aviso do teste ou fale com o Konserta pelo WhatsApp de vendas."},
+{k:["duas os","mesmo cliente","dois aparelhos","duplicada"],r:"Quando o mesmo cliente tem dois aparelhos na loja, as duas OS aparecem ligadas, pra você não esquecer de avisar das duas juntas."}
+];
+const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
+cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Agenda",()=>true,()=>{agForm=null;openAgenda()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
+conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()]};
+let kon={aberto:false,msgs:[],ocupado:false,ia:null};
+function konChave(){return "konserta.kon."+(KS.uid||"")}
+try{}catch(_){}
+const konTok=x=>norm(x).replace(/[^\p{L}\p{N} ]/gu," ").split(" ").filter(w=>w.length>1&&!["de","da","do","um","uma","o","a","e","eu","me","meu","minha","como","que","pra","para","no","na","em","com","se","ta","esta","to","faco","fazer"].includes(w)).map(w=>w.slice(0,5));
+function konResposta(q){
+const t=new Set(konTok(q));let best=null,bs=0;
+for(const f of KON_FAQ){let sc=0;for(const k of f.k){const ws=konTok(k);if(ws.length&&ws.every(w=>t.has(w)))sc+=ws.length*2}if(sc>bs){bs=sc;best=f}}
+if(!best||bs<2)return "Hmm, essa eu ainda não sei responder direitinho. 🔧\nTenta perguntar de outro jeito, ou escolhe um dos assuntos aqui embaixo. Se for um problema no app, fala com o suporte do Konserta.";
+return best.r+(best.a?"\n[[abrir:"+best.a+"]]":"");
+}
+function konFmt(txt){
+let acao=null;txt=String(txt||"").replace(/\[\[abrir:([a-z_]+)\]\]/g,(m,x)=>{acao=acao||x;return ""}).trim();
+let h=esc(txt).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>");
+const A=acao&&KON_ACOES[acao];
+if(A&&A[1]())h+=`<button type="button" class="kon-acao" data-konacao="${acao}">${A[0]} →</button>`;
+return h;
+}
+function konSugestoes(){const s=["Como abro uma OS?","Como mando um orçamento?","O que é o Liberar a loja?","Como instalo no celular?"];
+if(pode("equipe"))s.splice(2,0,"Como cadastro um funcionário?");else s.splice(2,0,"Por que não vejo um botão?");
+return s}
+function konRender(){
+const box=$("#konMsgs");if(!box)return;
+box.innerHTML=kon.msgs.map(m=>m.de==="kon"?`<div class="kon-m kon-de"><span class="kon-av">${konSVG("mini")}</span><div class="kon-b">${konFmt(m.texto)}</div></div>`:`<div class="kon-m kon-eu"><div class="kon-b">${esc(m.texto)}</div></div>`).join("")
++(kon.ocupado?`<div class="kon-m kon-de"><span class="kon-av">${konSVG("mini")}</span><div class="kon-b kon-dig"><i></i><i></i><i></i></div></div>`:"");
+const sg=$("#konSug");if(sg)sg.innerHTML=kon.msgs.filter(m=>m.de==="eu").length<2?konSugestoes().map(s=>`<button type="button" data-konsug="${esc(s)}">${esc(s)}</button>`).join(""):"";
+box.scrollTop=box.scrollHeight;
+const st=$("#konStatus");if(st)st.textContent=kon.ia===true?"assistente com IA":"guia rápido do Konserta";
+try{localStorage.setItem(konChave(),JSON.stringify(kon.msgs.slice(-30)))}catch(_){}
+}
+function konAbrir(){
+if(!me)return;
+if(!kon.msgs.length){try{kon.msgs=JSON.parse(localStorage.getItem(konChave())||"[]")}catch(_){kon.msgs=[]}}
+if(!kon.msgs.length)kon.msgs=[{de:"kon",texto:`Oi, ${me.nome.split(" ")[0]}! Eu sou o **Kon**, o ajudante do Konserta. 🔧\nPergunta o que quiser sobre o app: como abrir OS, mandar orçamento, organizar a equipe… Eu te mostro o caminho.`}];
+kon.aberto=true;$("#kon").hidden=false;$("#konFab").classList.add("on");document.body.classList.add("kon-on");
+try{localStorage.setItem("konserta.kon.visto","1")}catch(_){}const d=$("#konDica");if(d)d.hidden=true;
+konRender();setTimeout(()=>{if(matchMedia("(min-width:761px)").matches)$("#konIn")?.focus()},50);
+}
+function konFechar(){kon.aberto=false;$("#kon").hidden=true;$("#konFab").classList.remove("on");document.body.classList.remove("kon-on")}
+async function konPerguntar(q){
+q=String(q||"").trim().slice(0,600);if(!q||kon.ocupado)return;
+kon.msgs.push({de:"eu",texto:q});kon.ocupado=true;konRender();
+let resp=null;
+if(kon.ia!==false){
+try{const {data,error}=await sb.functions.invoke("kon",{body:{empresa_id:KS.eid,mensagens:kon.msgs.slice(-10)}});
+if(!error&&data&&data.texto){resp=data.texto;kon.ia=true}
+else if(data&&data.semIA&&!data.falhou&&!data.limite)kon.ia=false;
+if(data&&data.limite)resp="Por hoje eu já respondi bastante coisa pra você com a IA. 😅 Até amanhã eu sigo no guia rápido:\n\n"+konResposta(q);
+}catch(_){}
+}
+if(!resp){await new Promise(r=>setTimeout(r,450));resp=konResposta(q)}
+kon.ocupado=false;kon.msgs.push({de:"kon",texto:resp});konRender();
+}
+document.addEventListener("click",e=>{
+const t=e.target.closest("#konFab,[data-kon],[data-konsug],[data-konacao]");if(!t)return;
+if(t.id==="konFab"){kon.aberto?konFechar():konAbrir();return}
+if(t.dataset.kon==="fechar"){konFechar();return}
+if(t.dataset.kon==="limpar"){kon.msgs=[];try{localStorage.removeItem(konChave())}catch(_){}konAbrir();return}
+if(t.dataset.konsug){konPerguntar(t.dataset.konsug);return}
+if(t.dataset.konacao){const A=KON_ACOES[t.dataset.konacao];if(A&&A[1]()){if(!matchMedia("(min-width:761px)").matches)konFechar();A[2]()}return}
+});
+document.addEventListener("submit",e=>{if(e.target.id!=="konForm")return;e.preventDefault();const i=$("#konIn");const v=i.value;i.value="";konPerguntar(v)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&kon.aberto)konFechar()});
+function konMostrar(){const f=$("#konFab");if(!f)return;f.hidden=!me;
+let visto=false;try{visto=!!localStorage.getItem("konserta.kon.visto")}catch(_){}
+const d=$("#konDica");if(d&&me&&!visto&&!kon.aberto){d.hidden=false;setTimeout(()=>{d.hidden=true},9000)}}
+(function(){const f=$("#konFab");if(f)f.innerHTML=konSVG("fab");const h=$("#konHead");if(h)h.innerHTML=konSVG("head")+`<div><b>Kon</b><small id="konStatus">guia rápido do Konserta</small></div><div class="kx"><button type="button" data-kon="limpar" title="Começar conversa nova">Nova</button><button type="button" data-kon="fechar" aria-label="Fechar">✕</button></div>`})();
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
