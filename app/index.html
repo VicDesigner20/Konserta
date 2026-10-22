@@ -527,6 +527,11 @@ background:radial-gradient(90% 120% at 100% 0%,color-mix(in srgb,var(--brand) 55
 .ag-oq{font-size:13.5px;background:var(--brand-soft);color:var(--brand-fg);border-radius:9px;padding:5px 9px;align-self:flex-start;font-weight:700}
 .lj-add textarea,.lj-add select,#fornForm textarea{background:var(--surface)}
 .lj-add .fld select,.lj-add .fld textarea{border:1px solid var(--line)}
+.lj-senha{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:var(--surface2)}
+.lj-timer{font-size:13.5px}.lj-timer b{font-size:16px;color:var(--bad)}
+.lj-venc{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,var(--surface))}
+.pp .pill{font-size:10px;vertical-align:middle}
+.login-card .fld input{width:100%}
 </style>
 </head>
 <body style="margin:0">
@@ -1596,6 +1601,10 @@ if(me&&KS.estado==="ok"){L.hidden=true;const b=$("#btnUser");b.hidden=false;cons
 $("#btnUser").hidden=true;L.hidden=false;
 const sair=`<button type="button" class="btn btn-line" data-act="logout">Sair</button>`;
 const head=`<span class="mark" style="width:60px;height:60px;border-radius:16px;font-size:26px">K</span>`;
+if(KS.estado==="trocar_senha"){L.innerHTML=`<div class="login-card">${head}<h2>Crie sua senha<small>${esc(KS.email||"")}</small></h2><p>Você entrou com uma senha provisória. Para proteger a loja, crie agora a sua senha. Só você vai saber.</p>
+<form id="trocaForm" style="display:flex;flex-direction:column;gap:10px;text-align:left" autocomplete="off"><div class="fld"><label for="ts1">Senha nova</label><input id="ts1" type="password" autocomplete="new-password" placeholder="Pelo menos 8 caracteres"></div>
+<div class="fld"><label for="ts2">Repita a senha</label><input id="ts2" type="password" autocomplete="new-password"></div><div class="err" id="tsErr"></div>
+<button class="btn btn-accent" type="submit">Salvar e entrar</button></form>${sair}</div>`;return}
 if(KS.estado==="pendente"){L.innerHTML=`<div class="login-card">${head}<h2>Aguardando aprovação<small>${esc(KS.empresaNome||"")}</small></h2><p>Seu pedido para entrar na equipe foi enviado. Assim que o dono da loja aprovar em <b>Conta</b>, é só abrir o Konserta de novo.</p><button type="button" class="btn btn-accent" data-act="recarregar">Já fui aprovado</button>${sair}</div>`;return}
 if(KS.estado==="expirado"){const w=(window.KONSERTA&&KONSERTA.whatsapp)||"";L.innerHTML=`<div class="login-card">${head}<h2>Seu teste grátis acabou<small>${esc(empresa.nome||KS.empresaNome||"")}</small></h2><p>Seus dados continuam guardados. Escolha um plano para voltar a usar o Konserta.</p>${w?`<a class="btn btn-accent" href="https://wa.me/${w}?text=${encodeURIComponent("Oi! Quero assinar o Konserta para a "+(empresa.nome||""))}" target="_blank" rel="noopener">Assinar pelo WhatsApp</a>`:`<p class="hint">Fale com a Konserta para assinar.</p>`}${sair}</div>`;return}
 if(KS.estado==="erro"){L.innerHTML=`<div class="login-card">${head}<h2>Não encontramos sua empresa<small>${esc(KS.email||"")}</small></h2><p>${esc(KS.erroMsg||"Sua conta ainda não está ligada a nenhuma empresa.")}</p><a class="btn btn-accent" href="/cadastro">Criar empresa ou usar outro código</a>${sair}</div>`;return}
@@ -1795,6 +1804,17 @@ const ex=users.find(u=>norm(u.nome)===norm(nome));const id=ex?ex.id:"u"+uid();
 const u={...(ex?(({id:_i,...r})=>r)(ex):{}),nome:ex?ex.nome:nome,pinHash:await hashPin(id,pin),admin:ex&&ex.id===me.id?true:adm,criadoEm:ex?ex.criadoEm:Date.now()};
 try{await ucol.doc(id).set(u);toast(ex?"PIN trocado":"Usuário criado");$("#u_nome").value="";$("#u_pin").value=""}catch(_){err.textContent="Não salvou. Tente de novo."}
 }
+document.addEventListener("submit",async e=>{if(e.target.id!=="trocaForm")return;e.preventDefault();
+const a=$("#ts1").value,b=$("#ts2").value,er=$("#tsErr");er.textContent="";
+if(a.length<8){er.textContent="A senha precisa ter pelo menos 8 caracteres.";return}
+if(a!==b){er.textContent="As duas senhas não são iguais.";return}
+const bt=e.target.querySelector("button");bt.disabled=true;bt.textContent="Salvando…";
+const {error}=await sb.auth.updateUser({password:a});
+if(error){bt.disabled=false;bt.textContent="Salvar e entrar";const m=(error.message||"").toLowerCase();er.textContent=m.includes("different")||m.includes("same")?"Escolha uma senha diferente da provisória.":m.includes("weak")?"Essa senha é fraca. Misture letras e números.":"Não deu para salvar: "+error.message;return}
+const {data:ok}=await sb.rpc("confirmar_senha_nova");
+if(!ok){bt.disabled=false;bt.textContent="Salvar e entrar";er.textContent="Não deu para confirmar a senha nova. Tente de novo.";return}
+location.reload();
+});
 /* ---------- Painel da Loja (dono e gerentes) ---------- */
 const PAPEIS={
 dono:{t:"Dono",d:"Dono da loja. Pode tudo."},
@@ -1823,14 +1843,13 @@ vis("#btnNew",pode("editar_os"));vis("#btnCot",pode("cotacoes"));vis("#btnShop",
 vis('.bn[data-nav="shop"]',pode("compras"));vis("#btnLoja",pode("equipe"));
 vis("#btnFin",!!(KS.recursos&&KS.recursos.financas)&&pode("financas"));
 }
-function senhaNova(){const a="abcdefghjkmnpqrstuvwxyz23456789";let s="";const r=crypto.getRandomValues(new Uint32Array(8));for(const n of r)s+=a[n%a.length];return "Kn-"+s}
 async function chamarEquipe(body){
 const {data,error}=await sb.functions.invoke("equipe",{body:{empresa_id:KS.eid,...body}});
 if(error){let m=error.message;try{const j=await error.context.json();if(j&&j.erro)m=j.erro}catch(_){}throw new Error(m)}
 if(data&&data.erro)throw new Error(data.erro);
 return data||{};
 }
-let lj={aba:"resumo",form:null,edit:null,editPapel:null,editPerms:null,add:false,addPapel:"tecnico",addPerms:presetDe("tecnico"),addSenha:"",resultado:null,ocupado:false};
+let lj={aba:"resumo",form:null,edit:null,editPapel:null,editPerms:null,add:false,addPapel:"tecnico",addPerms:presetDe("tecnico"),addSenha:"",addModo:"email",senhaPara:null,resultado:null,ocupado:false};
 function permToggles(prefix,perms,dis){
 return `<div class="pt-grid">${PERMS.map(([k,t])=>`<label class="pt"><input type="checkbox" data-${prefix}perm="${k}" ${perms[k]?"checked":""} ${dis?"disabled":""}><span>${esc(t)}</span></label>`).join("")}</div>`;
 }
@@ -1863,15 +1882,21 @@ return `<div class="mb mb-edit"><div class="mb-top"><span class="av">${esc(inici
 }
 return `<div class="mb"><div class="mb-top"><span class="av">${esc(iniciais(u.nome))}</span><span class="mb-n"><b>${esc(u.nome)}${eu?" <small class=\"you\">você</small>":""}</b><small>${esc(u.email||"")}</small></span><span class="role role-${u.papel||"tecnico"}">${papelDe(u).t}</span></div>
 <span class="hint">${dono?"Acesso total":nP+" de "+PERMS.length+" permissões"}</span>
-${dono||eu?"":`<div class="btnrow"><button type="button" class="btn btn-line" data-lj="editar" data-uid="${u.id}">Editar função</button><button type="button" class="btn btn-line" data-lj="senha" data-uid="${u.id}">Nova senha</button><button type="button" class="btn btn-danger" data-udel="${u.id}">Remover</button></div>`}</div>`;
+${dono||eu?"":`<div class="btnrow"><button type="button" class="btn btn-line" data-lj="editar" data-uid="${u.id}">Editar função</button><button type="button" class="btn btn-line" data-lj="senha" data-uid="${u.id}">Nova senha</button><button type="button" class="btn btn-danger" data-udel="${u.id}">Remover</button></div>
+${lj.senhaPara===u.id?`<div class="lj-senha"><b>Como mandar a nova senha?</b><div class="btnrow"><button type="button" class="btn btn-accent" data-lj="senhaemail" data-uid="${u.id}">Link por e-mail</button><button type="button" class="btn btn-line" data-lj="senhatemp" data-uid="${u.id}">Senha provisória (5 min)</button><button type="button" class="btn btn-line" data-lj="senhax">Cancelar</button></div><span class="hint">Pelo e-mail é mais seguro: a pessoa cria a senha dela e ninguém mais vê.</span></div>`:""}`}</div>`;
 };
-const res=lj.resultado?`<div class="lj-ok"><b>${esc(lj.resultado.titulo)}</b><pre class="msg" id="ljCred">${esc(lj.resultado.texto)}</pre>
-<div class="btnrow"><button type="button" class="btn btn-accent" data-lj="copiar">Copiar</button><a class="btn btn-ok" href="https://wa.me/?text=${encodeURIComponent(lj.resultado.texto)}" target="_blank" rel="noopener">Mandar no WhatsApp</a><button type="button" class="btn btn-line" data-lj="fechar">Pronto</button></div>
-<span class="hint">Guarde ou envie agora: por segurança, a senha não aparece de novo.</span></div>`:"";
+const R0=lj.resultado,venc=R0&&R0.expira&&Date.now()>=R0.expira;
+const res=R0?(venc?`<div class="lj-ok lj-venc"><b>A senha provisória de ${esc(R0.nome)} venceu</b><span>Ela valia só ${R0.minutos} minutos e não serve mais. Se a pessoa ainda não entrou, gere outra em "Nova senha".</span><div class="btnrow"><button type="button" class="btn btn-line" data-lj="fechar">Ok</button></div></div>`
+:`<div class="lj-ok"><b>${esc(R0.titulo)}</b>${R0.aviso?`<span>A pessoa vai receber um e-mail com o link para criar a própria senha. Peça para olhar também o spam.</span>`:""}${R0.expira?`<span class="lj-timer">Vale por <b id="ljTimer" class="mono">${fmtResta(R0.expira)}</b>. Depois disso a senha é apagada e a pessoa precisa pedir outra.</span>`:""}${R0.texto?`<pre class="msg" id="ljCred">${esc(R0.texto)}</pre>`:""}
+<div class="btnrow">${R0.texto?`<button type="button" class="btn btn-accent" data-lj="copiar">Copiar</button><a class="btn btn-ok" href="https://wa.me/?text=${encodeURIComponent(R0.texto)}" target="_blank" rel="noopener">Mandar no WhatsApp</a>`:""}<button type="button" class="btn btn-line" data-lj="fechar">Pronto</button></div>
+${R0.expira?`<span class="hint">No primeiro acesso o Konserta obriga a pessoa a criar a própria senha. A senha provisória não aparece de novo.</span>`:""}</div>`):"";
 const add=lj.add?`<form class="lj-add" id="ljAddForm" autocomplete="off">
 <div class="grid2"><div class="fld"><label for="lj_nome">Nome</label><input id="lj_nome" required></div>
 <div class="fld"><label for="lj_email">E-mail</label><input id="lj_email" type="email" required placeholder="o login da pessoa"></div>
-<div class="fld full"><label for="lj_senha">Senha provisória</label><input id="lj_senha" class="mono" value="${esc(lj.addSenha)}"><span class="hint">A pessoa entra com esta senha e pode trocar depois em "Esqueci minha senha".</span></div></div>
+</div>
+<span class="lj-lbl">Como a pessoa recebe o acesso</span><div class="pp-grid">
+<button type="button" class="pp" data-amodo="email" aria-pressed="${lj.addModo==="email"}"><b>Convite por e-mail <span class="pill p-arr">mais seguro</span></b><small>A pessoa recebe um link e cria a própria senha. Ninguém mais vê a senha.</small></button>
+<button type="button" class="pp" data-amodo="senha" aria-pressed="${lj.addModo==="senha"}"><b>Senha provisória</b><small>Para mandar no WhatsApp. Vale só 5 minutos e precisa ser trocada no primeiro acesso.</small></button></div>
 <span class="lj-lbl">Função</span>${papelChips("a",lj.addPapel)}
 <span class="lj-lbl">O que pode fazer <small class="hint">(já vem marcado pela função; ajuste se quiser)</small></span>${permToggles("a",lj.addPerms,false)}
 <div class="err" id="ljErr"></div>
@@ -1913,19 +1938,26 @@ ${logoSrc()?`<img src="${esc(logoSrc())}" alt="" class="lj-logo">`:`<span class=
 <div class="lj-tabs" role="tablist">${abas.map(([k,t])=>`<button type="button" role="tab" data-ljaba="${k}" aria-selected="${lj.aba===k}">${t}</button>`).join("")}</div>
 ${corpo}`);
 }
+function fmtResta(ate){const r=Math.max(0,Math.ceil((ate-Date.now())/1000));return Math.floor(r/60)+":"+String(r%60).padStart(2,"0")}
+function resultadoSenha(nome,email,r){const pn=nome.split(" ")[0],min=r.minutos||5;
+return {nome,minutos:min,expira:Date.now()+min*60000-3000,titulo:"Senha provisória de "+nome,
+texto:`Oi, ${pn}! Seu acesso ao Konserta da ${empresa.nome||"loja"}:\n${location.origin}/entrar\nE-mail: ${email}\nSenha provisória: ${r.senha}\n\nEssa senha vale só ${min} minutos. Ao entrar, o Konserta vai pedir para você criar a sua senha.`}}
+setInterval(()=>{const R0=lj.resultado;if(!R0||!R0.expira||R0._fim)return;const el=$("#ljTimer");
+if(Date.now()>=R0.expira){R0._fim=1;R0.texto="";if(sheetMode==="loja")openLoja();return}
+if(el)el.textContent=fmtResta(R0.expira)},1000);
 async function ljCriar(){
 const err=$("#ljErr");err.textContent="";
-const nome=$("#lj_nome").value.trim(),email=$("#lj_email").value.trim(),senha=$("#lj_senha").value.trim();
+const nome=$("#lj_nome").value.trim(),email=$("#lj_email").value.trim();
 if(!nome){err.textContent="Coloque o nome.";return}
 if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent="Confira o e-mail.";return}
-if(senha.length<8){err.textContent="A senha provisória precisa ter pelo menos 8 caracteres.";return}
 lj.ocupado=true;openLoja();
 try{
-const r=await chamarEquipe({acao:"criar",nome,email,senha,papel:lj.addPapel,permissoes:lj.addPerms});
-lj.add=false;lj.ocupado=false;
+const r=await chamarEquipe({acao:"criar",nome,email,modo:lj.addModo,origem:location.origin,papel:lj.addPapel,permissoes:lj.addPerms});
+lj.add=false;lj.ocupado=false;const pn=nome.split(" ")[0];
 lj.resultado=r.ja_tinha_conta
-?{titulo:nome+" entrou na equipe",texto:`Oi, ${nome.split(" ")[0]}! Você foi adicionado à equipe da ${empresa.nome||"loja"} no Konserta.\nEntre em ${location.origin}/entrar com o seu e-mail ${email} e a senha que você já usa.`}
-:{titulo:"Acesso criado para "+nome,texto:`Oi, ${nome.split(" ")[0]}! Seu acesso ao Konserta da ${empresa.nome||"loja"}:\n${location.origin}/entrar\nE-mail: ${email}\nSenha: ${senha}`};
+?{titulo:nome+" entrou na equipe",texto:`Oi, ${pn}! Você foi adicionado à equipe da ${empresa.nome||"loja"} no Konserta.\nEntre em ${location.origin}/entrar com o seu e-mail ${email} e a senha que você já usa.`}
+:r.modo==="email"?{titulo:"Convite enviado para "+email,texto:"",aviso:1}
+:resultadoSenha(nome,email,r);
 toast("Pronto: "+nome+" está na equipe");
 }catch(e){lj.ocupado=false;openLoja();const er=$("#ljErr");if(er)er.textContent=e.message;return}
 openLoja();
@@ -1933,7 +1965,7 @@ openLoja();
 async function ljAcao(t){
 if(await ljGestao(t))return;
 const a=t.dataset.lj,uid=t.dataset.uid,u=users.find(x=>x.id===uid);
-if(a==="add"){lj.add=true;lj.addPapel="tecnico";lj.addPerms=presetDe("tecnico");lj.addSenha=senhaNova();lj.resultado=null;openLoja();setTimeout(()=>$("#lj_nome")?.focus(),0);return}
+if(a==="add"){lj.add=true;lj.addPapel="tecnico";lj.addPerms=presetDe("tecnico");lj.addModo="email";lj.resultado=null;openLoja();setTimeout(()=>$("#lj_nome")?.focus(),0);return}
 if(a==="addx"){lj.add=false;openLoja();return}
 if(a==="fechar"){lj.resultado=null;openLoja();return}
 if(a==="copiar"){copy($("#ljCred").textContent,$("#ljCred"));return}
@@ -1941,17 +1973,22 @@ if(a==="cancelar"){lj.edit=null;openLoja();return}
 if(a==="editar"&&u){lj.edit=uid;lj.editPapel=u.papel==="dono"?"gerente":(u.papel||"tecnico");lj.editPerms={...presetDe(lj.editPapel),...(u.permissoes||{})};openLoja();return}
 if(a==="salvar"&&u){try{await ucol.doc(uid).set({...u,papel:lj.editPapel,permissoes:lj.editPerms});lj.edit=null;toast(u.nome.split(" ")[0]+" agora é "+PAPEIS[lj.editPapel].t)}catch(e){toast("Não salvou: "+(e.message||"tente de novo"))}openLoja();return}
 if(a==="aprovar"&&u){const p=($("#ljp_"+uid)||{}).value||"tecnico";try{await ucol.doc(uid).set({...u,pendente:false,papel:p,permissoes:presetDe(p)});toast(u.nome.split(" ")[0]+" aprovado como "+PAPEIS[p].t)}catch(e){toast("Não aprovou: "+(e.message||"tente de novo"))}return}
-if(a==="senha"&&u){
-const nova=senhaNova();t.disabled=true;t.textContent="Gerando…";
-try{await chamarEquipe({acao:"senha",user_id:uid,senha:nova});lj.resultado={titulo:"Nova senha de "+u.nome,texto:`Oi, ${u.nome.split(" ")[0]}! Sua nova senha do Konserta:\n${location.origin}/entrar\nE-mail: ${u.email||""}\nSenha: ${nova}`};toast("Senha trocada")}
-catch(e){toast(e.message)}
+if(a==="senha"&&u){lj.senhaPara=lj.senhaPara===uid?null:uid;openLoja();return}
+if(a==="senhax"){lj.senhaPara=null;openLoja();return}
+if((a==="senhaemail"||a==="senhatemp")&&u){
+t.disabled=true;t.textContent=a==="senhaemail"?"Enviando…":"Gerando…";
+try{const r=await chamarEquipe({acao:"senha",user_id:uid,modo:a==="senhaemail"?"email":"senha",origem:location.origin});lj.senhaPara=null;
+if(r.modo==="email"){lj.resultado=null;toast("Link enviado para "+(r.email||u.email))}
+else{lj.resultado=resultadoSenha(u.nome,u.email||"",r);toast("Senha provisória gerada")}}
+catch(e){toast(e.message);t.disabled=false}
 openLoja();return}
 }
 document.addEventListener("click",e=>{
-const t=e.target.closest("[data-lj],[data-epapel],[data-apapel],#btnLoja,[data-act='loja']");if(!t)return;
+const t=e.target.closest("[data-lj],[data-epapel],[data-apapel],[data-amodo],#btnLoja,[data-act='loja']");if(!t)return;
 if(t.id==="btnLoja"||t.dataset.act==="loja"){lj.edit=null;lj.add=false;lj.resultado=null;openLoja();return}
 if(t.dataset.epapel){lj.editPapel=t.dataset.epapel;lj.editPerms=presetDe(lj.editPapel);openLoja();return}
-if(t.dataset.apapel){const n=$("#lj_nome")?.value,m=$("#lj_email")?.value,s=$("#lj_senha")?.value;lj.addPapel=t.dataset.apapel;lj.addPerms=presetDe(lj.addPapel);lj.addSenha=s||lj.addSenha;openLoja();if(n)$("#lj_nome").value=n;if(m)$("#lj_email").value=m;return}
+if(t.dataset.apapel){const n=$("#lj_nome")?.value,m=$("#lj_email")?.value;lj.addPapel=t.dataset.apapel;lj.addPerms=presetDe(lj.addPapel);openLoja();if(n)$("#lj_nome").value=n;if(m)$("#lj_email").value=m;return}
+if(t.dataset.amodo){const n=$("#lj_nome")?.value,m=$("#lj_email")?.value;lj.addModo=t.dataset.amodo;openLoja();if(n)$("#lj_nome").value=n;if(m)$("#lj_email").value=m;return}
 if(t.dataset.lj)ljAcao(t);
 });
 document.addEventListener("change",e=>{
@@ -2114,6 +2151,7 @@ db=await claude.use("db");assets=await claude.use("assets");
 const {data:{session}}=await sb.auth.getSession();
 if(!session){location.replace("/entrar");return}
 KS.uid=session.user.id;KS.email=session.user.email||"";
+try{const {data:sp}=await sb.rpc("minha_senha_provisoria");if(sp&&sp.pendente){KS.estado="trocar_senha";gate();return}}catch(_){}
 let ms=[];
 try{
 ms=await minhasEmpresas();

@@ -39,6 +39,7 @@
 
   <div class="card" id="cNova" hidden>
     <h1>Nova senha</h1>
+    <p class="sub" id="novaSub">Só você vai saber esta senha.</p>
     <form id="fNova" novalidate>
       <div class="fld"><label for="nsenha">Senha nova</label><input id="nsenha" type="password" autocomplete="new-password" minlength="8" placeholder="Pelo menos 8 caracteres"></div>
       <div class="err" id="nerr" role="alert"></div>
@@ -48,14 +49,16 @@
 
   <p class="foot">Ainda não tem conta? <a href="/cadastro">Teste grátis por 14 dias</a></p>
 </main>
+<script>window.__hash=location.hash</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/config.js"></script>
 <script src="/google.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const show=id=>["#cLogin","#cReset","#cNova"].forEach(c=>$(c).hidden=c!==id);
-let recuperando=/type=recovery/.test(location.hash);
-if(recuperando)show("#cNova");
+let recuperando=/type=(recovery|invite)/.test(window.__hash||location.hash);
+const convite=/type=invite/.test(window.__hash||"");
+if(recuperando){show("#cNova");if(convite){document.querySelector("#cNova h1").textContent="Bem-vindo! Crie sua senha";}}
 KSGoogle.montar($("#gbox"),"Entrar com Google");
 sb.auth.onAuthStateChange((ev)=>{if(ev==="PASSWORD_RECOVERY"){recuperando=true;show("#cNova")}});
 sb.auth.getSession().then(({data})=>{if(data.session&&!recuperando)location.replace("/app")});
