@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Criar conta · Konserta</title>
+<meta name="description" content="Teste o Konserta grátis por 14 dias.">
+<meta name="theme-color" content="#0b0d10">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Manrope:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+<main class="box">
+  <a href="/" class="brand"><img src="/icon.svg" width="44" height="44" alt=""><b>konserta</b></a>
+  <div class="card" id="card">
+    <div>
+      <h1 id="titulo">Teste grátis por 14 dias</h1>
+      <p class="sub" id="subt">Sem cartão de crédito. Leva 2 minutos.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Tipo de cadastro">
+      <button type="button" role="tab" id="tabNova" aria-selected="true">Criar minha empresa</button>
+      <button type="button" role="tab" id="tabEquipe" aria-selected="false">Entrar numa equipe</button>
+    </div>
+
+    <form id="form" novalidate>
+      <div class="fld"><label for="nome">Seu nome</label><input id="nome" autocomplete="name" required></div>
+
+      <div id="blocoNova">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="fld"><label for="empresa">Nome da empresa</label><input id="empresa" autocomplete="organization" placeholder="Ex.: Assistência Técnica Silva"></div>
+          <div class="row2">
+            <div class="fld"><label for="ramo">Ramo</label>
+              <select id="ramo">
+                <option value="assistencia">Assistência técnica</option>
+                <option value="mecanica">Mecânica automotiva</option>
+                <option value="ar">Ar-condicionado</option>
+                <option value="marcenaria">Marcenaria</option>
+              </select></div>
+            <div class="fld"><label for="tel">WhatsApp</label><input id="tel" inputmode="tel" autocomplete="tel" placeholder="(41) 9…"></div>
+          </div>
+          <div class="fld"><span class="lbl">Já usa um sistema de ordem de serviço?</span>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="sis" value="sim"><span>Sim, já tenho<small>O Konserta organiza a bancada; a OS continua no seu sistema.</small></span></label>
+              <label class="opt"><input type="radio" name="sis" value="nao" checked><span>Não tenho<small>Quero a OS completa: número, orçamento e PDF.</small></span></label>
+            </div></div>
+        </div>
+      </div>
+
+      <div id="blocoEquipe" hidden>
+        <div class="fld"><label for="codigo">Código da equipe</label><input id="codigo" autocapitalize="characters" maxlength="6" placeholder="Ex.: A1B2C3" style="text-transform:uppercase;letter-spacing:.2em;font-weight:700"></div>
+        <p class="hint" style="margin:8px 0 0">Peça o código para o dono da loja. Ele aparece em Conta, no app dele.</p>
+      </div>
+
+      <div class="fld"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required></div>
+      <div class="fld"><label for="senha">Crie uma senha</label><input id="senha" type="password" autocomplete="new-password" minlength="8" required placeholder="Pelo menos 8 caracteres"></div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn" type="submit" id="btn">Começar teste grátis</button>
+      <p class="hint" style="margin:0;text-align:center">Ao criar a conta você concorda com os [Termos de uso] e a [Política de privacidade].</p>
+    </form>
+
+    <div id="enviado" class="okmsg" hidden></div>
+  </div>
+  <p class="foot">Já tem conta? <a href="/entrar">Entrar</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/config.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+let modo="nova";
+function setModo(m){
+  modo=m;
+  $("#tabNova").setAttribute("aria-selected",m==="nova");$("#tabEquipe").setAttribute("aria-selected",m==="equipe");
+  $("#blocoNova").hidden=m!=="nova";$("#blocoEquipe").hidden=m!=="equipe";
+  $("#titulo").textContent=m==="nova"?"Teste grátis por 14 dias":"Entrar na equipe";
+  $("#subt").textContent=m==="nova"?"Sem cartão de crédito. Leva 2 minutos.":"Crie seu acesso com o código que o dono da loja te passou.";
+  $("#btn").textContent=m==="nova"?"Começar teste grátis":"Pedir para entrar";
+  $("#err").textContent="";
+}
+$("#tabNova").onclick=()=>setModo("nova");
+$("#tabEquipe").onclick=()=>setModo("equipe");
+const qs=new URLSearchParams(location.search);
+if(qs.get("codigo")){setModo("equipe");$("#codigo").value=qs.get("codigo").toUpperCase()}
+
+sb.auth.getSession().then(({data})=>{if(data.session)location.replace("/app")});
+
+$("#form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const err=$("#err");err.textContent="";
+  const nome=$("#nome").value.trim(),email=$("#email").value.trim(),senha=$("#senha").value;
+  if(!nome){err.textContent="Coloque seu nome.";$("#nome").focus();return}
+  let meta={nome};
+  if(modo==="nova"){
+    const emp=$("#empresa").value.trim();
+    if(!emp){err.textContent="Coloque o nome da empresa.";$("#empresa").focus();return}
+    const temSistema=(document.querySelector('input[name="sis"]:checked')||{}).value==="sim";
+    meta.acao="criar";
+    meta.empresa={nome:emp,segmento:$("#ramo").value,atende:{},temSistema,telefone:$("#tel").value.trim(),email,horario:"",logoUrl:"",logoId:"",marcas:[],criadoEm:Date.now()};
+  }else{
+    const cod=$("#codigo").value.trim().toUpperCase();
+    if(!/^[A-Z0-9]{6}$/.test(cod)){err.textContent="O código tem 6 letras e números.";$("#codigo").focus();return}
+    meta.acao="entrar";meta.codigo=cod;
+  }
+  if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent="Confira o e-mail.";$("#email").focus();return}
+  if(senha.length<8){err.textContent="A senha precisa ter pelo menos 8 caracteres.";$("#senha").focus();return}
+  const btn=$("#btn");btn.disabled=true;btn.textContent="Criando…";
+  const {data,error}=await sb.auth.signUp({email,password:senha,options:{data:meta,emailRedirectTo:location.origin+"/app"}});
+  btn.disabled=false;setModo(modo);
+  if(error){
+    const m=(error.message||"").toLowerCase();
+    err.textContent=m.includes("registered")?"Esse e-mail já tem conta. Toque em Entrar, lá embaixo."
+      :m.includes("password")?"Essa senha é fraca. Use letras e números, com 8 ou mais caracteres."
+      :m.includes("rate")?"Muitas tentativas agora. Espere alguns minutos e tente de novo."
+      :"Não deu para criar a conta: "+error.message;
+    return;
+  }
+  if(data.session){location.replace("/app");return}
+  if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){err.textContent="Esse e-mail já tem conta. Toque em Entrar, lá embaixo.";return}
+  $("#form").hidden=true;document.querySelector(".tabs").hidden=true;
+  const ok=$("#enviado");ok.hidden=false;
+  ok.textContent="Pronto! Enviamos um e-mail para "+email+". Abra o e-mail e toque no link para ativar sua conta. Se não chegar em alguns minutos, olhe a caixa de spam.";
+  $("#titulo").textContent="Confira seu e-mail";$("#subt").textContent="Falta só um passo.";
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Entrar · Konserta</title>
+<meta name="theme-color" content="#0b0d10">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Manrope:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+<main class="box">
+  <a href="/" class="brand"><img src="/icon.svg" width="44" height="44" alt=""><b>konserta</b></a>
+
+  <div class="card" id="cLogin">
+    <h1>Entrar</h1>
+    <form id="fLogin" novalidate>
+      <div class="fld"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required></div>
+      <div class="fld"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" required></div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn" type="submit" id="btn">Entrar</button>
+      <button class="btn btn-line" type="button" id="esqueci">Esqueci minha senha</button>
+    </form>
+  </div>
+
+  <div class="card" id="cReset" hidden>
+    <h1>Recuperar senha</h1>
+    <p class="sub">Vamos mandar um link para você criar uma senha nova.</p>
+    <form id="fReset" novalidate>
+      <div class="fld"><label for="remail">E-mail</label><input id="remail" type="email" autocomplete="email" required></div>
+      <div class="err" id="rerr" role="alert"></div>
+      <div id="rok" class="okmsg" hidden></div>
+      <button class="btn" type="submit" id="rbtn">Enviar link</button>
+      <button class="btn btn-line" type="button" id="voltar">Voltar</button>
+    </form>
+  </div>
+
+  <div class="card" id="cNova" hidden>
+    <h1>Nova senha</h1>
+    <form id="fNova" novalidate>
+      <div class="fld"><label for="nsenha">Senha nova</label><input id="nsenha" type="password" autocomplete="new-password" minlength="8" placeholder="Pelo menos 8 caracteres"></div>
+      <div class="err" id="nerr" role="alert"></div>
+      <button class="btn" type="submit">Salvar e entrar</button>
+    </form>
+  </div>
+
+  <p class="foot">Ainda não tem conta? <a href="/cadastro">Teste grátis por 14 dias</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/config.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const show=id=>["#cLogin","#cReset","#cNova"].forEach(c=>$(c).hidden=c!==id);
+let recuperando=/type=recovery/.test(location.hash);
+if(recuperando)show("#cNova");
+sb.auth.onAuthStateChange((ev)=>{if(ev==="PASSWORD_RECOVERY"){recuperando=true;show("#cNova")}});
+sb.auth.getSession().then(({data})=>{if(data.session&&!recuperando)location.replace("/app")});
+
+$("#fLogin").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("#err");err.textContent="";
+  const email=$("#email").value.trim(),senha=$("#senha").value;
+  if(!email||!senha){err.textContent="Preencha o e-mail e a senha.";return}
+  const b=$("#btn");b.disabled=true;b.textContent="Entrando…";
+  const {error}=await sb.auth.signInWithPassword({email,password:senha});
+  b.disabled=false;b.textContent="Entrar";
+  if(error){const m=(error.message||"").toLowerCase();
+    err.textContent=m.includes("confirm")?"Falta confirmar seu e-mail. Abra o e-mail que enviamos e toque no link."
+      :m.includes("invalid")?"E-mail ou senha errados.":"Não deu para entrar: "+error.message;return}
+  location.replace("/app");
+});
+$("#esqueci").onclick=()=>{$("#remail").value=$("#email").value;show("#cReset")};
+$("#voltar").onclick=()=>show("#cLogin");
+$("#fReset").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("#rerr");err.textContent="";
+  const email=$("#remail").value.trim();if(!email){err.textContent="Coloque seu e-mail.";return}
+  $("#rbtn").disabled=true;
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/entrar"});
+  $("#rbtn").disabled=false;
+  if(error){err.textContent=(error.message||"").toLowerCase().includes("rate")?"Muitas tentativas agora. Espere alguns minutos.":"Não deu para enviar: "+error.message;return}
+  const ok=$("#rok");ok.hidden=false;ok.textContent="Se esse e-mail tiver conta, o link chega em instantes. Olhe também o spam.";
+});
+$("#fNova").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("#nerr");err.textContent="";
+  const s=$("#nsenha").value;if(s.length<8){err.textContent="A senha precisa ter pelo menos 8 caracteres.";return}
+  const {error}=await sb.auth.updateUser({password:s});
+  if(error){err.textContent="Não deu para salvar: "+error.message;return}
+  location.replace("/app");
+});
+</script>
+</body>
+</html>

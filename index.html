@@ -10,7 +10,7 @@
 <meta property="og:title" content="Konserta — sua bancada organizada, sua loja mais vazia">
 <meta property="og:description" content="App de OS, orçamento e bancada para assistências técnicas, oficinas mecânicas, ar-condicionado e marcenarias.">
 <meta property="og:locale" content="pt_BR">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%23ffb21e'/%3E%3Crect x='23' y='18' width='17' height='64' rx='3' fill='%23141414'/%3E%3Cpath d='M40 52 L72 84' stroke='%23141414' stroke-width='17'/%3E%3Cpath d='M40 50 L59 31' stroke='%23141414' stroke-width='17'/%3E%3Ccircle cx='67' cy='24' r='15' fill='%23141414'/%3E%3Crect x='69' y='6' width='10' height='20' fill='%23ffb21e' transform='rotate(45 74 16)'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
@@ -49,6 +49,8 @@ p{margin:0}
 .nav nav{display:flex;gap:22px;margin-left:auto;font-size:15px}
 .nav nav a{color:#b7c0cc;text-decoration:none}.nav nav a:hover{color:var(--white)}
 .nav .btn{padding:11px 18px;font-size:15px}
+.only-sm{display:none}
+.nav-login{color:#e9edf2;text-decoration:none;font-weight:600;font-size:15px}.nav-login:hover{color:#fff}
 .menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line2);color:var(--ink);border-radius:10px;width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
 
 /* hero */
@@ -180,7 +182,9 @@ footer{border-top:1px solid #1d2229}
   .nav nav.open{display:flex}
   .nav nav a{padding:12px 0;border-bottom:1px solid #1a1f26}
   .menu-btn{display:inline-flex}
-  .nav .btn{display:none}
+  .nav .btn{padding:9px 14px;font-size:14px}
+  .nav-login{display:none}
+  .nav nav a.only-sm{display:block;color:#ffb21e;font-weight:700}
 }
 @media (prefers-reduced-motion:reduce){.phone{animation:none}.reveal,.btn,.feat{transition:none}.js .reveal:not(.in){opacity:1;transform:none}html{scroll-behavior:auto}}
 </style>
@@ -202,8 +206,10 @@ footer{border-top:1px solid #1d2229}
       <a href="#ramos">Para quem</a>
       <a href="#planos">Planos</a>
       <a href="#duvidas">Dúvidas</a>
+      <a href="/entrar" class="only-sm">Entrar</a>
     </nav>
-    <a href="#planos" class="btn btn-amber">Testar grátis</a>
+    <a href="/entrar" class="nav-login">Entrar</a>
+    <a href="/cadastro" class="btn btn-amber">Testar grátis</a>
   </div>
 </header>
 
@@ -214,7 +220,7 @@ footer{border-top:1px solid #1d2229}
       <h1>Sua bancada organizada.<br><em>Sua loja mais vazia.</em></h1>
       <p class="lead">Veja cada aparelho, peça e orçamento num quadro só. Tire foto do defeito, mande o orçamento pelo WhatsApp e saiba exatamente o que fazer primeiro para liberar espaço.</p>
       <div class="ctas">
-        <a href="#planos" class="btn btn-amber">Começar 14 dias grátis</a>
+        <a href="/cadastro" class="btn btn-amber">Começar 14 dias grátis</a>
         <a href="#como" class="btn btn-ghost">Ver como funciona</a>
       </div>
       <div class="perks">
@@ -333,7 +339,7 @@ footer{border-top:1px solid #1d2229}
         <span class="para">Para quem já tem sistema de OS e quer organizar a bancada.</span>
         <div class="price"><strong>R$ 29</strong><span>/mês</span></div>
         <span class="obs">Cancele quando quiser</span>
-        <a href="#comecar" class="btn btn-ghost">Testar grátis</a>
+        <a href="/cadastro" class="btn btn-ghost">Testar grátis</a>
         <ul><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Quadro por etapa e dias parados</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Foto e vídeo do defeito</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Peças, estoque e lista de compras</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Liberar a loja</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>1 usuário</li></ul>
       </div>
       <div class="plan top reveal" data-mensal="49">
@@ -341,7 +347,7 @@ footer{border-top:1px solid #1d2229}
         <span class="para">Para quem não tem sistema: a OS inteira dentro do app.</span>
         <div class="price"><strong>R$ 49</strong><span>/mês</span></div>
         <span class="obs">Cancele quando quiser</span>
-        <a href="#comecar" class="btn btn-amber">Testar grátis</a>
+        <a href="/cadastro" class="btn btn-amber">Testar grátis</a>
         <ul><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Tudo do plano Bancada</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>OS com numeração automática</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Orçamento e cotação no WhatsApp</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>PDF de entrada, orçamento e entrega</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Logo e cores da sua empresa</li></ul>
       </div>
       <div class="plan reveal" data-mensal="89">
@@ -349,7 +355,7 @@ footer{border-top:1px solid #1d2229}
         <span class="para">Para lojas com vários técnicos na bancada.</span>
         <div class="price"><strong>R$ 89</strong><span>/mês</span></div>
         <span class="obs">Cancele quando quiser</span>
-        <a href="#comecar" class="btn btn-ghost">Testar grátis</a>
+        <a href="/cadastro" class="btn btn-ghost">Testar grátis</a>
         <ul><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Tudo do plano Completo</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Até 5 técnicos</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Um quadro para cada técnico</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Visão da equipe toda</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Suporte prioritário</li></ul>
       </div>
     </div>
@@ -379,7 +385,7 @@ footer{border-top:1px solid #1d2229}
         <h2>Menos aparelho parado.<br>Mais conserto entregue.</h2>
         <p>Teste 14 dias grátis. Leva 2 minutos para cadastrar a sua loja.</p>
       </div>
-      <a href="[LINK-WHATSAPP-OU-CADASTRO]" class="btn">Criar minha conta</a>
+      <a href="/cadastro" class="btn">Criar minha conta</a>
     </div>
   </section>
 </main>

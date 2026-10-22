@@ -1,0 +1,1597 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Konserta">
+<title>Konserta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+img{max-width:100%}
+[hidden]{display:none!important}
+.trial{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding:10px 14px;border-radius:12px;background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 35%,transparent);font-size:14px}
+.trial b{font-weight:700}.trial .btn{padding:7px 12px;font-size:13px;margin-left:auto}
+.trial.fim{background:color-mix(in srgb,var(--bad) 10%,var(--surface));border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.codebox{font-family:var(--f-mono);font-size:26px;letter-spacing:.25em;font-weight:600;background:var(--surface2);border:1px dashed var(--line);border-radius:12px;padding:10px 14px;text-align:center}
+/* Layout: barra do app clara com a cor da empresa como destaque; colunas de status no computador; no celular, abas de status no topo e barra de navegação embaixo com botão + central. */
+:root{
+--brand:#2c6a5d; --brand-ink:#ffffff;
+--bg:color-mix(in srgb,var(--brand) 5%,#f2f3f2); --surface:#ffffff; --surface2:color-mix(in srgb,var(--brand) 5%,#f0f1f0);
+--ink:#151a18; --muted:#5b6561; --line:color-mix(in srgb,var(--brand) 10%,#dde1df);
+--brand-fg:color-mix(in srgb,var(--brand) 82%,#000); --brand-soft:color-mix(in srgb,var(--brand) 12%,#ffffff);
+--ok:#23824c; --warn:#a87200; --bad:#c23a28;
+--t-part:#6b7a75; --t-fab:#2f66cf; --t-ped:#cf6a12; --t-seg:#8248c0; --t-emp:#0b8383;
+--shadow:0 1px 2px rgba(15,25,22,.06),0 4px 14px rgba(15,25,22,.06);
+--shadow-lg:0 10px 40px rgba(10,20,18,.22);
+--mat:var(--brand); --mat-ink:var(--brand-ink); --accent:var(--brand); --accent-ink:var(--brand-ink);
+--r:12px;
+--f-display:"Barlow Semi Condensed","Arial Narrow",sans-serif;
+--f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+--f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:color-mix(in srgb,var(--brand) 7%,#0d100f); --surface:#161b19; --surface2:color-mix(in srgb,var(--brand) 6%,#1c2220);
+--ink:#e5eae8; --muted:#94a09b; --line:color-mix(in srgb,var(--brand) 14%,#283030);
+--brand-fg:color-mix(in srgb,var(--brand) 55%,#ffffff); --brand-soft:color-mix(in srgb,var(--brand) 24%,#161b19);
+--ok:#4cbb7c; --warn:#e2aa30; --bad:#ef6b55;
+--t-part:#93a29d; --t-fab:#6f9dff; --t-ped:#f08a3a; --t-seg:#b383ec; --t-emp:#3cc4c4;
+--shadow:0 1px 2px rgba(0,0,0,.35); --shadow-lg:0 10px 40px rgba(0,0,0,.55); color-scheme:dark}}
+:root[data-theme="dark"]{
+--bg:color-mix(in srgb,var(--brand) 7%,#0d100f); --surface:#161b19; --surface2:color-mix(in srgb,var(--brand) 6%,#1c2220);
+--ink:#e5eae8; --muted:#94a09b; --line:color-mix(in srgb,var(--brand) 14%,#283030);
+--brand-fg:color-mix(in srgb,var(--brand) 55%,#ffffff); --brand-soft:color-mix(in srgb,var(--brand) 24%,#161b19);
+--ok:#4cbb7c; --warn:#e2aa30; --bad:#ef6b55;
+--t-part:#93a29d; --t-fab:#6f9dff; --t-ped:#f08a3a; --t-seg:#b383ec; --t-emp:#3cc4c4;
+--shadow:0 1px 2px rgba(0,0,0,.35); --shadow-lg:0 10px 40px rgba(0,0,0,.55); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+svg.i{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* barra do app */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);
+padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 0}
+.row1{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:11px;flex:1 1 auto;min-width:0}
+.mark{width:42px;height:42px;border-radius:11px;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700;font-size:20px;flex:0 0 auto}
+.logo{width:42px;height:42px;border-radius:11px;object-fit:contain;background:#fff;padding:3px;flex:0 0 auto;border:1px solid var(--line)}
+.logo-lg{width:76px;height:76px;border-radius:16px;object-fit:contain;background:#fff;padding:6px;border:1px solid var(--line)}
+h1{margin:0;line-height:1.05;min-width:0;display:flex;flex-direction:column}
+h1 #brandName{font-family:var(--f-display);font-weight:700;font-size:21px;color:var(--ink);letter-spacing:.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+h1 #brandTitle{font-family:var(--f-body);font-weight:500;font-size:12px;color:var(--brand-fg);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;white-space:nowrap}
+.navtop{display:flex;gap:6px;align-items:center}
+.btn{border:0;border-radius:10px;padding:9px 14px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;transition:filter .12s}
+.btn:hover{filter:brightness(.96)}
+.btn-accent{background:var(--brand);color:var(--brand-ink)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-line{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
+.btn-danger{background:transparent;color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 55%,transparent)}
+.btn-ok{background:var(--ok);color:#fff}
+.badge-n{background:var(--bad);color:#fff;border-radius:99px;padding:0 6px;min-width:18px;text-align:center;font-size:11.5px;line-height:18px;font-family:var(--f-mono);font-weight:500}
+.row2{display:flex;gap:8px;margin-top:12px;align-items:center}
+.searchbox{flex:1;position:relative;min-width:0}
+.searchbox svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);width:18px;height:18px}
+.search{width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:9px 12px 9px 36px}
+.search::placeholder{color:var(--muted)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:10px 12px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--brand-soft);color:var(--brand-fg);border-color:color-mix(in srgb,var(--brand) 40%,transparent);font-weight:600}
+.tabs{display:none}
+.scope{flex:0 1 auto;max-width:46%;background:var(--brand-soft);color:var(--brand-fg);border:1px solid color-mix(in srgb,var(--brand) 35%,transparent);border-radius:10px;padding:9px 10px;font-weight:600;font-size:14px;min-width:0}
+.p-dono{color:var(--ink);background:var(--surface2);border:1px solid var(--line);font-weight:500}
+.notice{margin:12px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--warn);color:var(--ink);font-size:13px}
+/* quadro */
+.board{display:flex;gap:14px;align-items:flex-start;overflow-x:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 40px}
+.col{flex:0 0 290px;background:var(--surface2);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;max-height:calc(100vh - 190px)}
+.col.drop{outline:2px dashed var(--brand);outline-offset:-2px}
+.col-h{display:flex;align-items:center;gap:8px;padding:12px 14px 10px}
+.col-h h2{font-family:var(--f-display);font-weight:600;font-size:17px;margin:0;flex:1;letter-spacing:.005em}
+.col-h .n{font-family:var(--f-mono);color:var(--muted);font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:1px 8px}
+.col-b{display:flex;flex-direction:column;gap:8px;padding:0 10px 12px;overflow-y:auto;min-height:40px}
+.empty-col{color:var(--muted);font-size:13px;padding:8px 6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:11px 12px 11px 16px;text-align:left;width:100%;position:relative;display:flex;flex-direction:column;gap:6px;overflow:hidden;transition:transform .12s,border-color .12s}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tc,var(--t-part))}
+.card:hover{border-color:color-mix(in srgb,var(--brand) 45%,var(--line))}
+.card:active{transform:scale(.99)}
+.c-top{display:flex;gap:8px;align-items:flex-start}
+.c-os{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);background:var(--surface2);border-radius:6px;padding:1px 6px;flex:0 0 auto}
+.c-name{font-weight:600;font-size:15px;flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.25}
+.c-dev{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.c-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.pill{font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 7px;line-height:1.35;white-space:nowrap}
+.p-tipo{color:var(--tc);background:color-mix(in srgb,var(--tc) 13%,transparent)}
+.p-days{font-family:var(--f-mono);font-weight:500}
+.d-ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.d-warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,transparent)}
+.d-bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,transparent)}
+.p-info{color:var(--muted);background:var(--surface2);font-weight:500}
+.p-buy{color:var(--bad);background:color-mix(in srgb,var(--bad) 11%,transparent)}
+.p-arr{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.p-twin{color:var(--brand-fg);background:var(--brand-soft)}
+.p-urg{color:#fff;background:var(--bad)}
+.p-alta{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.p-baixa{color:var(--muted);background:var(--surface2);font-weight:500}
+/* painel lateral / tela cheia */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(8,14,12,.45);display:flex;justify-content:flex-end}
+.sheet{background:var(--bg);width:min(580px,100%);height:100%;overflow-y:auto;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.sheet-h{position:sticky;top:0;z-index:2;background:var(--surface);color:var(--ink);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);
+padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sheet-h::before{content:"";width:5px;align-self:stretch;border-radius:3px;background:var(--brand)}
+.sheet-h h3{font-family:var(--f-display);font-size:21px;font-weight:700;margin:0;flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.15}
+.sheet-b{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px calc(40px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.sec{display:flex;flex-direction:column;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.sec>h4{margin:0;font-family:var(--f-display);font-size:16px;color:var(--ink);font-weight:600;display:flex;align-items:center;gap:8px;letter-spacing:.005em}
+.sec .u-row,.sec .part,.sec .shop-i,.sec .wa{background:var(--surface2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fld{display:flex;flex-direction:column;gap:5px;min-width:0}
+.fld label{font-size:12.5px;color:var(--muted);font-weight:500}
+.fld input,.fld select,.fld textarea,.inp{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 11px;width:100%;min-width:0}
+.fld input:focus,.fld select:focus,.fld textarea:focus,.inp:focus{border-color:var(--brand);outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+textarea{resize:vertical;min-height:72px}
+.full{grid-column:1/-1}
+.status-row{display:flex;gap:6px;flex-wrap:wrap}
+.st-btn{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:500}
+.st-btn[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
+.parts{display:flex;flex-direction:column;gap:6px}
+.part{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 8px 8px 11px}
+.part .nm{flex:1;min-width:0;overflow-wrap:anywhere;font-size:14px}
+.ps{border:0;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:600;white-space:nowrap}
+.ps-comprar{color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,transparent)}
+.ps-encomendada{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.ps-chegou{color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,transparent)}
+.ps-aplicada{color:var(--muted);background:var(--surface)}
+.x{border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;padding:3px 7px;border-radius:7px}
+.x:hover{color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,transparent)}
+.addrow{display:flex;gap:8px}
+.addrow .inp{flex:1}
+.media{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.m-item{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--surface2);border:1px solid var(--line);max-width:100%}
+.m-item img,.m-item video{width:100%;height:100%;object-fit:cover;display:block}
+.m-item .x{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);color:#fff}
+.m-item .vtag{position:absolute;left:5px;bottom:5px;font-size:10px;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;padding:1px 5px;font-weight:600}
+.m-add{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;aspect-ratio:1;border:1.5px dashed color-mix(in srgb,var(--brand) 40%,var(--line));border-radius:10px;color:var(--brand-fg);font-size:13px;font-weight:500;text-align:center;background:var(--brand-soft);cursor:pointer}
+.m-add b{font-size:26px;font-weight:400}
+.hint{font-size:12.5px;color:var(--muted)}
+.twin-box{background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 35%,transparent);border-radius:12px;padding:10px 12px;font-size:13.5px;color:var(--ink)}
+.twin-box a{color:var(--brand-fg);font-weight:600}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:13px}
+.timeline li{display:flex;gap:10px}
+.timeline .when{font-family:var(--f-mono);color:var(--muted);flex:0 0 auto;font-size:12px;padding-top:1px}
+.wa{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px}
+.wa pre{white-space:pre-wrap;margin:0;font-family:var(--f-body);font-size:13.5px;user-select:all}
+.wa .acts{display:flex;gap:8px;flex-wrap:wrap}
+.wa a{color:var(--ok);font-weight:600;font-size:14px;align-self:center}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13.5px}
+.saved{font-family:var(--f-body);font-size:12px;color:var(--muted);font-weight:400;white-space:nowrap}
+.finish{display:flex;flex-direction:column;gap:6px;background:color-mix(in srgb,var(--ok) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--ok) 35%,transparent);border-radius:12px;padding:11px 12px}
+.shop-g{display:flex;flex-direction:column;gap:6px}
+.shop-i{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.shop-i .txt{flex:1;min-width:0}
+.shop-i .txt b{display:block;font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.shop-i .txt button{border:0;background:none;padding:0;color:var(--muted);font-size:12.5px;text-align:left}
+.shop-i .txt button:hover{text-decoration:underline}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;box-shadow:var(--shadow-lg);max-width:calc(100% - 32px);text-align:center}
+/* entrada */
+.login{position:fixed;inset:0;z-index:50;background:radial-gradient(120% 80% at 50% 0%,color-mix(in srgb,var(--brand) 85%,#fff) 0%,var(--brand) 45%,color-mix(in srgb,var(--brand) 70%,#000) 100%);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;overflow-y:auto;
+padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-bottom,0px))}
+.login-card{background:var(--surface);color:var(--ink);border-radius:20px;padding:24px 20px;width:min(400px,100%);display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow-lg);margin:auto}
+.login-card h2{font-family:var(--f-display);font-size:28px;font-weight:700;margin:0;line-height:1.05}
+.login-card h2 small{display:block;font-family:var(--f-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-fg);margin-top:5px;font-weight:600}
+.login-card form{display:flex;flex-direction:column;gap:12px}
+.login-card .btn-accent{padding:12px 14px;font-size:15px}
+.pin{font-family:var(--f-mono);letter-spacing:.45em;font-size:22px;text-align:center}
+.err{color:var(--bad);font-size:13px;min-height:1em}
+.who{display:flex;flex-wrap:wrap;gap:6px}
+.who button{border:1px solid var(--line);background:var(--surface2);border-radius:99px;padding:8px 14px;font-weight:600;font-size:14px}
+.who button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.u-row{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.u-row .nm{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere}
+.u-row .nm small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.logo-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.seg-list{display:flex;flex-direction:column;gap:6px}
+.seg-opt{display:flex;align-items:center;gap:11px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:500;text-align:left;width:100%}
+.seg-opt:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
+button.seg-opt:hover{border-color:var(--brand)}
+.seg-extra{display:flex;flex-direction:column;gap:6px;padding:4px 2px}
+.qtybox{display:flex;align-items:center;gap:4px}
+.qtybox button{width:34px;height:34px;border:1px solid var(--line);background:var(--surface);border-radius:9px;font-size:17px;line-height:1}
+.qty{font-family:var(--f-mono);font-variant-numeric:tabular-nums;min-width:34px;text-align:center;font-weight:600}
+.qty.low{color:var(--bad)}
+.tag-est{font-size:10.5px;font-weight:600;color:var(--brand-fg);background:var(--brand-soft);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+.pull{display:grid;grid-template-columns:1fr 70px auto;gap:8px}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px}
+.chk input,.seg-opt input{accent-color:var(--brand);width:17px;height:17px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sw{width:32px;height:32px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.colorin{width:44px;height:34px;border:1px solid var(--line);border-radius:9px;padding:2px;background:var(--surface)}
+/* orçamento */
+.orc-i{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 8px 8px 11px}
+.orc-i .d{min-width:0;overflow-wrap:anywhere;font-size:14px}
+.orc-i .d small{display:block;color:var(--muted);font-size:12px}
+.orc-i .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:13.5px;white-space:nowrap}
+.step{display:flex;gap:11px;align-items:flex-start}
+.step+.step{border-top:1px solid var(--line);padding-top:12px}
+.sn{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.step.done .sn{background:var(--ok);color:#fff}
+.sb{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
+.sb>b{font-size:14.5px;padding-top:3px}
+.orc-form{display:flex;flex-direction:column;gap:9px;background:var(--brand-soft);border-radius:12px;padding:11px}
+.orc-form-row{display:flex;gap:8px}.orc-form-row .fld{flex:1}.orc-form-row .fld:first-child:not(:last-child){flex:0 0 76px}
+.more>summary{cursor:pointer;color:var(--brand-fg);font-size:13.5px;font-weight:600;padding:2px 0}
+.more[open]>summary{margin-bottom:8px}
+.msg{white-space:pre-wrap;margin:0;font-family:var(--f-body);font-size:13px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px;user-select:all}
+.linkbtn{border:0;background:none;color:var(--brand-fg);font-size:13px;text-decoration:underline;padding:0}
+a.btn{text-decoration:none}
+.orc-tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line);padding-top:10px}
+.orc-tot b{font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums;color:var(--brand-fg)}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.os-st{display:inline-flex;font-size:12px;font-weight:600;border-radius:99px;padding:2px 9px}
+.os-rascunho{color:var(--muted);background:var(--surface2)}
+.os-enviado{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.os-aprovado{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.os-recusado{color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,transparent)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:560px){.grid3{grid-template-columns:1fr 1fr}}
+.odoc{background:#fff;color:#151a18;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+.odoc-h{background:var(--brand);color:var(--brand-ink);display:flex;gap:14px;align-items:center;padding:16px}
+.odoc-logo{width:58px;height:58px;border-radius:12px;background:#fff;object-fit:contain;padding:4px;flex:0 0 auto}
+.odoc-mark{background:#fff;color:var(--brand);width:58px;height:58px}
+.odoc-co{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:12px;opacity:.95}
+.odoc-co b{font-family:var(--f-display);font-size:19px;opacity:1}
+.odoc-t{text-align:right;display:flex;flex-direction:column;font-size:12px}
+.odoc-t small{font-weight:600;letter-spacing:.08em}.odoc-t b{font-family:var(--f-display);font-size:20px}
+.odoc-b{padding:16px;display:flex;flex-direction:column;gap:14px}
+.odoc-info{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.odoc-info>div{display:flex;flex-direction:column;gap:1px;min-width:0;overflow-wrap:anywhere}
+.odoc small{color:#6b7570;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.odoc-info span{font-size:13px;color:#4a5450}
+.odoc-def{font-size:13.5px}
+.odoc-tab{width:100%;border-collapse:collapse;font-size:14px}
+.odoc-tab th{text-align:left;font-size:11px;color:#6b7570;text-transform:uppercase;letter-spacing:.05em;background:#f1f3f2;padding:8px}
+.odoc-tab th:not(:first-child),.odoc-tab td:not(:first-child){text-align:right;white-space:nowrap}
+.odoc-tab td{padding:9px 8px;border-bottom:1px solid #e6eae8;vertical-align:top}
+.odoc-tab td small{display:block;text-transform:none;letter-spacing:0;font-weight:400}
+.odoc-tot{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:14px;color:#4a5450}
+.odoc-tot .big{background:var(--brand);color:var(--brand-ink);border-radius:10px;padding:8px 14px;font-size:15px;font-weight:600}
+.odoc-tot .big b{font-size:22px;margin-left:8px}
+.odoc-foot{font-size:13px;color:#4a5450}
+/* fazer agora */
+.nowbar{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:14px}
+.nowbtn{width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:1px solid color-mix(in srgb,var(--brand) 35%,transparent);background:var(--brand-soft);color:var(--ink);border-radius:14px;padding:12px 14px}
+.nowbtn .ic{width:38px;height:38px;border-radius:11px;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:19px}
+.nowbtn b{display:block;font-size:15px}.nowbtn span.s{font-size:12.5px;color:var(--muted)}
+.nowbtn .go{margin-left:auto;color:var(--brand-fg);font-weight:600;font-size:13.5px;white-space:nowrap}
+.rec{display:flex;flex-direction:column;gap:7px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rec-top{display:flex;gap:10px;align-items:flex-start}
+.rec-n{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.rec-t{flex:1;min-width:0;overflow-wrap:anywhere}.rec-t b{font-size:14.5px}.rec-t small{display:block;color:var(--muted);font-size:12.5px}
+.why{display:flex;flex-wrap:wrap;gap:5px}
+.tmp{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tmp button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 11px;font-size:12.5px;font-weight:600}
+.tmp button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.p-rap{color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,transparent)}
+.p-med{color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,transparent)}
+.p-dem{color:var(--muted);background:var(--surface2)}
+/* barra de baixo (celular) */
+.bnav{display:none}
+@media (max-width:760px){
+body{padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+.navtop{display:none}
+header.top{padding-top:10px}
+.row2{margin-top:10px}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));padding-bottom:12px}
+.tabs::-webkit-scrollbar{display:none}
+.chips{padding-block:2px 10px}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--surface2);color:var(--muted);padding:7px 12px;font-size:13.5px;font-weight:600;border-radius:99px;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.tab .tn{font-family:var(--f-mono);font-weight:500;font-size:12px;opacity:.85}
+.board{display:block;padding-top:14px}
+.col{display:none;max-height:none;background:transparent;border:0}
+.col.active{display:flex}
+.col-h{display:none}
+.col-b{padding:0;overflow:visible;gap:10px}
+.card{padding:13px 14px 13px 18px}
+.grid2{grid-template-columns:1fr}
+.toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.bnav{display:grid;grid-template-columns:repeat(5,1fr);align-items:end;position:fixed;left:0;right:0;bottom:0;z-index:35;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);
+padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+.bn{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;padding:5px 2px;position:relative;border-radius:10px}
+.bn svg.i{width:23px;height:23px}
+.bn[aria-current="true"]{color:var(--brand-fg)}
+.bn .badge-n{position:absolute;top:0;left:calc(50% + 6px)}
+.fab{justify-self:center;width:56px;height:56px;border-radius:18px;border:0;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px color-mix(in srgb,var(--brand) 45%,transparent);margin-bottom:4px;transform:translateY(-10px)}
+.fab svg.i{width:28px;height:28px;stroke-width:2.2}
+}
+@media (prefers-reduced-motion:no-preference){.sheet.anim{animation:slide .2s ease-out}@keyframes slide{from{transform:translateX(28px);opacity:.5}}}
+</style>
+</head>
+<body style="margin:0">
+<header class="top">
+<div class="row1">
+<div class="brand"><span class="mark" id="brandMark">B</span><img class="logo" id="brandLogo" alt="" hidden><h1><span id="brandName">&nbsp;</span><span id="brandTitle">Controle de Bancada</span></h1></div>
+<div class="navtop">
+<button class="btn btn-ghost" id="btnStock" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg>Estoque <span class="badge-n" id="stockN" hidden>0</span></button>
+<button class="btn btn-ghost" id="btnShop" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Compras <span class="badge-n" id="shopN" hidden>0</span></button>
+<button class="btn btn-ghost" id="btnUser" type="button" hidden></button>
+<button class="btn btn-ghost" id="btnCot" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg>Cotações</button>
+<button class="btn btn-accent" id="btnNew" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova OS</button>
+</div>
+</div>
+<div class="row2">
+<label class="searchbox"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input class="search" id="q" type="search" placeholder="Buscar cliente, nº da OS, marca…" autocomplete="off" aria-label="Buscar"></label>
+<select id="scope" class="scope" aria-label="Quadro de quem" hidden></select>
+</div>
+<div class="chips" id="chips" role="group" aria-label="Filtrar por tipo de atendimento"></div>
+<div class="tabs" id="tabs" role="tablist" aria-label="Status"></div>
+</header>
+<nav class="bnav" id="bnav" aria-label="Navegação">
+<button class="bn" type="button" data-nav="board" aria-current="true"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z"/></svg>Quadro</button>
+<button class="bn" type="button" data-nav="stock"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg>Estoque<span class="badge-n" id="stockN2" hidden>0</span></button>
+<button class="fab" type="button" data-nav="new" aria-label="Nova OS"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+<button class="bn" type="button" data-nav="shop"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Compras<span class="badge-n" id="shopN2" hidden>0</span></button>
+<button class="bn" type="button" data-nav="user"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.3 7.5-5.3s6.3 1.7 7.5 5.3"/></svg>Conta<span class="badge-n" id="userN2" hidden>0</span></button>
+</nav>
+<div class="trial" id="trial" hidden></div>
+<div class="notice" id="notice" hidden></div>
+<div class="nowbar" id="nowbar" hidden></div>
+<main class="board" id="board"></main>
+<div id="layer"></div>
+<div class="login" id="login" hidden></div>
+<div class="toast" id="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/config.js"></script>
+<script>
+/* Konserta: ponte entre o app e o Supabase (dados, arquivos e downloads) */
+(function(){
+const SB=window.sb;
+window.KS={eid:null,uid:null,email:"",estado:"carregando",assinatura:null,empresaNome:""};
+const snapOf=rows=>({docs:rows.map(r=>({id:r.id,exists:true,data:()=>r.d})),size:rows.length,empty:!rows.length});
+const nowIso=()=>new Date().toISOString();
+const rnd=()=>Math.random().toString(36).slice(2,8);
+function docsCol(eid,col){
+const map=new Map();
+return {
+doc(id){return {
+id,
+async set(d){const {error}=await SB.from("docs").upsert({empresa_id:eid,col,id,dados:d,atualizado_em:nowIso()});if(error)throw error;map.set(id,d)},
+async update(d){const cur=map.get(id)||{};const {error}=await SB.from("docs").upsert({empresa_id:eid,col,id,dados:{...cur,...d},atualizado_em:nowIso()});if(error)throw error;map.set(id,{...cur,...d})},
+async delete(){const {error}=await SB.from("docs").delete().match({empresa_id:eid,col,id});if(error)throw error;map.delete(id)}
+}},
+onSnapshot(cb,onErr){
+let alive=true;
+const emit=()=>{if(alive)cb(snapOf([...map].map(([id,d])=>({id,d}))))};
+const load=async()=>{
+let from=0;const step=1000;map.clear();
+for(;;){
+const {data,error}=await SB.from("docs").select("id,dados").eq("empresa_id",eid).eq("col",col).range(from,from+step-1);
+if(error){onErr&&onErr(error);return}
+data.forEach(r=>map.set(r.id,r.dados));
+if(data.length<step)break;from+=step;
+}
+emit();
+};
+load();
+const ch=SB.channel("d-"+col+"-"+rnd())
+.on("postgres_changes",{event:"*",schema:"public",table:"docs",filter:"empresa_id=eq."+eid},p=>{
+if(p.eventType==="DELETE"){const o=p.old||{};if(o.empresa_id&&o.empresa_id!==eid)return;if(o.col&&o.col!==col)return;if(map.delete(o.id))emit();return}
+const n=p.new;if(!n||n.col!==col)return;map.set(n.id,n.dados);emit();
+})
+.subscribe(st=>{if(st==="SUBSCRIBED")load()});
+const vis=()=>{if(document.visibilityState==="visible")load()};
+document.addEventListener("visibilitychange",vis);
+return ()=>{alive=false;document.removeEventListener("visibilitychange",vis);SB.removeChannel(ch)};
+}
+};
+}
+function membrosCol(eid){
+let rows=[];
+return {
+doc(uid){return {
+id:uid,
+async set(d){
+const cur=rows.find(r=>r.id===uid)||{};
+if(uid===KS.uid&&d.nome&&d.nome!==cur.nome){const {error}=await SB.rpc("mudar_meu_nome",{e:eid,novo:d.nome});if(error)throw error}
+const patch={};
+if("admin" in d&&!!d.admin!==!!cur.admin)patch.admin=!!d.admin;
+if(!!d.pendente!==!!cur.pendente)patch.pendente=!!d.pendente;
+if(Object.keys(patch).length){const {error}=await SB.from("membros").update(patch).match({empresa_id:eid,user_id:uid});if(error)throw error}
+},
+async delete(){const {error}=await SB.from("membros").delete().match({empresa_id:eid,user_id:uid});if(error)throw error}
+}},
+onSnapshot(cb,onErr){
+let alive=true;
+const load=async()=>{
+const {data,error}=await SB.from("membros").select("user_id,nome,admin,pendente,criado_em").eq("empresa_id",eid);
+if(error){onErr&&onErr(error);return}
+rows=data.map(r=>({id:r.user_id,d:{nome:r.nome,admin:r.admin,pendente:r.pendente,criadoEm:Date.parse(r.criado_em)}}));
+rows.forEach(r=>Object.assign(r,r.d));
+if(alive)cb(snapOf(rows));
+};
+load();
+const ch=SB.channel("m-"+rnd()).on("postgres_changes",{event:"*",schema:"public",table:"membros",filter:"empresa_id=eq."+eid},()=>load()).subscribe();
+return ()=>{alive=false;SB.removeChannel(ch)};
+}
+};
+}
+function empresaDoc(eid){
+return {
+async set(d){const {error}=await SB.from("empresas").update({config:d}).eq("id",eid);if(error)throw error},
+onSnapshot(cb){
+let alive=true;
+const load=async()=>{const {data,error}=await SB.from("empresas").select("config").eq("id",eid).maybeSingle();
+if(!error&&data&&alive)cb({exists:true,data:()=>data.config||{}})};
+load();
+const ch=SB.channel("e-"+rnd()).on("postgres_changes",{event:"UPDATE",schema:"public",table:"empresas",filter:"id=eq."+eid},p=>{if(alive&&p.new)cb({exists:true,data:()=>p.new.config||{}})}).subscribe();
+return ()=>{alive=false;SB.removeChannel(ch)};
+}
+};
+}
+const db={
+collection(path){const p=path.split("/");
+if(p[0]==="ws"&&p.length===3)return p[2]==="usuarios"?membrosCol(p[1]):docsCol(p[1],p[2]);
+return {doc(){return {set:async()=>{},update:async()=>{},delete:async()=>{}}},onSnapshot(){return ()=>{}}};
+},
+doc(path){const p=path.split("/");
+if(p[0]==="ws"&&p.length===2)return empresaDoc(p[1]);
+return {set:async()=>{},onSnapshot(){return ()=>{}}};
+}
+};
+const assets={
+async upload(file){
+const nome=(file.name||"arquivo").normalize("NFD").replace(/[^\w.\-]+/g,"_").slice(-60);
+const path=KS.eid+"/"+(crypto.randomUUID?crypto.randomUUID():Date.now()+rnd())+"-"+nome;
+const {error}=await SB.storage.from("arquivos").upload(path,file,{contentType:file.type||undefined,upsert:false});
+if(error)throw error;
+const url=SB.storage.from("arquivos").getPublicUrl(path).data.publicUrl;
+return {id:path,url,sizeBytes:file.size,contentType:file.type};
+},
+async delete(id){if(!id||!String(id).includes("/"))return {deleted:false};const {error}=await SB.storage.from("arquivos").remove([id]);if(error)throw error;return {deleted:true}},
+async list(){return {assets:[],usage:{files:0,bytes:0}}}
+};
+const downloads={
+async save({filename,data}){
+const blob=data instanceof Blob?data:new Blob([data]);
+const url=URL.createObjectURL(blob);const a=document.createElement("a");
+a.href=url;a.download=filename||"arquivo";document.body.appendChild(a);a.click();a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),4000);return {status:"saved"};
+}
+};
+const user={isOwner:async()=>!!(window.me&&window.me.admin),canEdit:async()=>true,id:async()=>KS.uid};
+window.claude={use:async n=>({db,assets,downloads,user})[n]||null};
+})();
+</script>
+<script>
+const STATUS=[
+{k:"fila",t:"Fila de Análise",lim:[5,10]},
+{k:"aprovacao",t:"Aguardando Aprovação",lim:[5,10]},
+{k:"pecas",t:"Aguardando Peças",lim:[15,30]},
+{k:"bancada",t:"Em Bancada",lim:[10,20]},
+{k:"pronto",t:"Pronto / Aguardando Retirada",lim:[7,30]},
+{k:"devolvido",t:"Devolvido sem Reparo",lim:[7,30]},
+{k:"entregue",t:"Entregue",lim:[999,999]}
+];
+const TIPOS=[
+{k:"particular",t:"Particular",c:"--t-part"},
+{k:"fabrica",t:"Garantia de Fábrica",c:"--t-fab"},
+{k:"pedroso",t:"Garantia da loja",c:"--t-ped"},
+{k:"seguradora",t:"Seguradora",c:"--t-seg"},
+{k:"empresa",t:"Empresa",c:"--t-emp"}
+];
+const PRI=[{k:"urgente",t:"Urgente",r:3},{k:"alta",t:"Alta",r:2},{k:"normal",t:"Normal",r:1},{k:"baixa",t:"Baixa",r:0}];
+const priOf=k=>PRI.find(p=>p.k===k)||PRI[2];
+const SEG={
+assistencia:{xk:"acessorios",xl:"Acessórios deixados",xp:"Ex.: cabo, controle, caixa",el:"Estado na entrada",ep:"Ex.: riscos na tampa, liga mas não aquece",moPh:"Ex.: Mão de obra, troca de placa",pcPh:"Ex.: Resistência 1500W",stockPh:"Ex.: Resistência air fryer 1500W",partPh:"capacitor 10µF 450V",t:"Assistência técnica",title:"Controle de Bancada",item:"Aparelho / modelo",ph:"Ex.: Air fryer 4L",def:"Defeito",bench:"Em Bancada",noun:"aparelho",nouns:"aparelhos",opts:[["fabrica","Atendo garantias de fábrica"],["seguradora","Atendo seguradoras"]]},
+mecanica:{xk:"km",xl:"Quilometragem",xp:"Ex.: 85.400 km",el:"Estado do veículo na entrada",ep:"Ex.: risco na porta, tanque 1/4",moPh:"Ex.: Troca de óleo e filtro, alinhamento",pcPh:"Ex.: Pastilha de freio dianteira",stockPh:"Ex.: Pastilha de freio dianteira",partPh:"filtro de óleo",t:"Mecânica automotiva",title:"Controle da Oficina",item:"Veículo / placa",ph:"Ex.: Gol 2015 · ABC1D23",def:"Problema relatado",bench:"Em Serviço",noun:"veículo",nouns:"veículos",opts:[["seguradora","Atendo seguradoras"],["empresa","Atendo empresas (frotas)"]]},
+marcenaria:{xk:"endereco",xl:"Endereço de entrega / instalação",xp:"Rua, número, bairro",el:"Observações do pedido",ep:"Ex.: cor branca, puxador embutido",moPh:"Ex.: Montagem e instalação",pcPh:"Ex.: Chapa MDF branco 18mm",stockPh:"Ex.: Chapa MDF branco 18mm",partPh:"dobradiça 35mm com amortecedor",t:"Marcenaria",title:"Controle da Marcenaria",item:"Móvel / projeto",ph:"Ex.: Guarda-roupa 6 portas",def:"Pedido / medidas",bench:"Em Produção",noun:"pedido",nouns:"pedidos",opts:[]},
+ar:{xk:"endereco",xl:"Endereço do serviço",xp:"Rua, número, bairro",el:"Observações do local",ep:"Ex.: 2º andar, precisa de escada",moPh:"Ex.: Instalação split 12.000 BTUs",pcPh:"Ex.: Kit instalação 3 m",stockPh:"Ex.: Tubo de cobre 1/4 (metro)",partPh:"capacitor 35+5µF",t:"Ar-condicionado (instalação e reparo)",title:"Controle de Serviços",item:"Equipamento / BTUs",ph:"Ex.: Split 12.000 BTUs",def:"Serviço / defeito",bench:"Em Execução",noun:"equipamento",nouns:"equipamentos",opts:[["seguradora","Atendo seguradoras"],["fabrica","Atendo garantias de fábrica"]]}
+};
+const seg=()=>SEG[empresa.segmento]||SEG.assistencia;
+function tiposOn(){const on=["particular","pedroso"];const at=empresa.atende||{};seg().opts.forEach(([k])=>{if(at[k])on.push(k)});return TIPOS.filter(t=>on.includes(t.k))}
+let estoque=[],scol=null,cotList=[],ccol=null,curKind="os";
+const isCot=o=>o&&o.kind==="cot";
+function curObj(){return curKind==="cot"?cotList.find(c=>c.id===openId):osList.find(x=>x.id===openId)}
+const PSTAT=[{k:"comprar",t:"Precisa comprar"},{k:"encomendada",t:"Encomendada"},{k:"chegou",t:"Chegou"},{k:"aplicada",t:"Aplicada"}];
+const DAY=86400000;
+let db=null,assets=null,col=null;
+let osList=[];            // documentos {id,...}
+let loaded=false;
+let filtroTipo="todos";
+let q="";
+let activeTab="fila";
+let openId=null;          // OS aberta no painel
+let sheetMode=null;       // 'os' | 'new' | 'shop'
+let delConfirm=false;
+let ucol=null,users=[],usersLoaded=false,me=null,sessId=null;
+let cid=null,wsList=[],wsLoaded=false,unsubs=[];
+try{cid=localStorage.getItem("bancada.ws")}catch(e){}
+try{sessId=localStorage.getItem("bancada.sessao")}catch(e){}
+try{const t=localStorage.getItem("bancada.tab");if(t)activeTab=t;const f=localStorage.getItem("bancada.tipo");if(f)filtroTipo=f}catch(e){}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim().replace(/\s+/g," ");
+const tipoOf=k=>TIPOS.find(t=>t.k===k)||TIPOS[0];
+const stOf=k=>STATUS.find(s=>s.k===k)||STATUS[0];
+const daysIn=o=>Math.max(0,Math.floor((Date.now()-(o.statusDesde||o.criadoEm||Date.now()))/DAY));
+const entradaOf=o=>o.entrada||o.criadoEm||Date.now();
+const daysShop=o=>Math.max(0,Math.floor((Date.now()-entradaOf(o))/DAY));
+const WAIT=k=>k==="pronto"||k==="devolvido";
+const toISO=ts=>{const d=new Date(ts);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const fromISO=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||"");return m?new Date(+m[1],+m[2]-1,+m[3],12).getTime():null};
+const fmtDia=ts=>new Date(ts).toLocaleDateString("pt-BR");
+const plural=(n,a,b)=>n+" "+(n===1?a:b);
+let empresa={nome:"",horario:"",logoId:"",logoUrl:""};
+const logoSrc=()=>empresa.logoUrl||(empresa.logoId?"/_blob/"+empresa.logoId:"");
+const fmtD=ts=>{const d=new Date(ts);return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
+function notice(msg){const n=$("#notice");n.textContent=msg;n.hidden=!msg}
+function twinsOf(o){
+const n=norm(o.cliente);if(!n)return[];
+return osList.filter(x=>x.id!==o.id&&norm(x.cliente)===n&&x.status!=="entregue");
+}
+let scope="me";try{scope=localStorage.getItem("bancada.scope")||"me"}catch(e){}
+const activeUsers=()=>users.filter(u=>!u.pendente);
+function ownerOf(o){if(o.dono&&users.some(u=>u.id===o.dono))return o.dono;const a=users.filter(u=>u.admin&&!u.pendente)[0]||users[0];return a?a.id:null}
+function scopeId(){return scope==="me"?(me?me.id:null):scope}
+function scopeMatch(o){return scope==="all"||ownerOf(o)===scopeId()}
+function firstName(id){const u=users.find(x=>x.id===id);return u?u.nome.split(" ")[0]:"?"}
+function renderScope(){
+const sel=$("#scope");const au=activeUsers();
+if(!me||au.length<2){sel.hidden=true;if(scope!=="me"){scope="me"}return}
+if(scope!=="me"&&scope!=="all"&&!au.some(u=>u.id===scope))scope="me";
+sel.hidden=false;
+sel.innerHTML=`<option value="me">Meus aparelhos</option>${au.filter(u=>u.id!==me.id).map(u=>`<option value="${u.id}">De ${esc(u.nome.split(" ")[0])}</option>`).join("")}<option value="all">Toda a equipe</option>`;
+sel.value=scope;
+}
+function matches(o){
+if(!scopeMatch(o))return false;
+if(filtroTipo!=="todos"&&(o.tipo||"particular")!==filtroTipo)return false;
+if(!q)return true;
+const hay=norm([o.num,o.cliente,o.aparelho,o.defeito,o.marca].join(" "));
+return norm(q).split(" ").every(w=>hay.includes(w));
+}
+const numOf=o=>{const n=parseInt(String(o.num||"").replace(/\D/g,""),10);return isFinite(n)?n:Infinity};
+const isUrg=o=>priOf(o.prioridade).k==="urgente";
+function sortList(a){return a.sort((x,y)=>{const nx=numOf(x),ny=numOf(y);return (isUrg(y)-isUrg(x))||((nx===Infinity)-(ny===Infinity))||(nx===Infinity?0:ny-nx)||(entradaOf(y)-entradaOf(x))})}
+/* ---------- Quadro ---------- */
+function renderChips(){
+const on=tiposOn();if(filtroTipo!=="todos"&&!on.some(t=>t.k===filtroTipo))filtroTipo="todos";
+const opts=[{k:"todos",t:"Todos"}].concat(on);
+$("#chips").innerHTML=opts.map(o=>`<button type="button" class="chip" data-tipo="${o.k}" aria-pressed="${filtroTipo===o.k}">${esc(o.t)}</button>`).join("");
+}
+function renderBoard(){
+const vis=osList.filter(matches);
+const by={};STATUS.forEach(s=>by[s.k]=[]);
+vis.forEach(o=>(by[o.status]||by.fila).push(o));
+$("#tabs").innerHTML=STATUS.map(s=>`<button type="button" role="tab" class="tab" data-tab="${s.k}" aria-selected="${activeTab===s.k}">${esc(s.t.split(" / ")[0])}<span class="tn">${by[s.k].length}</span></button>`).join("");
+$("#board").innerHTML=STATUS.map(s=>{
+const items=sortList(by[s.k]);
+const body=!loaded?`<div class="empty-col">Carregando…</div>`:
+items.length?items.map(cardHTML).join(""):`<div class="empty-col">${osList.some(scopeMatch)?"Nenhuma OS aqui.":scope==="me"?"Seu quadro está vazio. Toque em + para adicionar seu primeiro "+seg().noun+".":"Nenhuma OS neste quadro."}</div>`;
+return `<section class="col ${activeTab===s.k?"active":""}" data-col="${s.k}"><div class="col-h"><h2>${esc(s.t)}</h2><span class="n">${items.length}</span></div><div class="col-b">${body}</div></section>`;
+}).join("");
+renderNowBar();if(sheetMode==="now")openNow();
+const nb=shopItems().filter(i=>i.p.status==="comprar").length;
+["#shopN","#shopN2"].forEach(x=>{const b=$(x);b.textContent=nb;b.hidden=!nb});
+}
+function cardHTML(o){
+const tp=tipoOf(o.tipo);const st=stOf(o.status);const w=WAIT(o.status);const d=w?daysIn(o):daysShop(o);
+const dc=d>=st.lim[1]?"d-bad":d>=st.lim[0]?"d-warn":"d-ok";
+const pecas=o.pecas||[];
+const buy=pecas.filter(p=>p.status==="comprar").length, enc=pecas.filter(p=>p.status==="encomendada").length, arr=pecas.filter(p=>p.status==="chegou").length;
+const nm=(o.midia||[]).length;const tw=twinsOf(o).length;
+const pr=priOf(o.prioridade);
+let meta=pr.k==="urgente"?`<span class="pill p-urg">Urgente</span>`:pr.k==="alta"?`<span class="pill p-alta">Prioridade alta</span>`:"";
+meta+=`<span class="pill p-tipo">${esc(o.tipo==="fabrica"&&o.marca?"Fábrica · "+o.marca:tp.t)}</span>`;
+if(o.status!=="entregue")meta+=`<span class="pill p-days ${dc}" title="${w?"Dias aguardando retirada":"Dias desde que chegou"}">${w?(d===0?"pronto hoje":plural(d,"dia","dias")+" aguardando"):(d===0?"chegou hoje":plural(d,"dia","dias")+" na loja")}</span>`;
+if(buy)meta+=`<span class="pill p-buy">${buy} a comprar</span>`;
+if(enc)meta+=`<span class="pill p-info">${enc} encomendada${enc>1?"s":""}</span>`;
+if(arr)meta+=`<span class="pill p-arr">${arr} chegou</span>`;
+if(nm)meta+=`<span class="pill p-info">${nm} mídia${nm>1?"s":""}</span>`;
+if(full()&&o.orc&&o.orc.itens&&o.orc.itens.length){const cs={rascunho:"p-info",enviado:"d-warn",aprovado:"p-arr",recusado:"p-buy"}[o.orc.status]||"p-info";meta+=`<span class="pill ${cs} mono">${fmtR(orcTotal(o))}${o.orc.status==="aprovado"?" ✓":o.orc.status==="enviado"?" · enviado":""}</span>`}
+if(tw)meta+=`<span class="pill p-twin">+${tw} ${tw>1?seg().nouns:seg().noun}</span>`;
+if(pr.k==="baixa")meta+=`<span class="pill p-baixa">Baixa</span>`;
+const tp2=tempoOf(o.tempo);if(tp2&&!["pronto","devolvido","entregue"].includes(o.status))meta+=`<span class="pill ${tp2.c}">${tp2.t}</span>`;
+if(scope==="all"&&activeUsers().length>1)meta+=`<span class="pill p-dono">${esc(firstName(ownerOf(o)))}</span>`;
+return `<button type="button" class="card" draggable="true" data-id="${o.id}" style="--tc:var(${tp.c})">
+<div class="c-top"><span class="c-name">${esc(o.cliente||"Sem nome")}</span><span class="c-os">${o.num?"#"+esc(o.num):""}</span></div>
+${o.aparelho||o.defeito?`<div class="c-dev">${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))}</div>`:""}
+<div class="c-meta">${meta}</div></button>`;
+}
+/* ---------- Gravação ---------- */
+async function save(o,quiet){
+o.atualizadoEm=Date.now();
+const {id,...data}=o;
+const cc=o.kind==="cot"?ccol:col;
+if(!cc){if(!quiet)toast("Sem conexão: alteração só nesta tela");return}
+try{await cc.doc(id).set(data);if(!quiet)toast("Salvo")}
+catch(e){toast(e&&e.code==="quota_exceeded"?"Armazenamento cheio":"Não salvou. Tente de novo.")}
+}
+const saveSoon=(()=>{let t;return o=>{clearTimeout(t);const s=$("#savedInd");if(s)s.textContent="salvando…";t=setTimeout(async()=>{await save(o,true);const s2=$("#savedInd");if(s2)s2.textContent="salvo"},600)}})();
+function setStatus(o,k){
+if(o.status===k)return;
+o.status=k;o.statusDesde=Date.now();
+(o.historico=o.historico||[]).push({s:k,em:Date.now(),por:me?me.nome:""});
+save(o,true);toast("Movida para "+stOf(k).t);
+}
+/* ---------- Painéis ---------- */
+function closeSheet(){resetMode=null;orcAdd=null;document.querySelectorAll(".bn").forEach(b=>b.setAttribute("aria-current",String(b.dataset.nav==="board")));$("#layer").innerHTML="";openId=null;sheetMode=null;delConfirm=false}
+function shell(title,inner,extra=""){
+const was=document.querySelector(".sheet");
+return `<div class="overlay" data-close="1"><div class="sheet ${was?"":"anim"}" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+<div class="sheet-h"><h3>${esc(title)}</h3>${extra}<button type="button" class="btn btn-ghost" data-act="close">Fechar</button></div>
+<div class="sheet-b">${inner}</div></div></div>`;
+}
+function tipoSelect(id,val){const l=tiposOn();if(val&&!l.some(t=>t.k===val))l.push(tipoOf(val));return `<select id="${id}">${l.map(t=>`<option value="${t.k}" ${t.k===(val||"particular")?"selected":""}>${t.t}</option>`).join("")}</select>`}
+function priSelect(id,val){return `<select id="${id}">${PRI.slice().reverse().map(p=>`<option value="${p.k}" ${p.k===(val||"normal")?"selected":""}>${p.t}</option>`).join("")}</select>`}
+function marcaField(id,val,show){const m=(empresa.marcas||[]);return `<div class="fld" id="w_${id}" ${show?"":"hidden"}><label for="${id}">Marca do fabricante</label><input id="${id}" list="marcasDL" value="${esc(val||"")}" placeholder="Escolha ou digite"><datalist id="marcasDL">${m.map(x=>`<option value="${esc(x)}"></option>`).join("")}</datalist></div>`}
+function openPlus(){
+sheetMode="plus";
+$("#layer").innerHTML=shell("Criar",`
+<div class="seg-list">
+<button type="button" class="seg-opt" data-act="newos"><span class="sn">+</span><span><b>Nova OS</b><br><small class="hint">O ${esc(seg().noun)} chegou na loja</small></span></button>
+<button type="button" class="seg-opt" data-act="newcot"><span class="sn">$</span><span><b>Nova cotação</b><br><small class="hint">O cliente quer saber o preço antes</small></span></button>
+<button type="button" class="seg-opt" data-act="cots"><span class="sn">≡</span><span><b>Ver cotações</b><br><small class="hint">${cotList.filter(scopeMatch).length} no total</small></span></button>
+</div>`);
+}
+function openNew(){
+sheetMode="new";
+$("#layer").innerHTML=shell("Nova OS",`
+<form id="newForm" class="grid2" autocomplete="off">
+<div class="fld"><label for="n_num">${full()?"Nº da OS (automático)":"Nº da OS (do seu sistema)"}</label><input id="n_num" inputmode="numeric" class="mono" ${full()?`value="${nextNum()}"`:""}></div>
+<div class="fld"><label for="n_tipo">Tipo de atendimento</label>${tipoSelect("n_tipo")}</div>
+${marcaField("n_marca","",false)}
+<div class="fld"><label for="n_tempo">Tempo estimado</label><select id="n_tempo"><option value="">Não sei ainda</option>${TEMPO.map(t=>`<option value="${t.k}">${t.t}</option>`).join("")}</select></div>
+<div class="fld"><label for="n_pri">Prioridade</label>${priSelect("n_pri")}</div>
+<div class="fld full"><label for="n_cli">Cliente</label><input id="n_cli" required></div>
+<div class="fld"><label for="n_ap">${esc(seg().item)}</label><input id="n_ap" placeholder="${esc(seg().ph)}"></div>
+<div class="fld"><label for="n_tel">WhatsApp do cliente</label><input id="n_tel" inputmode="tel" placeholder="(41) 9…"></div>
+<div class="fld full"><label for="n_def">${esc(seg().def)}</label><input id="n_def"></div>
+${full()?`<div class="fld"><label for="n_doc">CPF do cliente (opcional)</label><input id="n_doc" inputmode="numeric"></div>
+<div class="fld"><label for="n_acc">${esc(seg().xl)}</label><input id="n_acc" placeholder="${esc(seg().xp)}"></div>
+<div class="fld full"><label for="n_est">${esc(seg().el)}</label><input id="n_est" placeholder="${esc(seg().ep)}"></div>`:""}
+<div class="fld"><label for="n_ent">Data que chegou</label><input id="n_ent" type="date" value="${toISO(Date.now())}" max="${toISO(Date.now())}"></div>
+<div class="fld"><label for="n_st">Começa em</label><select id="n_st">${STATUS.filter(s=>s.k!=="entregue").map(s=>`<option value="${s.k}">${s.t}</option>`).join("")}</select></div>
+<div class="full"><button class="btn btn-accent" type="submit">Criar OS</button></div>
+</form>
+<p class="hint">${scope!=="me"&&scope!=="all"?"Esta OS vai para o quadro de "+esc(firstName(scope))+". ":""}Fotos, vídeos e peças (inclusive do estoque) você adiciona depois de criar, dentro da OS.</p>`);
+const tw=$("#n_cli");tw.focus();
+}
+async function createFromForm(){
+const cli=$("#n_cli").value.trim();if(!cli){$("#n_cli").focus();return}
+const now=Date.now();const st=$("#n_st").value;const ent=fromISO($("#n_ent").value)||now;
+let num=$("#n_num").value.trim();if(full()&&!num)num=String(nextNum());
+if(full()&&/^\d+$/.test(num)&&+num>=nextNum()-0)saveEmpresa({proxNum:+num+1});
+const extra=full()?{doc:$("#n_doc").value.trim(),[seg().xk]:$("#n_acc").value.trim(),estado:$("#n_est").value.trim()}:{};
+const o={id:uid(),num,...extra,cliente:cli,aparelho:$("#n_ap").value.trim(),telefone:$("#n_tel").value.trim(),
+defeito:$("#n_def").value.trim(),tipo:$("#n_tipo").value,marca:$("#n_tipo").value==="fabrica"?$("#n_marca").value.trim():"",prioridade:$("#n_pri").value,tempo:$("#n_tempo").value,status:st,entrada:ent,criadoEm:now,statusDesde:now,pecas:[],midia:[],notas:"",criadoPor:me?me.nome:"",dono:(scope!=="me"&&scope!=="all"?scope:(me?me.id:"")),historico:[{s:st,em:now,por:me?me.nome:""}]};
+osList.push(o);activeTab=st;renderBoard();
+await save(o,true);toast("OS criada");openOS(o.id);
+}
+function openOS(id){
+const o=osList.find(x=>x.id===id);if(!o){closeSheet();return}
+if(openId!==id||curKind!=="os")orcAdd=null;curKind="os";
+const sh=document.querySelector(".sheet");const keep=(sheetMode==="os"&&openId===id&&sh)?sh.scrollTop:0;
+requestAnimationFrame(()=>{const s2=document.querySelector(".sheet");if(s2&&keep)s2.scrollTop=keep});
+openId=id;sheetMode="os";
+const tw=twinsOf(o);
+const twin=tw.length?`<div class="twin-box">Este cliente tem mais ${tw.length} ${tw.length>1?seg().nouns:seg().noun} com você: ${tw.map(t=>`<a href="#" data-open="${t.id}">${t.num?"#"+esc(t.num):"OS"} (${esc(stOf(t.status).t)})</a>`).join(", ")}.</div>`:"";
+const pecas=(o.pecas||[]).map(p=>`<div class="part"><span class="nm">${p.qtd>1?p.qtd+"× ":""}${esc(p.nome)}${p.estoqueId?`<span class="tag-est">ESTOQUE</span>`:""}</span><button type="button" class="ps ps-${p.status}" data-pcycle="${p.id}" title="Toque para mudar">${esc((PSTAT.find(s=>s.k===p.status)||PSTAT[0]).t)}</button><button type="button" class="x" data-pdel="${p.id}" aria-label="Remover peça">×</button></div>`).join("");
+const mid=(o.midia||[]).map(m=>{const src=m.url||("/_blob/"+m.id);return `<div class="m-item">${m.tipo==="video"?`<video src="${esc(src)}" controls playsinline preload="metadata"></video><span class="vtag">VÍDEO</span>`:`<a href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="${esc(m.nome||"foto")}" loading="lazy"></a>`}<button type="button" class="x" data-mdel="${esc(m.id)}" aria-label="Apagar mídia">×</button></div>`}).join("");
+const hist=(o.historico||[]).slice().reverse().map(h=>`<li><span class="when">${fmtD(h.em)}</span><span>${esc(stOf(h.s).t)}${h.por?` <span class="hint">· ${esc(h.por)}</span>`:""}</span></li>`).join("");
+let wa="";
+if(o.status==="pronto"||o.status==="devolvido"){
+const msg=waText(o);const ph=String(o.telefone||"").replace(/\D/g,"");
+const link=ph.length>=10?`<a href="https://wa.me/${ph.length<=11?"55"+ph:ph}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Abrir no WhatsApp ↗</a>`:`<span class="hint">Coloque o WhatsApp do cliente para abrir direto.</span>`;
+wa=`<div class="sec"><h4>Aviso ao cliente</h4><div class="wa"><pre id="waText">${esc(msg)}</pre><div class="acts"><button type="button" class="btn btn-line" data-act="copywa">Copiar mensagem</button>${link}</div></div></div>`;
+}
+$("#layer").innerHTML=shell((o.num?"OS "+o.num:"OS")+" · "+(o.cliente||""),`
+${twin}
+<div class="sec"><h4>Tempo estimado</h4>${tempoChips(o,"data-ostmp")}<span class="hint">Ajuda o app a sugerir o que dá para fazer rápido.</span></div>
+<div class="sec"><h4>Prioridade</h4><div class="status-row">${PRI.slice().reverse().map(p=>`<button type="button" class="st-btn" data-pri="${p.k}" aria-pressed="${priOf(o.prioridade).k===p.k}">${p.t}</button>`).join("")}</div></div>
+<div class="sec"><h4>Status</h4><div class="status-row">${STATUS.map(s=>`<button type="button" class="st-btn" data-st="${s.k}" aria-pressed="${o.status===s.k}">${esc(s.t)}</button>`).join("")}</div>
+${o.status==="pronto"||o.status==="devolvido"?`<div class="finish"><button type="button" class="btn btn-ok" data-act="finalizar">✓ Finalizar OS — cliente retirou</button><span class="hint">Move para Entregue e tira da frente. Dá para reabrir mudando o status.</span></div>`:""}
+<span class="hint">Chegou em ${fmtDia(entradaOf(o))} (${daysShop(o)===0?"hoje":"há "+plural(daysShop(o),"dia","dias")}). Neste status há ${daysIn(o)===0?"menos de 1 dia":plural(daysIn(o),"dia","dias")}.</span></div>
+${wa}
+${full()?orcHTML(o):""}
+<div class="sec"><h4>Fotos e vídeos</h4>
+<div class="media">${mid}<label class="m-add" for="fileIn"><b>+</b>Foto ou vídeo</label></div>
+<input id="fileIn" type="file" accept="image/*,video/*" multiple hidden>
+<span class="hint" id="upHint">No celular abre a câmera ou a galeria. Vídeo até 20 MB (uns 20–40 segundos).</span></div>
+<div class="sec"><h4>Peças</h4>
+<div class="parts">${pecas||`<span class="hint">Nenhuma peça listada.</span>`}</div>
+<form class="addrow" id="partForm" autocomplete="off"><input class="inp" id="partIn" placeholder="Peça para comprar: ex. ${esc(seg().partPh)}"><button class="btn btn-line" type="submit">Adicionar</button></form>
+<form class="pull" id="pullForm" autocomplete="off"><input class="inp" id="pullIn" list="estoqueDL" placeholder="${estoque.length?"Puxar do estoque…":"Estoque vazio"}" aria-label="Item do estoque"><input class="inp mono" id="pullQ" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantidade"><button class="btn btn-line" type="submit">Puxar</button>
+<datalist id="estoqueDL">${estoque.filter(i=>(i.qtd||0)>0).map(i=>`<option value="${esc(i.nome)}">${esc(i.qtd)} em estoque</option>`).join("")}</datalist></form>
+<span class="hint">Toque no status da peça para avançar: Precisa comprar → Encomendada → Chegou → Aplicada. Peça puxada do estoque já dá baixa na hora; se remover da OS, ela volta para o estoque.</span></div>
+<div class="sec"><h4>Dados <span class="saved" id="savedInd"></span></h4>
+<div class="grid2">
+<div class="fld"><label for="f_num">Nº da OS</label><input id="f_num" class="mono" inputmode="numeric" value="${esc(o.num)}"></div>
+<div class="fld"><label for="f_ent">Data que chegou</label><input id="f_ent" type="date" value="${toISO(entradaOf(o))}" max="${toISO(Date.now())}"></div>
+<div class="fld"><label for="f_tipo">Tipo de atendimento</label>${tipoSelect("f_tipo",o.tipo)}</div>
+${activeUsers().length>1?`<div class="fld"><label for="f_dono">Técnico responsável</label><select id="f_dono">${activeUsers().map(u=>`<option value="${u.id}" ${ownerOf(o)===u.id?"selected":""}>${esc(u.nome)}</option>`).join("")}</select></div>`:""}
+${marcaField("f_marca",o.marca,o.tipo==="fabrica")}
+<div class="fld full"><label for="f_cli">Cliente</label><input id="f_cli" value="${esc(o.cliente)}"></div>
+<div class="fld"><label for="f_ap">${esc(seg().item)}</label><input id="f_ap" value="${esc(o.aparelho)}" placeholder="${esc(seg().ph)}"></div>
+<div class="fld"><label for="f_tel">WhatsApp</label><input id="f_tel" inputmode="tel" value="${esc(o.telefone)}"></div>
+<div class="fld full"><label for="f_def">${esc(seg().def)}</label><input id="f_def" value="${esc(o.defeito)}"></div>
+${full()?`<div class="fld"><label for="f_doc">CPF do cliente</label><input id="f_doc" inputmode="numeric" value="${esc(o.doc)}"></div>
+<div class="fld"><label for="f_acc">${esc(seg().xl)}</label><input id="f_acc" value="${esc(o[seg().xk])}" placeholder="${esc(seg().xp)}"></div>
+<div class="fld full"><label for="f_est">${esc(seg().el)}</label><input id="f_est" value="${esc(o.estado)}" placeholder="${esc(seg().ep)}"></div>`:""}
+<div class="fld full"><label for="f_notas">Anotações</label><textarea id="f_notas" placeholder="Medições, o que já testou, o que falta…">${esc(o.notas)}</textarea></div>
+</div></div>
+<div class="sec"><h4>Histórico</h4><ul class="timeline">${hist||`<li class="hint">Sem registros.</li>`}</ul></div>
+<div class="sec"><div class="confirm" id="delBox">${delConfirm?`Apagar esta OS e suas fotos? <button type="button" class="btn btn-danger" data-act="del2">Sim, apagar</button><button type="button" class="btn btn-line" data-act="del0">Cancelar</button>`:`<button type="button" class="btn btn-danger" data-act="del1">Apagar OS do quadro</button>`}</div></div>
+`);
+}
+function waText(o){
+const first=(o.cliente||"").split(" ")[0];const nome=first?first.charAt(0).toUpperCase()+first.slice(1).toLowerCase():"";
+const ap=o.aparelho?`seu ${o.aparelho}`:"seu "+seg().noun;
+let m=o.status==="pronto"
+?`Olá${nome?" "+nome:""}! Aqui é da ${empresa.nome||"assistência"}. ${ap.charAt(0).toUpperCase()+ap.slice(1)}${o.num?" (OS "+o.num+")":""} está pronto e pode ser retirado.`
+:`Olá${nome?" "+nome:""}! Aqui é da ${empresa.nome||"assistência"}. ${ap.charAt(0).toUpperCase()+ap.slice(1)}${o.num?" (OS "+o.num+")":""} está disponível para retirada.`;
+const tw=twinsOf(o);
+tw.forEach(t=>{m+=t.status==="pronto"||t.status==="devolvido"?` O ${t.aparelho||"outro "+seg().noun}${t.num?" (OS "+t.num+")":""} também já pode ser retirado.`:` O ${t.aparelho||"outro "+seg().noun}${t.num?" (OS "+t.num+")":""} ainda está em andamento (${stOf(t.status).t.toLowerCase()}).`});
+return m+(empresa.horario?"\nAtendemos "+empresa.horario+".":"");
+}
+/* ---------- Lista de compras ---------- */
+function shopItems(){
+const out=[];osList.forEach(o=>{if(o.status==="entregue"||!scopeMatch(o))return;(o.pecas||[]).forEach(p=>{if(p.status!=="aplicada")out.push({o,p})})});return out;
+}
+function openShop(){
+const sh=document.querySelector(".sheet");const keep=(sheetMode==="shop"&&sh)?sh.scrollTop:0;
+requestAnimationFrame(()=>{const s2=document.querySelector(".sheet");if(s2&&keep)s2.scrollTop=keep});
+sheetMode="shop";
+const items=shopItems();
+const grp=k=>items.filter(i=>i.p.status===k);
+const sec=(k,t,h)=>{const g=grp(k);return `<div class="sec"><h4>${t} <span class="mono">${g.length}</span></h4>${h?`<span class="hint">${h}</span>`:""}<div class="shop-g">${g.length?g.map(({o,p})=>`<div class="shop-i"><div class="txt"><b>${esc(p.nome)}</b><button type="button" data-open="${o.id}">${o.num?"OS "+esc(o.num)+" · ":""}${esc(o.cliente)}${o.aparelho?" · "+esc(o.aparelho):""}</button></div><button type="button" class="ps ps-${p.status}" data-scycle="${o.id}|${p.id}">${esc(PSTAT.find(s=>s.k===p.status).t)}</button></div>`).join(""):`<span class="hint">Nada aqui.</span>`}</div></div>`};
+$("#layer").innerHTML=shell("Lista de compras",`
+<div><button type="button" class="btn btn-line" data-act="copyshop">Copiar lista para o fornecedor</button></div>
+${sec("comprar","Precisa comprar","")}
+${sec("encomendada","Encomendada","")}
+${restockSec()}
+${sec("chegou","Chegou — pode começar o serviço","Quando aplicar, marque a peça como aplicada dentro da OS.")}`);
+}
+function lowStock(){return estoque.filter(i=>(i.minimo||0)>0&&(i.qtd||0)<=(i.minimo||0))}
+function restockSec(){const l=lowStock();if(!l.length)return"";return `<div class="sec"><h4>Repor estoque <span class="mono">${l.length}</span></h4><div class="shop-g">${l.map(i=>`<div class="shop-i"><div class="txt"><b>${esc(i.nome)}</b><span class="hint">Tem ${esc(i.qtd||0)} · mínimo ${esc(i.minimo)}</span></div></div>`).join("")}</div></div>`}
+function cyclePart(o,pid){
+const p=(o.pecas||[]).find(x=>x.id===pid);if(!p)return;
+const i=PSTAT.findIndex(s=>s.k===p.status);p.status=PSTAT[(i+1)%PSTAT.length].k;
+save(o,true);
+if(p.status==="chegou"&&o.status==="pecas"&&(o.pecas||[]).every(x=>x.status==="chegou"||x.status==="aplicada"))toast("Todas as peças chegaram. Já pode mover para "+seg().bench+".");
+}
+/* ---------- OS completa (orçamento, PDF) ---------- */
+const full=()=>empresa.temSistema===false;
+const fmtR=v=>(+v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function parseMoney(v){v=String(v||"").trim().replace(/[R$\s]/g,"");if(!v)return 0;if(v.includes(","))v=v.replace(/\./g,"").replace(",",".");const n=parseFloat(v);return isFinite(n)?Math.round(n*100)/100:0}
+function orcOf(o){return o.orc||(o.orc={itens:[],desconto:0,validade:7,prazo:"",status:"rascunho"})}
+function orcSub(o){return (o.orc?.itens||[]).reduce((a,i)=>a+(+i.qtd||0)*(+i.valor||0),0)}
+function orcTotal(o){return Math.max(0,orcSub(o)-(+o.orc?.desconto||0))}
+const ORC_ST={rascunho:"Rascunho",enviado:"Enviado ao cliente",aprovado:"Aprovado",recusado:"Recusado"};
+function nextNum(){const mx=osList.reduce((m,o)=>{const n=parseInt(o.num,10);return isFinite(n)&&String(n)===String(o.num).trim()?Math.max(m,n):m},0);return Math.max(+empresa.proxNum||1,mx+1)}
+const DEF_TERMO="Garantia de {garantia} dias para o serviço executado e as peças trocadas, contados a partir da entrega. A garantia não cobre mau uso, quedas, contato com líquidos, oscilação de energia ou violação do lacre. Aparelhos não retirados em até {retirada} dias após o aviso de conclusão serão considerados abandonados.";
+function termoTxt(){return (empresa.termo||DEF_TERMO).replace(/\{garantia\}/g,empresa.garantia||90).replace(/\{retirada\}/g,empresa.retirada||90)}
+function orcMsg(o){
+const first=(o.cliente||"").split(" ")[0];const nome=first?first.charAt(0).toUpperCase()+first.slice(1).toLowerCase():"";
+const r=orcOf(o);let m=`Olá${nome?" "+nome:""}! Aqui é da ${empresa.nome||"assistência"}. Segue ${isCot(o)?"a cotação"+(o.num?" "+o.num:""):"o orçamento"+(o.num?" da OS "+o.num:"")}${o.aparelho?" ("+o.aparelho+")":""}:\n\n`;
+r.itens.forEach(i=>{m+=`• ${i.qtd>1?i.qtd+"× ":""}${i.desc} — ${fmtR(i.qtd*i.valor)}\n`});
+if(+r.desconto)m+=`Desconto: -${fmtR(r.desconto)}\n`;
+m+=`\n*Total: ${fmtR(orcTotal(o))}*\n`;
+if(r.prazo)m+=`Prazo para ficar pronto: ${r.prazo}\n`;
+m+=`${isCot(o)?"Cotação válida":"Orçamento válido"} por ${r.validade||7} dias.\n\nPara aprovar, é só responder esta mensagem.`;
+const rod=[empresa.nome,empresa.documento?"CNPJ "+empresa.documento:"",empresa.telefone,empresa.email].filter(Boolean).join(" · ");if(rod)m+=`\n\n${rod}`;
+return m;
+}
+let orcAdd=null;
+function orcHTML(o){
+const r=orcOf(o);const has=r.itens.length>0;const sg=seg();
+const ph=String(o.telefone||"").replace(/\D/g,"");const wa=ph.length>=10?`https://wa.me/${ph.length<=11?"55"+ph:ph}?text=${encodeURIComponent(orcMsg(o))}`:"";
+const itens=r.itens.map(i=>`<div class="orc-i"><span class="d">${i.qtd>1?i.qtd+"× ":""}${esc(i.desc)}<small>${i.tipo==="servico"?"Mão de obra":"Peça"}${i.qtd>1?" · "+fmtR(i.valor)+" cada":""}</small></span><span class="v">${fmtR(i.qtd*i.valor)}</span><button type="button" class="x" data-odel="${i.id}" aria-label="Remover item">×</button></div>`).join("");
+const addForm=orcAdd?`<form class="orc-form" id="orcForm" autocomplete="off">
+<div class="fld"><label for="oa_d">${orcAdd==="servico"?"Qual serviço?":"Qual peça?"}</label><input id="oa_d" placeholder="${esc(orcAdd==="servico"?sg.moPh:sg.pcPh)}"></div>
+<div class="orc-form-row">${orcAdd==="peca"?`<div class="fld"><label for="oa_q">Qtd</label><input id="oa_q" class="mono" type="number" min="1" value="1" inputmode="numeric"></div>`:""}
+<div class="fld"><label for="oa_v">Valor${orcAdd==="peca"?" de cada":""} (R$)</label><input id="oa_v" class="mono" inputmode="decimal" placeholder="0,00"></div></div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Adicionar</button><button type="button" class="btn btn-line" data-act="orcx">Cancelar</button></div></form>`:
+`<div class="btnrow"><button type="button" class="btn btn-line" data-oadd="servico">+ Mão de obra</button><button type="button" class="btn btn-line" data-oadd="peca">+ Peça</button></div>`;
+const step=(n,title,body,done)=>`<div class="step ${done?"done":""}"><span class="sn">${done?"✓":n}</span><div class="sb"><b>${title}</b>${body}</div></div>`;
+let s2="",s3="";
+if(has){
+s2=r.status==="rascunho"
+?`<button type="button" class="btn btn-ok" data-act="orcview">Ver e enviar orçamento</button><span class="hint">Abre o orçamento com seu logo e CNPJ, pronto para mandar. Ao enviar, a OS vai para Aguardando Aprovação.</span>`
+:`<span class="hint">Enviado${r.enviadoEm?" em "+fmtDia(r.enviadoEm):""}.</span> <button type="button" class="linkbtn" data-act="orcview">ver ou enviar de novo</button>`;
+if(r.status!=="rascunho")s3=r.status==="enviado"
+?`<div class="btnrow"><button type="button" class="btn btn-ok" data-orcst="aprovado">✓ Aprovou</button><button type="button" class="btn btn-danger" data-orcst="recusado">Recusou</button></div>`
+:`<span class="os-st os-${r.status}">${r.status==="aprovado"?"Aprovado":"Recusado"}${r[r.status+"Em"]?" em "+fmtDia(r[r.status+"Em"]):""}</span> <button type="button" class="linkbtn" data-orcst="enviado">mudar resposta</button>`;
+}
+return `<div class="sec"><h4>Orçamento</h4>
+${step(1,"Monte o orçamento",`<div class="parts">${itens}</div>${addForm}
+${has?`<div class="orc-tot"><span>Total</span><b id="orcTot">${fmtR(orcTotal(o))}</b></div>
+<details class="more"><summary>Desconto, prazo e validade</summary><div class="grid3">
+<div class="fld"><label for="o_desc">Desconto (R$)</label><input id="o_desc" class="mono" inputmode="decimal" value="${r.desconto?String(r.desconto).replace(".",","):""}" placeholder="0,00"></div>
+<div class="fld"><label for="o_prazo">Prazo</label><input id="o_prazo" value="${esc(r.prazo)}" placeholder="Ex.: 3 dias"></div>
+<div class="fld"><label for="o_val">Validade (dias)</label><input id="o_val" class="mono" type="number" min="1" inputmode="numeric" value="${r.validade||7}"></div></div></details>`:""}`,has)}
+${has?step(2,"Envie para o cliente",s2,r.status!=="rascunho"):""}
+${has&&r.status!=="rascunho"?step(3,"O cliente aprovou?",s3+(isCot(o)&&r.status==="aprovado"?(o.osId&&osList.some(x=>x.id===o.osId)?`<button type="button" class="linkbtn" data-open="${o.osId}">Virou OS${o.osNum?" "+esc(o.osNum):""}: abrir</button>`:`<button type="button" class="btn btn-accent" data-act="cot2os">Transformar em OS</button><span class="hint">Cria a OS no quadro com os dados e o orçamento desta cotação.</span>`):""),r.status==="aprovado"):""}
+</div>
+${isCot(o)?"":`<div class="sec"><h4>Imprimir / PDF</h4>
+<div class="btnrow"><button type="button" class="btn btn-line" data-pdf="entrada">OS de entrada</button>${has?`<button type="button" class="btn btn-line" data-pdf="orcamento">Orçamento</button>`:""}${["pronto","devolvido","entregue"].includes(o.status)?`<button type="button" class="btn btn-line" data-pdf="entrega">Comprovante de entrega</button>`:""}</div>
+<span class="hint" id="pdfHint">Baixa o PDF para imprimir ou mandar no WhatsApp.</span></div>`}`;
+}
+/* ---------- Cotações ---------- */
+function reopenBase(o){if(isCot(o))openCot(o.id);else openOS(o.id)}
+function nextCot(){const mx=cotList.reduce((m,c)=>{const n=parseInt(String(c.num||"").replace(/\D/g,""),10);return isFinite(n)?Math.max(m,n):m},0);return Math.max(+empresa.proxCot||1,mx+1)}
+function openCots(){
+sheetMode="cots";curKind="cot";openId=null;
+const l=cotList.filter(c=>scopeMatch(c)).sort((a,b)=>(b.criadoEm||0)-(a.criadoEm||0));
+const st={rascunho:"os-rascunho",enviado:"os-enviado",aprovado:"os-aprovado",recusado:"os-recusado"};
+$("#layer").innerHTML=shell("Cotações",`
+<div class="sec"><h4>Nova cotação</h4><span class="hint">Para quando o cliente pede preço antes de trazer o ${esc(seg().noun)}. Monte com peças e serviços e mande em imagem ou PDF. Se aprovar, vira OS com um toque.</span>
+<form id="cotNew" class="grid2" autocomplete="off">
+<div class="fld full"><label for="cn_cli">Cliente</label><input id="cn_cli"></div>
+<div class="fld"><label for="cn_tel">WhatsApp</label><input id="cn_tel" inputmode="tel" placeholder="(41) 9…"></div>
+<div class="fld"><label for="cn_ap">${esc(seg().item)}</label><input id="cn_ap" placeholder="${esc(seg().ph)}"></div>
+<div class="fld full"><label for="cn_def">${esc(seg().def)}</label><input id="cn_def"></div>
+<div class="full"><button class="btn btn-accent" type="submit">Criar cotação</button></div></form></div>
+<div class="sec"><h4>Cotações <span class="mono">${l.length}</span></h4>
+<div class="shop-g">${l.length?l.map(c=>`<div class="shop-i"><div class="txt"><b>${esc(c.cliente||"Sem nome")}${c.aparelho?" · "+esc(c.aparelho):""}</b><button type="button" data-cot="${c.id}">${esc(c.num||"")} · ${fmtDia(c.criadoEm||Date.now())} · abrir</button></div><span class="mono" style="font-weight:600">${fmtR(orcTotal(c))}</span><span class="os-st ${st[orcOf(c).status]}">${ORC_ST[orcOf(c).status].replace(" ao cliente","")}</span></div>`).join(""):`<span class="hint">Nenhuma cotação ainda.</span>`}</div></div>`);
+}
+function openCot(id){
+const o=cotList.find(c=>c.id===id);if(!o){openCots();return}
+if(openId!==id||curKind!=="cot")orcAdd=null;
+const sh=document.querySelector(".sheet");const keep=(sheetMode==="cot"&&openId===id&&sh)?sh.scrollTop:0;
+requestAnimationFrame(()=>{const s2=document.querySelector(".sheet");if(s2&&keep)s2.scrollTop=keep});
+sheetMode="cot";curKind="cot";openId=id;
+$("#layer").innerHTML=shell("Cotação "+(o.num||"")+" · "+(o.cliente||""),`
+<div><button type="button" class="btn btn-line" data-act="cots">← Todas as cotações</button></div>
+${orcHTML(o)}
+<div class="sec"><h4>Dados <span class="saved" id="savedInd"></span></h4><div class="grid2">
+<div class="fld full"><label for="ct_cli">Cliente</label><input id="ct_cli" value="${esc(o.cliente)}"></div>
+<div class="fld"><label for="ct_tel">WhatsApp</label><input id="ct_tel" inputmode="tel" value="${esc(o.telefone)}"></div>
+<div class="fld"><label for="ct_ap">${esc(seg().item)}</label><input id="ct_ap" value="${esc(o.aparelho)}"></div>
+<div class="fld full"><label for="ct_def">${esc(seg().def)}</label><input id="ct_def" value="${esc(o.defeito)}"></div></div></div>
+<div class="sec"><div class="confirm">${delConfirm?`Apagar esta cotação? <button type="button" class="btn btn-danger" data-act="cotdel2">Sim, apagar</button><button type="button" class="btn btn-line" data-act="cotdel0">Cancelar</button>`:`<button type="button" class="btn btn-danger" data-act="cotdel1">Apagar cotação</button>`}</div></div>`);
+}
+async function createCot(){
+const cli=$("#cn_cli").value.trim();if(!cli){$("#cn_cli").focus();toast("Coloque o nome do cliente.");return}
+const n=nextCot();const now=Date.now();
+const c={id:"c"+uid(),kind:"cot",num:"C-"+n,cliente:cli,telefone:$("#cn_tel").value.trim(),aparelho:$("#cn_ap").value.trim(),defeito:$("#cn_def").value.trim(),
+criadoEm:now,dono:me?me.id:"",criadoPor:me?me.nome:"",orc:{itens:[],desconto:0,validade:7,prazo:"",status:"rascunho"}};
+cotList.push(c);await save(c,true);saveEmpresa({proxCot:n+1});orcAdd="servico";openCot(c.id);setTimeout(()=>$("#oa_d")?.focus(),50);
+}
+async function cotToOS(c){
+const now=Date.now();const r=JSON.parse(JSON.stringify(orcOf(c)));
+const falta=false;const st=full()?"bancada":"fila";
+let num="";if(full()){num=String(nextNum());saveEmpresa({proxNum:+num+1})}
+const o={id:uid(),num,cliente:c.cliente,telefone:c.telefone,aparelho:c.aparelho,defeito:c.defeito,tipo:"particular",marca:"",prioridade:"normal",status:st,entrada:now,criadoEm:now,statusDesde:now,
+pecas:r.itens.filter(i=>i.tipo==="peca").map(i=>({id:uid(),nome:i.desc,status:"comprar",qtd:i.qtd})),midia:[],notas:"Criada a partir da cotação "+(c.num||""),criadoPor:me?me.nome:"",dono:c.dono||(me?me.id:""),
+orc:r,historico:[{s:st,em:now,por:me?me.nome:""}]};
+if(o.pecas.length&&st==="bancada")o.status="pecas";
+osList.push(o);await save(o,true);c.osId=o.id;c.osNum=num;await save(c,true);renderBoard();toast("OS criada a partir da cotação");activeTab=o.status;openOS(o.id);
+}
+function openOrcView(o){
+sheetMode="orcview";openId=o.id;const r=orcOf(o);const sg=seg();
+const ph=String(o.telefone||"").replace(/\D/g,"");const wa=ph.length>=10?`https://wa.me/${ph.length<=11?"55"+ph:ph}?text=${encodeURIComponent(orcMsg(o))}`:"";
+const l=logoSrc();
+const contato=[empresa.documento?"CNPJ "+empresa.documento:"",empresa.telefone,empresa.email].filter(Boolean);
+$("#layer").innerHTML=shell((isCot(o)?"Cotação":"Orçamento")+(o.num?" Nº "+o.num:""),`
+<div><button type="button" class="btn btn-line" data-act="backos">← Voltar ${isCot(o)?"para a cotação":"para a OS"}</button></div>
+<div class="odoc">
+<div class="odoc-h">${l?`<img src="${esc(l)}" alt="" class="odoc-logo">`:`<span class="mark odoc-mark">${esc(initials(empresa.nome))}</span>`}
+<div class="odoc-co"><b>${esc(empresa.nome||"")}</b>${contato.length?`<span>${contato.map(esc).join(" · ")}</span>`:""}${empresa.endereco?`<span>${esc(empresa.endereco)}</span>`:""}</div>
+<div class="odoc-t"><small>${isCot(o)?"COTAÇÃO":"ORÇAMENTO"}</small><b>${o.num?"Nº "+esc(o.num):""}</b><span>${fmtDia(Date.now())}</span></div></div>
+<div class="odoc-b">
+<div class="odoc-info"><div><small>Cliente</small><b>${esc(o.cliente)}</b>${o.telefone?`<span>${esc(o.telefone)}</span>`:""}</div>
+<div><small>${esc(sg.item.split(" /")[0])}</small><b>${esc(o.aparelho||"—")}</b>${[o.marca,o[sg.xk]?sg.xl+": "+o[sg.xk]:""].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div></div>
+${o.defeito?`<div class="odoc-def"><small>${esc(sg.def)}</small> ${esc(o.defeito)}</div>`:""}
+<table class="odoc-tab"><thead><tr><th>Descrição</th><th>Qtd</th><th>Valor</th></tr></thead><tbody>
+${r.itens.map(i=>`<tr><td>${esc(i.desc)}<small>${i.tipo==="servico"?"Mão de obra":"Peça"}</small></td><td class="mono">${i.qtd}</td><td class="mono">${fmtR(i.qtd*i.valor)}</td></tr>`).join("")}
+</tbody></table>
+<div class="odoc-tot">${+r.desconto?`<span>Subtotal <b class="mono">${fmtR(orcSub(o))}</b></span><span>Desconto <b class="mono">-${fmtR(r.desconto)}</b></span>`:""}<span class="big">Total <b class="mono">${fmtR(orcTotal(o))}</b></span></div>
+<div class="odoc-foot">${r.prazo?`Prazo: <b>${esc(r.prazo)}</b> · `:""}Válido por <b>${r.validade||7} dias</b>. Para aprovar, é só responder a mensagem.</div>
+</div></div>
+<div class="sec"><h4>Enviar ao cliente</h4>
+<div class="btnrow"><button type="button" class="btn btn-accent" data-act="orcimg">Baixar imagem do orçamento</button>${wa?`<a class="btn btn-ok" href="${wa}" target="_blank" rel="noopener" data-act="waorc">Enviar texto no WhatsApp</a>`:""}</div>
+<div class="btnrow"><button type="button" class="btn btn-line" data-act="copyorc">Copiar texto</button><button type="button" class="btn btn-line" data-pdf="orcamento">Baixar PDF</button></div>
+<span class="hint" id="pdfHint">Dica: baixe a imagem e mande no WhatsApp do cliente, junto com o texto. ${wa?"":"Coloque o WhatsApp do cliente na OS para abrir direto."}</span>
+<details class="more"><summary>Ver o texto</summary><pre class="msg" id="orcText">${esc(orcMsg(o))}</pre></details></div>`);
+}
+function reopen(o){if(sheetMode==="orcview")openOrcView(o);else if(isCot(o))openCot(o.id);else openOS(o.id)}
+function wrapLines(ctx,t,w){const out=[];String(t||"").split("\n").forEach(par=>{let line="";par.split(" ").forEach(word=>{const tryL=line?line+" "+word:word;if(ctx.measureText(tryL).width>w&&line){out.push(line);line=word}else line=tryL});out.push(line)});return out}
+async function orcImageBlob(o,withLogo){
+const r=orcOf(o),sg=seg(),W=1080,P=64;const rgb=hexRgb(empresa.cor)||hexRgb(DEF_COR);const brand=`rgb(${rgb.join(",")})`;
+const L=rgb.map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});const ink=(.2126*L[0]+.7152*L[1]+.0722*L[2])>.45?"#111614":"#ffffff";
+const c=document.createElement("canvas");c.width=W;c.height=4000;const x=c.getContext("2d");
+const F=(w,sz)=>`${w} ${sz}px "IBM Plex Sans", Arial, sans-serif`;
+x.fillStyle="#ffffff";x.fillRect(0,0,W,4000);
+// cabeçalho colorido
+let lg=null;if(withLogo&&logoSrc()){lg=await new Promise(res=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>res(im);im.onerror=()=>res(null);im.src=logoSrc()})}
+const contato=[empresa.documento?"CNPJ "+empresa.documento:"",empresa.telefone,empresa.email].filter(Boolean).join("  ·  ");
+x.font=F(400,26);const hdrLines=[contato,empresa.endereco].filter(Boolean).flatMap(t=>wrapLines(x,t,W-2*P-(lg?170:0)-260));
+const H=Math.max(220,120+hdrLines.length*36);
+x.fillStyle=brand;x.fillRect(0,0,W,H);
+let tx=P;if(lg){x.fillStyle="#ffffff";const bx=P,by=(H-140)/2;x.beginPath();x.roundRect?x.roundRect(bx,by,140,140,22):x.rect(bx,by,140,140);x.fill();const sc=Math.min(120/lg.width,120/lg.height);x.drawImage(lg,bx+70-lg.width*sc/2,by+70-lg.height*sc/2,lg.width*sc,lg.height*sc);tx=P+170}
+x.fillStyle=ink;x.font=F(700,44);x.fillText(empresa.nome||"",tx,80);
+x.font=F(400,26);x.globalAlpha=.9;hdrLines.forEach((t,i)=>x.fillText(t,tx,124+i*36));x.globalAlpha=1;
+x.textAlign="right";x.font=F(600,24);x.fillText(isCot(o)?"COTAÇÃO":"ORÇAMENTO",W-P,70);x.font=F(700,44);x.fillText(o.num?"Nº "+o.num:"",W-P,120);x.font=F(400,24);x.fillText(fmtDia(Date.now()),W-P,158);x.textAlign="left";
+let y=H+60;
+const label=(t,xx,yy)=>{x.fillStyle="#6b7570";x.font=F(600,22);x.fillText(t.toUpperCase(),xx,yy)};
+const val=(t,xx,yy,sz=32,w=600)=>{x.fillStyle="#151a18";x.font=F(w,sz);x.fillText(t,xx,yy)};
+label("Cliente",P,y);label(sg.item.split(" /")[0],W/2+10,y);y+=42;
+val(o.cliente||"",P,y);val(o.aparelho||"—",W/2+10,y);y+=38;
+x.font=F(400,26);x.fillStyle="#4a5450";if(o.telefone)x.fillText(o.telefone,P,y);
+const sub=[o.marca,o[sg.xk]?sg.xl+": "+o[sg.xk]:""].filter(Boolean).join(" · ");if(sub)x.fillText(sub,W/2+10,y);y+=50;
+if(o.defeito){label(sg.def,P,y);y+=38;x.font=F(400,28);x.fillStyle="#151a18";wrapLines(x,o.defeito,W-2*P).forEach(l=>{x.fillText(l,P,y);y+=38});y+=16}
+// tabela
+x.fillStyle="#f1f3f2";x.fillRect(P,y,W-2*P,56);label("Descrição",P+20,y+36);x.textAlign="right";label("Qtd",W-P-260,y+36);label("Valor",W-P-20,y+36);x.textAlign="left";y+=56;
+r.itens.forEach(i=>{x.font=F(500,28);const lines=wrapLines(x,i.desc,W-2*P-340);const h=Math.max(1,lines.length)*36+40;
+x.fillStyle="#151a18";lines.forEach((l,k)=>x.fillText(l,P+20,y+44+k*36));x.font=F(400,22);x.fillStyle="#6b7570";x.fillText(i.tipo==="servico"?"Mão de obra":"Peça",P+20,y+44+lines.length*36-6+20);
+x.textAlign="right";x.font=F(500,28);x.fillStyle="#151a18";x.fillText(String(i.qtd),W-P-260,y+44);x.fillText(fmtR(i.qtd*i.valor),W-P-20,y+44);x.textAlign="left";
+y+=h+10;x.strokeStyle="#e3e7e5";x.lineWidth=2;x.beginPath();x.moveTo(P,y);x.lineTo(W-P,y);x.stroke()});
+y+=50;x.textAlign="right";
+if(+r.desconto){x.font=F(400,28);x.fillStyle="#4a5450";x.fillText("Subtotal  "+fmtR(orcSub(o)),W-P-20,y);y+=42;x.fillText("Desconto  -"+fmtR(r.desconto),W-P-20,y);y+=56}
+x.fillStyle=brand;x.fillRect(W/2,y-50,W/2-P,84);x.fillStyle=ink;x.font=F(700,40);x.fillText("TOTAL  "+fmtR(orcTotal(o)),W-P-24,y+6);x.textAlign="left";y+=90;
+x.font=F(400,26);x.fillStyle="#4a5450";wrapLines(x,`${r.prazo?"Prazo: "+r.prazo+".  ":""}Válido por ${r.validade||7} dias. Para aprovar, é só responder a mensagem.`,W-2*P).forEach(l=>{x.fillText(l,P,y);y+=36});
+if(empresa.horario){x.fillText("Atendimento: "+empresa.horario,P,y);y+=36}
+y+=30;
+const out=document.createElement("canvas");out.width=W;out.height=y;out.getContext("2d").drawImage(c,0,0);
+return await new Promise((res,rej)=>{try{out.toBlob(b=>b?res(b):rej(new Error("blob")),"image/png")}catch(e){rej(e)}});
+}
+async function saveOrcImage(o){
+const hint=$("#pdfHint");if(hint)hint.textContent="Gerando imagem…";
+let blob;try{blob=await orcImageBlob(o,true)}catch(_){try{blob=await orcImageBlob(o,false)}catch(e){toast("Não consegui gerar a imagem.");return}}
+let dl=null;try{dl=await claude.use("downloads")}catch(_){}
+if(!dl){toast("Baixar arquivos não está disponível nesta tela.");return}
+const fname=`${isCot(o)?"Cotacao":"Orcamento"}-${o.num||o.id}-${(o.cliente||"").split(" ")[0]}.png`.replace(/[^\w.\-]+/g,"_");
+try{await dl.save({filename:fname,data:blob});if(hint)hint.textContent="Imagem pronta. Agora é só mandar no WhatsApp do cliente.";
+if(orcOf(o).status==="rascunho"){setOrcStatus(o,"enviado");renderBoard();if(!isCot(o))toast("OS movida para Aguardando Aprovação")}}
+catch(e){if(hint)hint.textContent="A imagem não foi salva."}
+}
+function setOrcStatus(o,st){
+const r=orcOf(o);r.status=st;r[st+"Em"]=Date.now();
+if(isCot(o)){save(o,true);return}
+(o.historico=o.historico||[]).push({s:o.status,em:Date.now(),por:(me?me.nome:"")+" · orçamento "+ORC_ST[st].toLowerCase()});
+if(st==="enviado"&&["fila","pecas","bancada"].includes(o.status)){setStatus(o,"aprovacao");return}
+if(st==="aprovado"&&["fila","aprovacao"].includes(o.status)){const falta=(o.pecas||[]).some(p=>p.status==="comprar"||p.status==="encomendada");setStatus(o,falta?"pecas":"bancada");return}
+if(st==="recusado"&&!["entregue","devolvido"].includes(o.status)){setStatus(o,"devolvido");return}
+save(o,true);
+}
+let jsPDFp=null;
+function loadJsPDF(){if(window.jspdf)return Promise.resolve(window.jspdf.jsPDF);if(jsPDFp)return jsPDFp;
+jsPDFp=new Promise((res,rej)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";sc.onload=()=>res(window.jspdf.jsPDF);sc.onerror=()=>{jsPDFp=null;rej(new Error("load"))};document.head.appendChild(sc)});return jsPDFp}
+async function logoData(){const l=logoSrc();if(!l)return null;try{const b=await (await fetch(l)).blob();if(!/png|jpe?g/i.test(b.type))return null;
+return await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r({d:fr.result,f:/png/i.test(b.type)?"PNG":"JPEG"});fr.onerror=()=>r(null);fr.readAsDataURL(b)})}catch(_){return null}}
+async function makePDF(o,kind){
+const hint=$("#pdfHint");if(hint)hint.textContent="Gerando PDF…";
+let J;try{J=await loadJsPDF()}catch(_){toast("Não consegui carregar o gerador de PDF. Verifique a internet.");if(hint)hint.textContent="Tente de novo.";return}
+const doc=new J({unit:"mm",format:"a4"});const W=210,M=14;let y=M;
+const rgb=hexRgb(empresa.cor)||hexRgb(DEF_COR);
+const txt=(t,x,yy,o2)=>doc.text(String(t??""),x,yy,o2);
+const need=h=>{if(y+h>282){doc.addPage();y=M}};
+const titles={entrada:"ORDEM DE SERVIÇO",orcamento:isCot(o)?"COTAÇÃO":"ORÇAMENTO",entrega:"COMPROVANTE DE ENTREGA"};
+// cabeçalho
+const lg=await logoData();let x0=M;
+if(lg){try{doc.addImage(lg.d,lg.f,M,y,22,22);x0=M+26}catch(_){}}
+doc.setFont("helvetica","bold");doc.setFontSize(15);doc.setTextColor(20);txt(empresa.nome||"",x0,y+6);
+doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90);
+const info=[empresa.endereco,[empresa.telefone,empresa.email].filter(Boolean).join(" · "),[empresa.documento?"CNPJ/CPF: "+empresa.documento:"",empresa.horario?"Atendimento: "+empresa.horario:""].filter(Boolean).join(" · ")].filter(Boolean);
+info.forEach((l,i)=>txt(doc.splitTextToSize(l,95)[0],x0,y+11+i*4));
+doc.setFont("helvetica","bold");doc.setFontSize(12);doc.setTextColor(rgb[0],rgb[1],rgb[2]);txt(titles[kind],W-M,y+6,{align:"right"});
+doc.setFontSize(18);doc.setTextColor(20);txt(o.num?"Nº "+o.num:"",W-M,y+14,{align:"right"});
+doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90);
+txt("Entrada: "+fmtDia(entradaOf(o)),W-M,y+19,{align:"right"});txt("Emissão: "+fmtDia(Date.now()),W-M,y+23,{align:"right"});
+y+=28;doc.setDrawColor(rgb[0],rgb[1],rgb[2]);doc.setLineWidth(.8);doc.line(M,y,W-M,y);y+=6;
+const box=(title,rows)=>{rows=rows.filter(r=>r[1]);if(!rows.length)return;need(8+rows.length*5);
+doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(rgb[0],rgb[1],rgb[2]);txt(title.toUpperCase(),M,y);y+=5;
+doc.setFontSize(9.5);rows.forEach(([k,v])=>{const lines=doc.splitTextToSize(String(v),W-2*M-38);need(lines.length*4.6);doc.setFont("helvetica","bold");doc.setTextColor(70);txt(k,M,y);doc.setFont("helvetica","normal");doc.setTextColor(20);txt(lines,M+38,y);y+=lines.length*4.6+0.8});y+=3};
+box("Cliente",[["Nome",o.cliente],["WhatsApp",o.telefone],["CPF",o.doc]]);
+box(seg().noun.charAt(0).toUpperCase()+seg().noun.slice(1),[[seg().item.split(" /")[0],o.aparelho],["Marca",o.marca],["Atendimento",isCot(o)?"":tipoOf(o.tipo).t],[seg().def,o.defeito],[seg().xl,o[seg().xk]],[seg().el,o.estado]]);
+const r=orcOf(o);
+if(r.itens.length&&(kind!=="entrada"||r.status==="aprovado"||true)){
+need(20);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(rgb[0],rgb[1],rgb[2]);txt(kind==="orcamento"?"ITENS DO ORÇAMENTO":"SERVIÇOS E PEÇAS",M,y);y+=4;
+doc.setFillColor(240,242,241);doc.rect(M,y,W-2*M,6,"F");doc.setFontSize(8.5);doc.setTextColor(70);
+txt("Descrição",M+2,y+4);txt("Qtd",W-M-62,y+4,{align:"right"});txt("Unitário",W-M-32,y+4,{align:"right"});txt("Total",W-M-2,y+4,{align:"right"});y+=10;
+doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.setTextColor(20);
+r.itens.forEach(i=>{const lines=doc.splitTextToSize((i.tipo==="servico"?"Serviço: ":"Peça: ")+i.desc,W-2*M-80);need(lines.length*4.6+2);txt(lines,M+2,y);txt(String(i.qtd),W-M-62,y,{align:"right"});txt(fmtR(i.valor),W-M-32,y,{align:"right"});txt(fmtR(i.qtd*i.valor),W-M-2,y,{align:"right"});y+=lines.length*4.6+1.5});
+doc.setDrawColor(200);doc.setLineWidth(.2);doc.line(M,y,W-M,y);y+=5;
+if(+r.desconto){txt("Desconto: -"+fmtR(r.desconto),W-M-2,y,{align:"right"});y+=5}
+doc.setFont("helvetica","bold");doc.setFontSize(12);txt("TOTAL: "+fmtR(orcTotal(o)),W-M-2,y,{align:"right"});y+=6;
+doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(70);
+if(kind==="orcamento"){txt(`Orçamento válido por ${r.validade||7} dias${r.prazo?" · Prazo: "+r.prazo:""}.`,M,y);y+=5}
+else if(r.status!=="aprovado"&&kind==="entrada"){txt("Valores sujeitos à aprovação do orçamento.",M,y);y+=5}
+y+=3;
+}
+if(kind!=="orcamento"){need(26);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(rgb[0],rgb[1],rgb[2]);txt("TERMO DE GARANTIA E RETIRADA",M,y);y+=5;
+doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(60);const tl=doc.splitTextToSize(termoTxt(),W-2*M);need(tl.length*4);txt(tl,M,y);y+=tl.length*4+4}
+if(kind==="entrega"){need(10);doc.setFontSize(9.5);doc.setTextColor(20);txt("Declaro que recebi o "+(seg().noun)+" descrito acima nesta data, testado e em funcionamento.",M,y);y+=8}
+need(28);y=Math.max(y+12,y);const sw=(W-2*M-16)/2;doc.setDrawColor(120);doc.setLineWidth(.3);
+doc.line(M,y,M+sw,y);doc.line(W-M-sw,y,W-M,y);doc.setFontSize(8.5);doc.setTextColor(90);
+txt("Assinatura do cliente",M,y+4);txt("Responsável: "+(firstName(ownerOf(o))||""),W-M-sw,y+4);
+txt("Data: ____/____/______",M,y+9);
+const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7.5);doc.setTextColor(140);txt(`${empresa.nome||""} · ${titles[kind]} ${o.num||""} · página ${i} de ${pages}`,W/2,292,{align:"center"})}
+const blob=doc.output("blob");const fname=`${kind==="orcamento"?(isCot(o)?"Cotacao":"Orcamento"):kind==="entrega"?"Entrega":"OS"}-${o.num||o.id}-${(o.cliente||"").split(" ")[0]}.pdf`.replace(/[^\w.\-]+/g,"_");
+let dl=null;try{dl=await claude.use("downloads")}catch(_){}
+if(!dl){toast("Baixar arquivos não está disponível nesta tela.");if(hint)hint.textContent="Não deu para baixar aqui. Abra o quadro pelo navegador ou app do Claude.";return}
+try{await dl.save({filename:fname,data:blob});if(hint)hint.textContent="PDF pronto: "+fname}catch(e){if(hint)hint.textContent=e&&e.code==="unavailable"?"Baixar arquivos não está disponível nesta tela.":"O PDF não foi salvo."}
+}
+/* ---------- Fazer agora (liberar a loja) ---------- */
+const TEMPO=[{k:"rapido",t:"Rápido",c:"p-rap",pts:45},{k:"medio",t:"Médio",c:"p-med",pts:12},{k:"demorado",t:"Demorado",c:"p-dem",pts:-25}];
+const tempoOf=k=>TEMPO.find(t=>t.k===k)||null;
+function tempoChips(o,dataAttr){return `<div class="tmp"><span class="hint">Tempo:</span>${TEMPO.map(t=>`<button type="button" ${dataAttr}="${o.id}|${t.k}" aria-pressed="${o.tempo===t.k}">${t.t}</button>`).join("")}</div>`}
+const partsOk=o=>!(o.pecas||[]).some(p=>p.status==="comprar"||p.status==="encomendada");
+function nowLists(){
+const mine=osList.filter(o=>scopeMatch(o)&&o.status!=="entregue");
+const sair=mine.filter(o=>WAIT(o.status)).sort((a,b)=>daysIn(b)-daysIn(a));
+const resp=mine.filter(o=>o.status==="aprovacao").sort((a,b)=>daysIn(b)-daysIn(a));
+const cand=mine.filter(o=>["fila","bancada","pecas"].includes(o.status)&&partsOk(o)&&!(o.orc&&o.orc.status==="recusado"));
+const rap=cand.map(o=>{const why=[];let sc=0;const t=tempoOf(o.tempo);
+if(t){sc+=t.pts;why.push([t.c,t.t])}else why.push(["p-info","sem tempo marcado"]);
+if(o.status==="pecas"&&(o.pecas||[]).length){sc+=20;why.push(["p-arr","peça chegou"])}
+else if(!(o.pecas||[]).length){sc+=8;why.push(["p-info","sem peça"])}
+if(o.status==="bancada"){sc+=12;why.push(["p-info","já na bancada"])}
+const d=daysShop(o);sc+=Math.min(d,60)*0.9;if(d>=5)why.push([d>=20?"d-bad":"d-warn",plural(d,"dia","dias")+" na loja"]);
+if(isUrg(o)){sc+=60;why.unshift(["p-urg","Urgente"])}else if(priOf(o.prioridade).k==="alta")sc+=15;
+if(o.orc&&o.orc.status==="aprovado"){sc+=10;why.push(["p-arr","aprovado"])}
+return {o,sc,why}}).sort((a,b)=>b.sc-a.sc);
+return {sair,resp,rap,semTempo:cand.filter(o=>!o.tempo).length,travadas:mine.filter(o=>["fila","bancada","pecas"].includes(o.status)&&!partsOk(o)).length,total:mine.length};
+}
+function renderNowBar(){
+const bar=$("#nowbar");if(!me||!loaded){bar.hidden=true;return}
+const L=nowLists();const n=L.sair.length+Math.min(L.rap.length,5);
+if(!L.total){bar.hidden=true;return}
+bar.hidden=false;
+bar.innerHTML=`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver →</span></button>`;
+}
+function recItem(o,i,why,actions){
+return `<div class="rec"><div class="rec-top"><span class="rec-n">${i}</span><div class="rec-t"><b>${o.num?"#"+esc(o.num)+" · ":""}${esc(o.cliente||"")}</b><small>${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))}</small></div></div>
+<div class="why">${why.map(([c,t])=>`<span class="pill ${c}">${esc(t)}</span>`).join("")}</div>${actions}</div>`;
+}
+function openNow(){
+const sh=document.querySelector(".sheet");const keep=(sheetMode==="now"&&sh)?sh.scrollTop:0;
+requestAnimationFrame(()=>{const s2=document.querySelector(".sheet");if(s2&&keep)s2.scrollTop=keep});
+sheetMode="now";curKind="os";openId=null;
+const L=nowLists();
+const sairH=L.sair.length?L.sair.slice(0,15).map((o,i)=>recItem(o,i+1,[[daysIn(o)>=15?"d-bad":daysIn(o)>=7?"d-warn":"d-ok",(daysIn(o)===0?"pronto hoje":plural(daysIn(o),"dia","dias")+" esperando")],[o.status==="pronto"?"p-arr":"p-info",o.status==="pronto"?"pronto":"devolver sem reparo"]],
+`<div class="btnrow"><button type="button" class="btn btn-line" data-open="${o.id}">Avisar o cliente</button><button type="button" class="btn btn-ok" data-nowfin="${o.id}">Saiu da loja</button></div>`)).join(""):`<span class="hint">Nenhum ${esc(seg().noun)} pronto esperando retirada.</span>`;
+const rapH=L.rap.length?L.rap.slice(0,8).map((r,i)=>recItem(r.o,i+1,r.why,`${r.o.tempo?"":tempoChips(r.o,"data-nowtmp")}<div class="btnrow">${r.o.status!=="bancada"?`<button type="button" class="btn btn-accent" data-nowgo="${r.o.id}">Começar agora</button>`:""}<button type="button" class="btn btn-line" data-open="${r.o.id}">Abrir OS</button></div>`)).join(""):`<span class="hint">Nada pronto para começar. ${L.travadas?L.travadas+" OS estão esperando peça.":""}</span>`;
+const respH=L.resp.filter(o=>daysIn(o)>=3).slice(0,10).map((o,i)=>recItem(o,i+1,[[daysIn(o)>=15?"d-bad":"d-warn",plural(daysIn(o),"dia","dias")+" sem resposta"]],
+`<div class="btnrow"><button type="button" class="btn btn-line" data-open="${o.id}">Cobrar resposta</button>${daysIn(o)>=15?`<button type="button" class="btn btn-danger" data-nowdev="${o.id}">Devolver sem reparo</button>`:""}</div>`)).join("");
+$("#layer").innerHTML=shell("Liberar a loja",`
+<div class="sec"><h4>1. Pode sair hoje <span class="mono">${L.sair.length}</span></h4><span class="hint">Já estão prontos ou para devolver. Avisar o cliente é o jeito mais rápido de abrir espaço.</span>${sairH}</div>
+<div class="sec"><h4>2. Consertos rápidos para fazer agora</h4><span class="hint">Têm tudo para começar, ordenados por rapidez e tempo parado na loja.${L.semTempo?` Marque o tempo de ${L.semTempo} OS para a lista ficar mais certa.`:""}</span>${rapH}</div>
+${respH?`<div class="sec"><h4>3. Esperando o cliente responder</h4><span class="hint">Orçamento sem resposta ocupa espaço. Com mais de 15 dias, vale devolver.</span>${respH}</div>`:""}`);
+}
+/* ---------- Estoque ---------- */
+let stockQ="";
+function openStock(){
+sheetMode="stock";
+$("#layer").innerHTML=shell("Estoque",`
+<div class="sec"><h4>Adicionar ou atualizar item</h4>
+<form id="stockForm" class="grid2" autocomplete="off">
+<div class="fld full"><label for="k_nome">Item</label><input id="k_nome" list="stockNames" placeholder="${esc(seg().stockPh)}"><datalist id="stockNames">${estoque.map(i=>`<option value="${esc(i.nome)}"></option>`).join("")}</datalist></div>
+<div class="fld"><label for="k_qtd">Quantidade que tem</label><input id="k_qtd" type="number" min="0" inputmode="numeric" class="mono"></div>
+<div class="fld"><label for="k_min">Mínimo (avisa para repor)</label><input id="k_min" type="number" min="0" inputmode="numeric" class="mono" placeholder="0"></div>
+${full()?`<div class="fld full"><label for="k_preco">Preço de venda (R$, opcional)</label><input id="k_preco" class="mono" inputmode="decimal" placeholder="0,00"></div>`:""}
+<div class="fld full"><label for="k_loc">Onde fica / código (opcional)</label><input id="k_loc" placeholder="Ex.: Gaveta 3 · cód. 1234"></div>
+<div class="full"><button class="btn btn-accent" type="submit">Salvar item</button></div></form>
+<span class="hint">Se o nome já existir no estoque, o item é atualizado.</span></div>
+<div class="sec"><h4>Itens <span class="mono" id="stockCount"></span></h4>
+<input class="inp" id="stockQ" type="search" placeholder="Buscar no estoque" value="${esc(stockQ)}">
+<div class="shop-g" id="stockList"></div></div>`);
+renderStockList();
+}
+function renderStockList(){
+const box=$("#stockList");if(!box)return;
+const l=estoque.filter(i=>!stockQ||norm(i.nome+" "+(i.local||"")).includes(norm(stockQ))).sort((a,b)=>norm(a.nome).localeCompare(norm(b.nome)));
+$("#stockCount").textContent=estoque.length;
+box.innerHTML=l.length?l.map(i=>{const low=(i.minimo||0)>0&&(i.qtd||0)<=(i.minimo||0);return `<div class="u-row"><span class="nm">${esc(i.nome)}<small>${[i.local,(i.minimo?"mínimo "+i.minimo:""),(full()&&i.preco?fmtR(i.preco):""),low?"repor":""].filter(Boolean).map(esc).join(" · ")||"&nbsp;"}</small></span>
+<div class="qtybox"><button type="button" data-sq="${i.id}|-1" aria-label="Tirar um">−</button><span class="qty ${low?"low":""}">${esc(i.qtd||0)}</span><button type="button" data-sq="${i.id}|1" aria-label="Pôr um">+</button></div>
+<button type="button" class="x" data-sdel="${i.id}" aria-label="Apagar item">×</button></div>`}).join(""):`<span class="hint">${estoque.length?"Nada encontrado.":"Nenhum item ainda. Cadastre acima o que você tem na prateleira."}</span>`;
+}
+function updateStockBadge(){const n=lowStock().length;["#stockN","#stockN2"].forEach(x=>{const b=$(x);b.textContent=n;b.hidden=!n})}
+async function stockAdd(id,delta){
+const i=estoque.find(x=>x.id===id);if(!i||!scol)return false;
+const nq=(i.qtd||0)+delta;if(nq<0)return false;
+i.qtd=nq;renderStockList();updateStockBadge();
+try{await scol.doc(id).update({qtd:nq,atualizadoEm:Date.now()});return true}catch(_){toast("Não salvou o estoque. Tente de novo.");return false}
+}
+async function saveStockItem(){
+const nome=$("#k_nome").value.trim();if(!nome){$("#k_nome").focus();return}
+const ex=estoque.find(i=>norm(i.nome)===norm(nome));
+const qv=$("#k_qtd").value,mv=$("#k_min").value,lv=$("#k_loc").value.trim();
+const d={nome:ex?ex.nome:nome,qtd:qv!==""?Math.max(0,parseInt(qv,10)||0):(ex?ex.qtd||0:0),minimo:mv!==""?Math.max(0,parseInt(mv,10)||0):(ex?ex.minimo||0:0),local:lv||(ex?ex.local||"":""),atualizadoEm:Date.now()};
+const pv=$("#k_preco")?$("#k_preco").value.trim():"";d.preco=pv!==""?parseMoney(pv):(ex?ex.preco||0:0);
+try{await scol.doc(ex?ex.id:"i"+uid()).set(d);toast(ex?"Item atualizado":"Item adicionado");["#k_nome","#k_qtd","#k_min","#k_loc","#k_preco"].forEach(s=>{if($(s))$(s).value=""});$("#k_nome").focus()}
+catch(e){toast(e&&e.code==="quota_exceeded"?"Estoque cheio":"Não salvou. Tente de novo.")}
+}
+async function pullFromStock(){
+const o=osList.find(x=>x.id===openId);if(!o)return;
+const nome=$("#pullIn").value.trim();const n=Math.max(1,parseInt($("#pullQ").value,10)||1);
+if(!nome)return;
+const i=estoque.find(x=>norm(x.nome)===norm(nome));
+if(!i){toast("Esse item não está no estoque. Cadastre em Estoque.");return}
+if((i.qtd||0)<n){toast(`Só tem ${i.qtd||0} no estoque.`);return}
+if(!await stockAdd(i.id,-n))return;
+const pid=uid();(o.pecas=o.pecas||[]).push({id:pid,nome:i.nome,status:"chegou",qtd:n,estoqueId:i.id});
+if(full()&&+i.preco)orcOf(o).itens.push({id:uid(),tipo:"peca",desc:i.nome,qtd:n,valor:+i.preco,pecaId:pid});
+await save(o,true);toast(`Baixa de ${n} no estoque · ficam ${i.qtd}`);openOS(o.id);renderBoard();
+}
+/* ---------- Mídia ---------- */
+async function uploadFiles(o,files){
+const hint=$("#upHint");
+if(!assets){toast("Envio de fotos indisponível nesta tela");return}
+for(const f of files){
+if(f.size>20*1024*1024){toast(`${f.name}: maior que 20 MB. Grave um vídeo mais curto.`);continue}
+if(hint)hint.textContent=`Enviando ${f.name}…`;
+try{
+const r=await assets.upload(f);
+(o.midia=o.midia||[]).push({id:r.id,url:r.url,tipo:(f.type||"").startsWith("video")?"video":"image",nome:f.name,em:Date.now()});
+await save(o,true);
+}catch(e){toast("Não enviou "+f.name+(e&&e.message?": "+e.message:""))}
+}
+if(openId===o.id)openOS(o.id);renderBoard();toast("Mídia adicionada");
+}
+async function deleteMedia(o,mid){
+o.midia=(o.midia||[]).filter(m=>m.id!==mid);await save(o,true);
+try{if(assets)await assets.delete(mid)}catch(e){}
+openOS(o.id);renderBoard();
+}
+/* ---------- Eventos ---------- */
+document.addEventListener("click",async e=>{
+const t=e.target.closest("button,a,[data-close]");if(!t)return;const act0=t.dataset.act;
+if(t.dataset.close&&e.target===t){closeSheet();return}
+if(t.dataset.tipo){filtroTipo=t.dataset.tipo;try{localStorage.setItem("bancada.tipo",filtroTipo)}catch(_){}renderChips();renderBoard();return}
+if(t.dataset.tab){activeTab=t.dataset.tab;try{localStorage.setItem("bancada.tab",activeTab)}catch(_){}renderBoard();return}
+if(t.classList.contains("card")){openOS(t.dataset.id);return}
+if(t.dataset.open){e.preventDefault();openOS(t.dataset.open);return}
+if(t.dataset.nav){const k=t.dataset.nav;document.querySelectorAll(".bn").forEach(b=>b.setAttribute("aria-current",String(b.dataset.nav===k)));
+if(k==="board"){closeSheet();window.scrollTo({top:0,behavior:"smooth"});return}
+if(k==="new")openPlus();else if(k==="stock")openStock();else if(k==="shop")openShop();else if(k==="user")openAccount();return}
+if(t.dataset.cor){await saveEmpresa({cor:t.dataset.cor});openAccount();return}
+if(t.dataset.act==="corlogo"){const c=await colorFromUrl(logoSrc());if(c){await saveEmpresa({cor:c});openAccount();toast("Cor do logo aplicada")}else toast("Não consegui ler a cor do logo. Escolha uma acima.");return}
+if(t.id==="btnNew"){openNew();return}
+if(t.id==="btnCot"){openCots();return}
+if(act0==="newos"){openNew();return}
+if(act0==="newcot"){openCots();setTimeout(()=>$("#cn_cli")?.focus(),50);return}
+if(t.id==="btnUser"){openAccount();return}
+if(t.dataset.who){pickWho(t.dataset.who);return}
+if(t.dataset.act==="logout"){logout();return}
+if(t.dataset.act==="recarregar"){location.reload();return}
+if(t.dataset.act==="convite"){const c=KS.assinatura&&KS.assinatura.codigo;if(c)copy(location.origin+"/cadastro?codigo="+c+"\n\nCódigo da equipe: "+c);return}
+if(t.dataset.act==="wipeMine"||t.dataset.act==="wipeAll"){resetMode=t.dataset.act==="wipeAll"?"all":"mine";openAccount();setTimeout(()=>$("#wipeIn")?.focus(),0);return}
+if(t.dataset.act==="wipe0"){resetMode=null;openAccount();return}
+if(t.dataset.act==="forgot"){loginMode="forgot";gate();return}
+if(t.dataset.ws){loginMode="login";selectWs(t.dataset.ws);return}
+if(t.dataset.act==="newco"){loginMode="newco";gate();setTimeout(()=>$("#s_emp")?.focus(),0);return}
+if(t.dataset.act==="chgws"){loginMode="login";closeSheet();selectWs(null);return}
+if(t.dataset.act==="signup"){loginMode="signup";gate();setTimeout(()=>$("#c_nome")?.focus(),0);return}
+if(t.dataset.uapr){const u=users.find(x=>x.id===t.dataset.uapr);if(u){const {id,...d}=u;delete d.pendente;try{await ucol.doc(id).set(d);toast(d.nome+" aprovado")}catch(_){toast("Não aprovou. Tente de novo.")}}return}
+if(t.dataset.act==="backlogin"){loginMode="login";gate();return}
+if(t.dataset.udel){const uid2=t.dataset.udel;const u=users.find(x=>x.id===uid2);if(!u||uid2===me?.id||!me?.admin)return;
+const n=osList.filter(o=>o.dono===uid2&&o.status!=="entregue").length;
+if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent=n?`Excluir e passar ${n} OS para você`:"Confirmar exclusão";return}
+try{for(const o of osList.filter(o=>o.dono===uid2)){o.dono=me.id;await save(o,true)}
+await ucol.doc(uid2).delete();toast(u.nome+" foi excluído"+(n?` · ${n} OS passaram para você`:""))}catch(_){toast("Não excluiu. Tente de novo.")}return}
+if(t.id==="btnShop"){openShop();return}
+if(t.id==="btnStock"){openStock();return}
+if(t.dataset.sq){const [id,d]=t.dataset.sq.split("|");stockAdd(id,+d);return}
+if(t.dataset.sdel){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="apagar?";t.style.fontSize="12px";return}
+try{await scol.doc(t.dataset.sdel).delete();toast("Item apagado")}catch(_){toast("Não apagou. Tente de novo.")}return}
+const act=t.dataset.act;
+if(act==="close"){closeSheet();return}
+if(act==="now"){openNow();return}
+if(t.dataset.nowtmp||t.dataset.ostmp){const [id,k]=(t.dataset.nowtmp||t.dataset.ostmp).split("|");const x=osList.find(z=>z.id===id);if(x){x.tempo=x.tempo===k&&t.dataset.ostmp?"":k;save(x,true);renderBoard();if(t.dataset.ostmp)openOS(x.id)}return}
+if(t.dataset.nowgo){const x=osList.find(z=>z.id===t.dataset.nowgo);if(x){setStatus(x,"bancada");renderBoard()}return}
+if(t.dataset.nowfin){const x=osList.find(z=>z.id===t.dataset.nowfin);if(x){setStatus(x,"entregue");renderBoard();toast("Saiu da loja · espaço liberado")}return}
+if(t.dataset.nowdev){const x=osList.find(z=>z.id===t.dataset.nowdev);if(x){setStatus(x,"devolvido");renderBoard()}return}
+const o=curObj();
+if(act==="orcview"&&o){openOrcView(o);return}
+if(act==="cots"){delConfirm=false;openCots();return}
+if(t.dataset.cot){delConfirm=false;openCot(t.dataset.cot);return}
+if(act==="cot2os"&&isCot(o)){cotToOS(o);return}
+if(act==="cotdel1"&&isCot(o)){delConfirm=true;openCot(o.id);return}
+if(act==="cotdel0"&&isCot(o)){delConfirm=false;openCot(o.id);return}
+if(act==="cotdel2"&&isCot(o)){delConfirm=false;cotList=cotList.filter(c=>c.id!==o.id);try{await ccol.doc(o.id).delete();toast("Cotação apagada")}catch(_){toast("Não apagou. Tente de novo.")}openCots();return}
+if(act==="backos"&&o){reopenBase(o);return}
+if(act==="orcimg"&&o){saveOrcImage(o);return}
+if(t.dataset.oadd&&o){orcAdd=t.dataset.oadd;reopen(o);setTimeout(()=>$("#oa_d")?.focus(),0);return}
+if(act==="orcx"&&o){orcAdd=null;reopen(o);return}
+if(t.dataset.odel&&o){orcOf(o).itens=orcOf(o).itens.filter(i=>i.id!==t.dataset.odel);save(o,true);reopen(o);renderBoard();return}
+if(t.dataset.orcst&&o){setOrcStatus(o,t.dataset.orcst);reopen(o);renderBoard();toast("Orçamento: "+ORC_ST[t.dataset.orcst].toLowerCase());return}
+if(t.dataset.pdf&&o){makePDF(o,t.dataset.pdf);return}
+if(act==="copyorc"&&o){copy($("#orcText").textContent,$("#orcText"));if(orcOf(o).status==="rascunho"){setOrcStatus(o,"enviado");renderBoard();if(!isCot(o))toast("Copiado · OS em Aguardando Aprovação")}return}
+if(act==="waorc"&&o){if(orcOf(o).status==="rascunho"){setTimeout(()=>{setOrcStatus(o,"enviado");renderBoard();if(!isCot(o))toast("OS movida para Aguardando Aprovação")},300)}return}
+if(t.dataset.pri&&o){o.prioridade=t.dataset.pri;save(o,true);openOS(o.id);renderBoard();return}
+if(t.dataset.st&&o){setStatus(o,t.dataset.st);openOS(o.id);renderBoard();return}
+if(t.dataset.pcycle&&o){cyclePart(o,t.dataset.pcycle);openOS(o.id);renderBoard();return}
+if(t.dataset.pdel&&o){const p=(o.pecas||[]).find(x=>x.id===t.dataset.pdel);o.pecas=o.pecas.filter(x=>x.id!==t.dataset.pdel);
+if(o.orc&&o.orc.itens)o.orc.itens=o.orc.itens.filter(i=>i.pecaId!==t.dataset.pdel);
+if(p&&p.estoqueId&&estoque.some(i=>i.id===p.estoqueId)){await stockAdd(p.estoqueId,p.qtd||1);toast("Peça voltou para o estoque")}
+save(o,true);openOS(o.id);renderBoard();return}
+if(t.dataset.mdel&&o){deleteMedia(o,t.dataset.mdel);return}
+if(t.dataset.scycle){const [oid,pid]=t.dataset.scycle.split("|");const so=osList.find(x=>x.id===oid);if(so){cyclePart(so,pid);openShop();renderBoard()}return}
+if(act==="copywa"){copy($("#waText").textContent,$("#waText"));return}
+if(act==="copyshop"){const g=shopItems().filter(i=>i.p.status==="comprar");const r=lowStock();const lines=g.map(i=>"- "+i.p.nome+(i.o.aparelho?" ("+i.o.aparelho+")":"")).concat(r.map(i=>"- "+i.nome+" (repor estoque)"));copy(lines.length?"Peças para comprar:\n"+lines.join("\n"):"Nenhuma peça para comprar.");return}
+if(act==="logodel"){const old=empresa.logoId;await saveEmpresa({logoId:"",logoUrl:""});try{if(old&&assets)await assets.delete(old)}catch(_){}toast("Logo removido");return}
+if(act==="finalizar"&&o){setStatus(o,"entregue");closeSheet();renderBoard();toast("OS finalizada");return}
+if(act==="del1"){delConfirm=true;openOS(o.id);return}
+if(act==="del0"){delConfirm=false;openOS(o.id);return}
+if(act==="del2"&&o){
+const ids=(o.midia||[]).map(m=>m.id);osList=osList.filter(x=>x.id!==o.id);closeSheet();renderBoard();
+try{if(col)await col.doc(o.id).delete();for(const id of ids){try{if(assets)await assets.delete(id)}catch(_){}}toast("OS apagada")}catch(_){toast("Não apagou. Tente de novo.")}
+return}
+});
+async function copy(text,el){
+try{await navigator.clipboard.writeText(text);toast("Copiado")}
+catch(_){if(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}toast("Selecionado: use copiar do celular")}
+}
+document.addEventListener("submit",e=>{
+e.preventDefault();
+if(e.target.id==="newForm"){createFromForm();return}
+if(e.target.id==="setupForm"){doSetup();return}
+if(e.target.id==="loginForm"){doLogin();return}
+if(e.target.id==="resetForm"){doReset();return}
+if(e.target.id==="signupForm"){doSignup();return}
+if(e.target.id==="wipeForm"){wipeOS();return}
+if(e.target.id==="cotNew"){createCot();return}
+if(e.target.id==="orcForm"){const o=curObj();if(!o)return;const vv=parseMoney($("#oa_v").value);
+const d=$("#oa_d").value.trim()||(vv?(orcAdd==="peca"?"Peça":"Mão de obra"):"");if(!d){$("#oa_d").focus();toast("Escreva o serviço ou a peça e o valor.");return}
+orcOf(o).itens.push({id:uid(),tipo:orcAdd||"servico",desc:d,qtd:Math.max(1,parseInt($("#oa_q")?.value,10)||1),valor:parseMoney($("#oa_v").value)});orcAdd=null;
+if(o.orc.status==="recusado")o.orc.status="rascunho";save(o,true);reopen(o);renderBoard();return}
+if(e.target.id==="osdocForm"){saveEmpresa({garantia:Math.max(0,parseInt($("#d_gar").value,10)||90),retirada:Math.max(0,parseInt($("#d_ret").value,10)||90),termo:$("#d_termo").value.trim()}).then(()=>toast("Dados da OS salvos"));return}
+if(e.target.id==="recForm"){saveRec();return}
+if(e.target.id==="myPinForm"){changeMyPin();return}
+if(e.target.id==="userForm"){addUser();return}
+if(e.target.id==="stockForm"){saveStockItem();return}
+if(e.target.id==="pullForm"){pullFromStock();return}
+if(e.target.id==="segForm"){const r={...readSeg("g"),temSistema:readSys("g")};saveEmpresa(r).then(()=>{applySeg();toast(r.temSistema?"Salvo: modo organização da bancada":"Salvo: modo OS completa ligado")});return}
+if(e.target.id==="marcaForm"){saveEmpresa({marcas:$("#e_marcas").value.split(/[,\n]/).map(x=>x.trim()).filter(Boolean)}).then(()=>toast("Marcas salvas"));return}
+if(e.target.id==="meForm"){const n=$("#me_nome").value.trim();if(!n||!me)return;const {id,...d}=me;d.nome=n;ucol.doc(id).set(d).then(()=>{me={id,...d};gate();toast("Nome trocado")}).catch(()=>toast("Não salvou. Tente de novo."));return}
+if(e.target.id==="empForm"){saveEmpresa({nome:$("#e_nome").value.trim(),horario:$("#e_hor").value.trim(),documento:$("#e_doc").value.trim(),telefone:$("#e_tel").value.trim(),email:$("#e_mail").value.trim(),endereco:$("#e_end").value.trim()}).then(()=>toast("Perfil salvo"));return}
+if(e.target.id==="partForm"){const o=osList.find(x=>x.id===openId);const v=$("#partIn").value.trim();if(!o||!v)return;
+(o.pecas=o.pecas||[]).push({id:uid(),nome:v,status:"comprar"});save(o,true);openOS(o.id);renderBoard();setTimeout(()=>{const i=$("#partIn");i&&i.focus()},0)}
+});
+const FMAP={f_num:"num",f_cli:"cliente",f_ap:"aparelho",f_tel:"telefone",f_def:"defeito",f_notas:"notas",f_tipo:"tipo",f_marca:"marca",f_doc:"doc",f_acc:"acessorios",f_est:"estado"};
+document.addEventListener("input",e=>{
+if(e.target.id==="q"){q=e.target.value;renderBoard();return}
+if(e.target.id==="corIn"){setBrandColor(e.target.value);return}
+if(["o_desc","o_val","o_prazo"].includes(e.target.id)){const o=curObj();if(!o)return;const r=orcOf(o);
+if(e.target.id==="o_desc")r.desconto=parseMoney(e.target.value);else if(e.target.id==="o_val")r.validade=Math.max(1,parseInt(e.target.value,10)||7);else r.prazo=e.target.value;
+const tt=$("#orcTot");if(tt)tt.textContent=fmtR(orcTotal(o));const ot=$("#orcText");if(ot)ot.textContent=orcMsg(o);saveSoon(o);return}
+if(["ct_cli","ct_tel","ct_ap","ct_def"].includes(e.target.id)){const o=curObj();if(!isCot(o))return;o[{ct_cli:"cliente",ct_tel:"telefone",ct_ap:"aparelho",ct_def:"defeito"}[e.target.id]]=e.target.value;saveSoon(o);return}
+if(e.target.id==="stockQ"){stockQ=e.target.value;renderStockList();return}
+if(e.target.id==="f_ent"){const o=osList.find(x=>x.id===openId);const ts=fromISO(e.target.value);if(o&&ts){o.entrada=ts;
+if((o.historico||[]).length<=1&&ts<(o.statusDesde||0))o.statusDesde=ts;saveSoon(o);renderBoard()}return}
+const k=e.target.id==="f_acc"?seg().xk:FMAP[e.target.id];if(!k)return;const o=osList.find(x=>x.id===openId);if(!o)return;
+o[k]=e.target.value;saveSoon(o);
+});
+document.addEventListener("change",e=>{
+if(e.target.id==="scope"){scope=e.target.value;try{localStorage.setItem("bancada.scope",scope)}catch(_){}renderBoard();return}
+if(e.target.id==="f_dono"){const o=osList.find(x=>x.id===openId);if(o){o.dono=e.target.value;save(o,true);renderBoard();toast(e.target.value===me?.id?"OS está com você":"OS passada para "+firstName(e.target.value))}return}
+if(e.target.id==="f_tipo"){renderBoard();const w=$("#w_f_marca");if(w)w.hidden=e.target.value!=="fabrica"}
+if(e.target.id==="n_tipo"){const w=$("#w_n_marca");if(w)w.hidden=e.target.value!=="fabrica"}
+if(e.target.name==="s_seg"||e.target.name==="g_seg"){const pre=e.target.name[0];const box=$("#"+pre+"_extra");if(box)box.innerHTML=segExtra(pre,e.target.value,{})}
+if(e.target.id==="corIn"){saveEmpresa({cor:e.target.value}).then(()=>openAccount());return}
+if(e.target.id==="logoIn"&&e.target.files[0]){uploadLogo(e.target.files[0]);return}
+if(e.target.id==="fileIn"){const o=osList.find(x=>x.id===openId);if(o&&e.target.files.length)uploadFiles(o,[...e.target.files])}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sheetMode)closeSheet()});
+/* arrastar entre colunas (computador) */
+let dragId=null;
+document.addEventListener("dragstart",e=>{const c=e.target.closest&&e.target.closest(".card");if(c){dragId=c.dataset.id;e.dataTransfer.effectAllowed="move"}});
+document.addEventListener("dragover",e=>{const c=e.target.closest&&e.target.closest(".col");if(c&&dragId){e.preventDefault();document.querySelectorAll(".col.drop").forEach(x=>x!==c&&x.classList.remove("drop"));c.classList.add("drop")}});
+document.addEventListener("dragleave",e=>{const c=e.target.closest&&e.target.closest(".col");if(c&&!c.contains(e.relatedTarget))c.classList.remove("drop")});
+document.addEventListener("drop",e=>{const c=e.target.closest&&e.target.closest(".col");if(c&&dragId){e.preventDefault();const o=osList.find(x=>x.id===dragId);if(o)setStatus(o,c.dataset.col);dragId=null;renderBoard()}});
+document.addEventListener("dragend",()=>{dragId=null;document.querySelectorAll(".col.drop").forEach(x=>x.classList.remove("drop"))});
+/* ---------- Login ---------- */
+/* SHA-256 em JS puro: dá o mesmo resultado em qualquer celular ou computador */
+function sha256(str){
+const b=new TextEncoder().encode(str),K=[],H=[];let n=2,c=0;
+const ip=x=>{for(let i=2;i*i<=x;i++)if(x%i===0)return false;return true};
+while(c<64){if(ip(n)){if(c<8)H[c]=(Math.pow(n,1/2)*4294967296)|0;K[c++]=(Math.pow(n,1/3)*4294967296)|0}n++}
+const l=b.length,words=[];for(let i=0;i<l;i++)words[i>>2]|=b[i]<<(24-(i%4)*8);
+words[l>>2]|=0x80<<(24-(l%4)*8);const tot=((l+8)>>6<<4)+16;words[tot-1]=l*8;
+for(let i=0;i<tot;i++)words[i]|=0;
+const rr=(v,k)=>(v>>>k)|(v<<(32-k));let h=H.slice();
+for(let j=0;j<tot;j+=16){const w=words.slice(j,j+16);let [a,bb,cc,d,e,f,g,hh]=h;
+for(let i=0;i<64;i++){if(i>=16){const x=w[i-15],y=w[i-2];w[i]=(w[i-16]+(rr(x,7)^rr(x,18)^(x>>>3))+w[i-7]+(rr(y,17)^rr(y,19)^(y>>>10)))|0}
+const t1=(hh+(rr(e,6)^rr(e,11)^rr(e,25))+((e&f)^(~e&g))+K[i]+w[i])|0,t2=((rr(a,2)^rr(a,13)^rr(a,22))+((a&bb)^(a&cc)^(bb&cc)))|0;
+hh=g;g=f;f=e;e=(d+t1)|0;d=cc;cc=bb;bb=a;a=(t1+t2)|0}
+h=[a,bb,cc,d,e,f,g,hh].map((v,i)=>(v+h[i])|0)}
+return h.map(v=>(v>>>0).toString(16).padStart(8,"0")).join("");
+}
+async function hashPin(id,pin){return sha256("bancada:"+id+":"+pin)}
+let loginMode="login",isOwnerFlag=false;
+let pickedWho=null;try{pickedWho=localStorage.getItem("bancada.ultimo")}catch(e){}
+function segExtra(pre,k,at){const o=(SEG[k]||SEG.assistencia).opts;return o.length?o.map(([ok,lab])=>`<label class="chk"><input type="checkbox" id="${pre}_at_${ok}" ${at&&at[ok]?"checked":""}> ${lab}</label>`).join(""):`<span class="hint">Sem opções extras para este ramo.</span>`}
+function segFields(pre,cur,at){return `<div class="seg-list">${Object.entries(SEG).map(([k,v])=>`<label class="seg-opt"><input type="radio" name="${pre}_seg" value="${k}" ${k===cur?"checked":""}> ${v.t}</label>`).join("")}</div>
+<div class="seg-extra" id="${pre}_extra">${segExtra(pre,cur,at)}</div>`}
+function sysFields(pre,has){return `<div class="seg-list">
+<label class="seg-opt"><input type="radio" name="${pre}_sys" value="sim" ${has?"checked":""}> <span>Sim, já tenho<br><small class="hint">O app organiza a bancada; a OS oficial continua no meu sistema.</small></span></label>
+<label class="seg-opt"><input type="radio" name="${pre}_sys" value="nao" ${has?"":"checked"}> <span>Não tenho<br><small class="hint">Quero OS completa: numeração, orçamento, envio ao cliente e PDF para imprimir.</small></span></label></div>`}
+function readSys(pre){return ((document.querySelector(`input[name="${pre}_sys"]:checked`)||{}).value||"sim")==="sim"}
+function readSeg(pre){const k=(document.querySelector(`input[name="${pre}_seg"]:checked`)||{}).value||"assistencia";const at={};SEG[k].opts.forEach(([ok])=>{at[ok]=!!$("#"+pre+"_at_"+ok)?.checked});return {segmento:k,atende:at}}
+function applySeg(){const s=seg();STATUS.find(x=>x.k==="bancada").t=s.bench;$("#brandTitle").textContent=s.title;renderChips();renderBoard()}
+function brandHead(sub){const l=logoSrc();return `${l?`<img class="logo-lg" src="${esc(l)}" alt="">`:`<span class="mark" style="width:60px;height:60px;border-radius:16px;font-size:26px">${esc(initials(empresa.nome||seg().title))}</span>`}<h2>${sub||seg().title}<small>${esc(empresa.nome||seg().title)}</small></h2>`}
+const DEF_COR="#f2a516";
+const SWATCHES=["#f2a516","#2c6a5d","#1f5fbf","#c0392b","#e67e22","#7b3fb8","#0f8a8a","#2d3436","#b8860b"];
+function initials(n){const w=String(n||"").replace(/[^\p{L}\p{N} ]/gu,"").trim().split(/\s+/).filter(Boolean);return ((w[0]||"?")[0]+((w.length>1?w[w.length-1][0]:"")||"")).toUpperCase()}
+function hexRgb(h){const m=/^#?([0-9a-f]{6})$/i.exec(h||"");if(!m)return null;const n=parseInt(m[1],16);return [n>>16&255,n>>8&255,n&255]}
+function setBrandColor(h){const rgb=hexRgb(h)||hexRgb(DEF_COR);const r=document.documentElement.style;r.setProperty("--brand","#"+rgb.map(v=>v.toString(16).padStart(2,"0")).join(""));
+const L=rgb.map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});const lum=.2126*L[0]+.7152*L[1]+.0722*L[2];r.setProperty("--brand-ink",lum>.45?"#111614":"#ffffff")}
+function colorFromImage(img){
+try{const c=document.createElement("canvas"),W=64,H=64;c.width=W;c.height=H;const x=c.getContext("2d");x.drawImage(img,0,0,W,H);const d=x.getImageData(0,0,W,H).data;
+const B={};for(let i=0;i<d.length;i+=4){const [r,g,b,a]=[d[i],d[i+1],d[i+2],d[i+3]];if(a<128)continue;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),sat=mx?(mx-mn)/mx:0;if(sat<.25||mx<40||mn>235)continue;
+let h=0;if(mx===r)h=((g-b)/(mx-mn))%6;else if(mx===g)h=(b-r)/(mx-mn)+2;else h=(r-g)/(mx-mn)+4;const k=Math.round(((h*60+360)%360)/20);
+const o=B[k]||(B[k]={w:0,r:0,g:0,b:0});const w=sat;o.w+=w;o.r+=r*w;o.g+=g*w;o.b+=b*w}
+const best=Object.values(B).sort((a,b)=>b.w-a.w)[0];if(!best||best.w<20)return null;
+let rgb=[best.r/best.w,best.g/best.w,best.b/best.w];const mx=Math.max(...rgb);if(mx>200)rgb=rgb.map(v=>v*0.8);
+return "#"+rgb.map(v=>Math.round(v).toString(16).padStart(2,"0")).join("")}catch(_){return null}
+}
+function colorFromFile(f){return new Promise(res=>{const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{res(colorFromImage(im));URL.revokeObjectURL(u)};im.onerror=()=>res(null);im.src=u})}
+function colorFromUrl(src){return new Promise(res=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>res(colorFromImage(im));im.onerror=()=>res(null);im.src=src})}
+function applyBrand(){
+const nm=empresa.nome||"Minha empresa";$("#brandName").textContent=nm;
+const mk=$("#brandMark");mk.textContent=initials(nm);
+const l=logoSrc(),img=$("#brandLogo");if(l){img.src=l;img.hidden=false;mk.hidden=true}else{img.hidden=true;img.removeAttribute("src");mk.hidden=false}
+setBrandColor(empresa.cor||DEF_COR);
+}
+function gate(){
+const L=$("#login");
+if(me&&KS.estado==="ok"){L.hidden=true;const b=$("#btnUser");b.hidden=false;const pend=me.admin?users.filter(u=>u.pendente).length:0;b.innerHTML=`<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.3 7.5-5.3s6.3 1.7 7.5 5.3"/></svg>`+esc(me.nome.split(" ")[0])+(pend?` <span class="badge-n">${pend}</span>`:"");const u2=$("#userN2");u2.textContent=pend;u2.hidden=!pend;b.title=pend?pend+" conta(s) aguardando aprovação":"Conta";renderTrial();return}
+$("#btnUser").hidden=true;L.hidden=false;
+const sair=`<button type="button" class="btn btn-line" data-act="logout">Sair</button>`;
+const head=`<span class="mark" style="width:60px;height:60px;border-radius:16px;font-size:26px">K</span>`;
+if(KS.estado==="pendente"){L.innerHTML=`<div class="login-card">${head}<h2>Aguardando aprovação<small>${esc(KS.empresaNome||"")}</small></h2><p>Seu pedido para entrar na equipe foi enviado. Assim que o dono da loja aprovar em <b>Conta</b>, é só abrir o Konserta de novo.</p><button type="button" class="btn btn-accent" data-act="recarregar">Já fui aprovado</button>${sair}</div>`;return}
+if(KS.estado==="expirado"){const w=(window.KONSERTA&&KONSERTA.whatsapp)||"";L.innerHTML=`<div class="login-card">${head}<h2>Seu teste grátis acabou<small>${esc(empresa.nome||KS.empresaNome||"")}</small></h2><p>Seus dados continuam guardados. Escolha um plano para voltar a usar o Konserta.</p>${w?`<a class="btn btn-accent" href="https://wa.me/${w}?text=${encodeURIComponent("Oi! Quero assinar o Konserta para a "+(empresa.nome||""))}" target="_blank" rel="noopener">Assinar pelo WhatsApp</a>`:`<p class="hint">Fale com a Konserta para assinar.</p>`}${sair}</div>`;return}
+if(KS.estado==="erro"){L.innerHTML=`<div class="login-card">${head}<h2>Não encontramos sua empresa<small>${esc(KS.email||"")}</small></h2><p>${esc(KS.erroMsg||"Sua conta ainda não está ligada a nenhuma empresa.")}</p><a class="btn btn-accent" href="/cadastro">Criar empresa ou usar outro código</a>${sair}</div>`;return}
+L.innerHTML=`<div class="login-card">${head}<h2>Konserta<small>Carregando…</small></h2></div>`;
+}
+function renderTrial(){
+const t=$("#trial"),a=KS.assinatura;if(!t)return;
+if(!a||a.plano||!me){t.hidden=true;return}
+const dias=Math.max(0,Math.ceil((Date.parse(a.trial_ate)-Date.now())/86400000));
+const w=(window.KONSERTA&&KONSERTA.whatsapp)||"";
+t.hidden=false;t.classList.toggle("fim",dias<=3);
+t.innerHTML=`<span>Teste grátis: <b>${dias===0?"último dia":dias===1?"falta 1 dia":"faltam "+dias+" dias"}</b></span>${w&&me.admin?`<a class="btn btn-accent" href="https://wa.me/${w}?text=${encodeURIComponent("Oi! Quero assinar o Konserta para a "+(empresa.nome||""))}" target="_blank" rel="noopener">Assinar</a>`:""}`;
+}
+function forgotHTML(){
+const u=users.find(x=>x.id===pickedWho);
+let body="";
+if(!u)body=`<p class="hint">Toque no seu nome.</p>`;
+else if(isOwnerFlag||u.recHash){
+body=`<form id="resetForm" autocomplete="off">
+${isOwnerFlag?`<p class="hint">Você está na conta Claude dona deste quadro, então pode criar um PIN novo direto.</p>`:
+`<div class="fld"><label for="r_resp">${esc(u.recPergunta||"Resposta de recuperação")}</label><input id="r_resp" autocomplete="off"></div>`}
+<div class="fld"><label for="r_pin">PIN novo (4 a 6 números)</label><input id="r_pin" class="pin" type="password" inputmode="numeric" maxlength="6"></div>
+<div class="fld"><label for="r_pin2">Repita o PIN novo</label><input id="r_pin2" class="pin" type="password" inputmode="numeric" maxlength="6"></div>
+<div class="err" id="r_err"></div>
+<button class="btn btn-accent" type="submit">Salvar PIN novo e entrar</button></form>`;
+}else body=`<p class="hint">${esc(u.nome)} ainda não cadastrou uma pergunta de recuperação. Peça para o administrador trocar seu PIN em Conta → Usuários. Depois de entrar, cadastre a pergunta em Conta para não depender disso de novo.</p>`;
+return `<div class="login-card">${brandHead("Redefinir PIN")}
+<div class="fld"><label>Quem é você?</label><div class="who">${users.map(x=>`<button type="button" data-who="${x.id}" aria-pressed="${pickedWho===x.id}">${esc(x.nome)}</button>`).join("")}</div></div>
+${body}
+<button type="button" class="btn btn-line" data-act="backlogin">← Voltar para entrar</button></div>`;
+}
+async function doSignup(){
+const nome=$("#c_nome").value.trim(),p1=$("#c_pin").value.trim(),p2=$("#c_pin2").value.trim(),err=$("#c_err");
+if(!nome){err.textContent="Coloque seu nome.";return}
+if(users.some(u=>norm(u.nome)===norm(nome))){err.textContent="Já existe uma conta com esse nome. Use outro (ex.: nome e sobrenome).";return}
+if(!/^\d{4,6}$/.test(p1)){err.textContent="O PIN precisa ter de 4 a 6 números.";return}
+if(p1!==p2){err.textContent="Os PINs não são iguais.";return}
+const first=!users.length;const id="u"+uid();const u={nome,pinHash:await hashPin(id,p1),admin:first,criadoEm:Date.now()};if(!first&&!isOwnerFlag)u.pendente=true;
+try{await ucol.doc(id).set(u);pickedWho=id;loginMode="login";
+if(!u.pendente)startSession({id,...u});else{gate();const e2=$("#l_err");if(e2)e2.textContent="Conta criada. Agora o administrador precisa aprovar."}}
+catch(_){err.textContent="Não salvou. Verifique a conexão e tente de novo."}
+}
+async function doReset(){
+const u=users.find(x=>x.id===pickedWho),err=$("#r_err");if(!u)return;
+const p1=$("#r_pin").value.trim(),p2=$("#r_pin2").value.trim();
+if(!isOwnerFlag){const r=$("#r_resp")?.value||"";if(!r.trim()){err.textContent="Responda a pergunta.";return}
+if(await hashPin(u.id,"rec:"+norm(r))!==u.recHash){err.textContent="Resposta não confere.";return}}
+if(!/^\d{4,6}$/.test(p1)){err.textContent="O PIN precisa ter de 4 a 6 números.";return}
+if(p1!==p2){err.textContent="Os PINs não são iguais.";return}
+const {id,...d}=u;d.pinHash=await hashPin(id,p1);
+try{await ucol.doc(id).set(d);loginMode="login";toast("PIN redefinido");startSession({id,...d})}catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+function pickWho(id){pickedWho=id;try{localStorage.setItem("bancada.ultimo",id)}catch(_){}gate();setTimeout(()=>$("#l_pin")?.focus(),0)}
+function startSession(u){me=u;sessId=u.id;scope="me";try{localStorage.setItem("bancada.scope","me")}catch(_){}renderScope();try{localStorage.setItem("bancada.sessao",u.id)}catch(_){}gate();renderBoard()}
+function selectWs(id,keepSess){
+unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];
+cid=id;try{if(id)localStorage.setItem("bancada.ws",id);else localStorage.removeItem("bancada.ws")}catch(_){}
+me=null;if(!keepSess){sessId=null;try{localStorage.removeItem("bancada.sessao")}catch(_){}}
+osList=[];users=[];estoque=[];cotList=[];loaded=false;usersLoaded=false;pickedWho=null;
+empresa={nome:"",horario:"",logoId:"",logoUrl:""};applyBrand();applySeg();updateStockBadge();
+if(!id||!db){gate();return}
+const base="ws/"+id;
+unsubs.push(db.doc(base).onSnapshot(snap=>{if(cid!==id)return;empresa={nome:"",horario:"",logoId:"",logoUrl:"",...(snap.exists?snap.data():{})};applyBrand();applySeg();if(!me)gate();if(sheetMode==="acct")openAccount()},()=>{}));
+scol=db.collection(base+"/estoque");
+unsubs.push(scol.onSnapshot(snap=>{if(cid!==id)return;estoque=snap.docs.map(d=>({id:d.id,...d.data()}));updateStockBadge();renderStockList();const dl=$("#estoqueDL");if(dl)dl.innerHTML=estoque.filter(i=>(i.qtd||0)>0).map(i=>`<option value="${esc(i.nome)}">${esc(i.qtd)} em estoque</option>`).join("")},()=>{}));
+ucol=db.collection(base+"/usuarios");
+unsubs.push(ucol.onSnapshot(snap=>{if(cid!==id)return;
+users=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.criadoEm||0)-(b.criadoEm||0));usersLoaded=true;
+if(sessId){me=users.find(u=>u.id===sessId&&!u.pendente)||null;if(!me&&users.length)logout(true)}
+gate();renderScope();if(me)renderBoard();if(sheetMode==="acct")openAccount();
+},()=>{usersLoaded=true;gate()}));
+ccol=db.collection(base+"/cotacoes");
+unsubs.push(ccol.onSnapshot(snap=>{if(cid!==id)return;cotList=snap.docs.map(d=>({id:d.id,...d.data()}))},()=>{}));
+col=db.collection(base+"/os");
+unsubs.push(col.onSnapshot(snap=>{if(cid!==id)return;osList=snap.docs.map(d=>({id:d.id,...d.data()}));loaded=true;renderBoard()},
+()=>{loaded=true;notice("A conexão com o quadro caiu. Recarregue a página.");renderBoard()}));
+gate();renderBoard();
+}
+async function logout(silent){try{await sb.auth.signOut()}catch(_){}location.replace("/entrar")}
+async function doSetup(){
+const nome=$("#s_nome").value.trim(),p1=$("#s_pin").value.trim(),p2=$("#s_pin2").value.trim(),err=$("#s_err");
+if(!nome){err.textContent="Coloque seu nome.";return}
+if(!/^\d{4,6}$/.test(p1)){err.textContent="O PIN precisa ter de 4 a 6 números.";return}
+if(p1!==p2){err.textContent="Os PINs não são iguais.";return}
+const emp=$("#s_emp").value.trim();if(!emp){err.textContent="Coloque o nome da empresa.";return}
+const sg={...readSeg("s"),temSistema:readSys("s")};const nid="w"+uid();
+const id="u"+uid();const u={nome,pinHash:await hashPin(id,p1),admin:true,criadoEm:Date.now()};
+try{await db.doc("ws/"+nid).set({nome:emp,documento:$("#s_doc").value.trim(),telefone:$("#s_tel").value.trim(),email:$("#s_mail").value.trim(),horario:"",logoId:"",logoUrl:"",marcas:[],...sg,criadoEm:Date.now()});
+await db.doc("ws/"+nid+"/usuarios/"+id).set(u);
+sessId=id;try{localStorage.setItem("bancada.sessao",id)}catch(_){}
+loginMode="login";selectWs(nid,true);toast("Empresa criada")}catch(_){err.textContent="Não salvou. Verifique a conexão e tente de novo."}
+}
+async function doLogin(){
+const err=$("#l_err");const u=users.find(x=>x.id===pickedWho);const pin=$("#l_pin").value.trim();
+if(!u){err.textContent="Toque no seu nome primeiro.";return}
+if(u.pendente){err.textContent="Sua conta ainda não foi aprovada. Peça para o administrador aprovar.";return}
+if(await hashPin(u.id,pin)===u.pinHash){$("#l_pin").value="";startSession(u)}else{err.textContent="PIN errado.";$("#l_pin").value="";$("#l_pin").focus()}
+}
+function openAccount(){
+if(!me)return;sheetMode="acct";
+const adm=!!me.admin;
+$("#layer").innerHTML=shell("Conta",`
+<div class="sec"><h4>Você</h4><div class="u-row"><span class="nm">${esc(me.nome)}<small>${adm?"Administrador":"Técnico"} · ${esc(KS.email)}</small></span><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="btn btn-line" data-act="logout">Sair</button></div></div>
+<form id="meForm" class="addrow" autocomplete="off"><input class="inp" id="me_nome" value="${esc(me.nome)}" aria-label="Seu nome"><button class="btn btn-line" type="submit">Trocar nome</button></form></div>
+${KS.assinatura?`<div class="sec"><h4>Assinatura</h4>${KS.assinatura.plano?`<span>Plano <b>${esc(KS.assinatura.plano)}</b> ativo.</span>`:`<span>Teste grátis até <b>${fmtDia(Date.parse(KS.assinatura.trial_ate))}</b>.</span>${(window.KONSERTA&&KONSERTA.whatsapp&&adm)?`<a class="btn btn-accent" style="align-self:flex-start" href="https://wa.me/${KONSERTA.whatsapp}?text=${encodeURIComponent("Oi! Quero assinar o Konserta para a "+(empresa.nome||""))}" target="_blank" rel="noopener">Assinar agora</a>`:""}`}</div>`:""}
+${adm?`<div class="sec"><h4>Perfil da empresa</h4>
+<div class="logo-row">${logoSrc()?`<img class="logo-lg" src="${esc(logoSrc())}" alt="Logo">`:`<div class="logo-lg" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;text-align:center">sem logo</div>`}
+<div style="display:flex;flex-direction:column;gap:6px"><label class="btn btn-line" for="logoIn">${logoSrc()?"Trocar logo":"Colocar logo"}</label>${logoSrc()?`<button type="button" class="btn btn-danger" data-act="logodel">Remover logo</button>`:""}</div>
+<input id="logoIn" type="file" accept="image/*" hidden></div>
+<span class="hint" id="logoHint">Imagem quadrada fica melhor. Ao colocar o logo, o app pega a cor principal dele automaticamente.</span>
+<div class="fld"><label>Cor do app</label><div class="swatches">${SWATCHES.map(c=>`<button type="button" class="sw" data-cor="${c}" style="background:${c}" aria-label="Cor ${c}" aria-pressed="${(empresa.cor||DEF_COR).toLowerCase()===c}"></button>`).join("")}
+<input type="color" class="colorin" id="corIn" value="${esc(empresa.cor||DEF_COR)}" aria-label="Escolher outra cor">
+${logoSrc()?`<button type="button" class="btn btn-line" data-act="corlogo">Pegar do logo</button>`:""}</div></div>
+<form id="empForm" class="grid2" autocomplete="off">
+<div class="fld full"><label for="e_nome">Nome da empresa</label><input id="e_nome" value="${esc(empresa.nome)}"></div>
+<div class="fld"><label for="e_doc">CNPJ (ou CPF)</label><input id="e_doc" inputmode="numeric" value="${esc(empresa.documento||"")}" placeholder="00.000.000/0001-00"></div>
+<div class="fld"><label for="e_tel">Telefone / WhatsApp</label><input id="e_tel" inputmode="tel" value="${esc(empresa.telefone||"")}" placeholder="(41) 3000-0000"></div>
+<div class="fld full"><label for="e_mail">E-mail</label><input id="e_mail" type="email" value="${esc(empresa.email||"")}" placeholder="contato@empresa.com.br"></div>
+<div class="fld full"><label for="e_end">Endereço</label><input id="e_end" value="${esc(empresa.endereco||"")}" placeholder="Rua, número, bairro, cidade"></div>
+<div class="fld full"><label for="e_hor">Horário de atendimento (vai no aviso ao cliente)</label><input id="e_hor" value="${esc(empresa.horario)}" placeholder="Ex.: seg a sex 9h–18h e sáb 10h–14h"></div>
+<div class="full"><button class="btn btn-accent" type="submit">Salvar perfil</button></div></form></div>`:""}
+${adm?`${full()?`<div class="sec"><h4>OS impressa</h4>
+<form id="osdocForm" class="grid2" autocomplete="off">
+<span class="hint full">CNPJ, telefone, e-mail e endereço ficam no Perfil da empresa, acima.</span>
+<div class="fld"><label for="d_gar">Garantia (dias)</label><input id="d_gar" class="mono" type="number" min="0" value="${esc(empresa.garantia||90)}"></div>
+<div class="fld"><label for="d_ret">Prazo para retirada (dias)</label><input id="d_ret" class="mono" type="number" min="0" value="${esc(empresa.retirada||90)}"></div>
+<div class="fld full"><label for="d_termo">Termo de garantia e retirada</label><textarea id="d_termo" rows="5">${esc(empresa.termo||DEF_TERMO)}</textarea><span class="hint">{garantia} e {retirada} viram os números de dias acima.</span></div>
+<div class="full"><button class="btn btn-accent" type="submit">Salvar dados da OS</button></div></form></div>`:""}
+<div class="sec"><h4>Ramo e atendimentos</h4>
+<form id="segForm" autocomplete="off" style="display:flex;flex-direction:column;gap:8px">${segFields("g",empresa.segmento||"assistencia",empresa.atende||{})}
+<div class="fld"><label>Já tem sistema de ordem de serviço?</label>${sysFields("g",empresa.temSistema!==false)}</div>
+<div><button class="btn btn-accent" type="submit">Salvar ramo</button></div></form>
+<span class="hint">Define os nomes dos campos e quais tipos de atendimento aparecem (Particular e Garantia da loja sempre aparecem).</span></div>
+${tiposOn().some(t=>t.k==="fabrica")?`<div class="sec"><h4>Marcas que você atende</h4>
+<form id="marcaForm" autocomplete="off" style="display:flex;flex-direction:column;gap:8px"><textarea id="e_marcas" class="inp" placeholder="Separe por vírgula: Mondial, WAP, Philco…">${esc((empresa.marcas||[]).join(", "))}</textarea>
+<div><button class="btn btn-line" type="submit">Salvar marcas</button></div></form>
+<span class="hint">Aparecem como sugestão no campo "Marca do fabricante" das OS de garantia de fábrica.</span></div>`:""}`:""}
+${adm?`<div class="sec"><h4>Usuários <span class="mono">${users.length}</span></h4>
+${users.map(u=>`<div class="u-row"><span class="nm">${esc(u.nome)}<small>${u.pendente?"Aguardando aprovação":u.admin?"Administrador":"Usuário"}${u.id===me.id?" · você":""}</small></span>${u.pendente?`<button type="button" class="btn btn-ok" data-uapr="${u.id}">Aprovar</button>`:""}${u.id===me.id?"":`<button type="button" class="btn btn-danger" data-udel="${u.id}">${u.pendente?"Recusar":"Excluir"}</button>`}</div>`).join("")}</div>
+<div class="sec"><h4>Convidar técnicos</h4>
+${KS.assinatura&&KS.assinatura.codigo?`<span class="hint">Mande este link para o técnico. Ele cria o acesso dele e aparece aqui para você aprovar.</span>
+<div class="codebox" aria-label="Código da equipe">${esc(KS.assinatura.codigo)}</div>
+<div class="btnrow"><button type="button" class="btn btn-accent" data-act="convite">Copiar link de convite</button></div>`:`<span class="hint">Código indisponível.</span>`}</div>
+<div class="sec"><h4>Excluir técnico</h4><span class="hint">Em Usuários, toque em Excluir e depois confirme. As OS da pessoa passam para o seu quadro, nada se perde. Você não consegue excluir a si mesmo.</span></div>`:""}
+<div class="sec"><h4>Zerar OS</h4>
+${resetMode?`<form id="wipeForm" autocomplete="off" style="display:flex;flex-direction:column;gap:8px">
+<span>${resetMode==="all"?`Isto apaga <b>todas as ${osList.length} OS da empresa</b>, de todos os técnicos`:`Isto apaga <b>todas as suas ${osList.filter(o=>ownerOf(o)===me.id).length} OS</b>`}, com fotos, vídeos e peças. Não dá para desfazer. O estoque, os usuários e o perfil continuam.</span>
+<div class="fld"><label for="wipeIn">Para confirmar, digite APAGAR</label><input id="wipeIn" autocapitalize="characters"></div>
+<div class="err" id="wipeErr"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-danger" type="submit" style="background:var(--bad);color:#fff">Apagar de vez</button><button type="button" class="btn btn-line" data-act="wipe0">Cancelar</button></div></form>`:
+`<span class="hint">Apaga as OS para começar o quadro do zero.</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn btn-danger" data-act="wipeMine">Apagar todas as minhas OS</button>${me.admin?`<button type="button" class="btn btn-danger" data-act="wipeAll">Apagar todas as OS da empresa</button>`:""}</div>`}</div>
+<div class="sec"><h4>Precisa de ajuda?</h4><span class="hint">Cada pessoa entra com o próprio e-mail e senha. Esqueceu a senha? Use "Esqueci minha senha" na tela de entrada.</span></div>`);
+}
+let resetMode=null;
+async function wipeOS(){
+const v=norm($("#wipeIn").value),err=$("#wipeErr");
+if(v!=="apagar"){err.textContent="Digite APAGAR para confirmar.";return}
+const list=osList.filter(o=>resetMode==="all"?true:ownerOf(o)===me.id);
+if(!list.length){resetMode=null;openAccount();toast("Não havia OS para apagar");return}
+const btn=$("#wipeForm button[type=submit]");btn.disabled=true;
+let n=0,fail=0;
+for(const o of list){
+try{await col.doc(o.id).delete();n++;for(const m of (o.midia||[])){try{if(assets)await assets.delete(m.id)}catch(_){}}}catch(_){fail++}
+btn.textContent=`Apagando… ${n}/${list.length}`;
+}
+resetMode=null;openAccount();
+toast(fail?`Apaguei ${n} OS. ${fail} não apagaram, tente de novo.`:`Pronto: ${n} OS apagadas. Quadro zerado.`);
+}
+async function saveEmpresa(patch){
+empresa={...empresa,...patch};applyBrand();
+try{await db.doc("ws/"+cid).set(empresa)}catch(_){toast("Não salvou. Tente de novo.")}
+}
+async function uploadLogo(f){
+if(!assets){toast("Envio de imagem indisponível nesta tela");return}
+if(f.size>5*1024*1024){toast("Logo maior que 5 MB. Use uma imagem menor.");return}
+const h=$("#logoHint");if(h)h.textContent="Enviando logo…";
+try{const old=empresa.logoId;const cor=await colorFromFile(f);const r=await assets.upload(f);await saveEmpresa({logoId:r.id,logoUrl:r.url,...(cor?{cor}:{})});try{if(old)await assets.delete(old)}catch(_){}toast(cor?"Logo salvo. Peguei a cor do logo para o app.":"Logo salvo")}
+catch(e){toast("Não enviou o logo"+(e&&e.message?": "+e.message:""));if(h)h.textContent="Tente outra imagem."}
+}
+async function saveRec(){
+const q=$("#rc_q").value.trim(),a=$("#rc_a").value,err=$("#rc_err");
+if(!q){err.textContent="Escreva a pergunta.";return}
+if(norm(a).length<2){err.textContent="Escreva uma resposta.";return}
+const {id,...d}=me;d.recPergunta=q;d.recHash=await hashPin(id,"rec:"+norm(a));
+try{await ucol.doc(id).set(d);me={id,...d};toast("Recuperação salva");openAccount()}catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+async function changeMyPin(){
+const p1=$("#mp1").value.trim(),p2=$("#mp2").value.trim(),err=$("#mp_err");
+if(!/^\d{4,6}$/.test(p1)){err.textContent="O PIN precisa ter de 4 a 6 números.";return}
+if(p1!==p2){err.textContent="Os PINs não são iguais.";return}
+const {id,...d}=me;d.pinHash=await hashPin(id,p1);
+try{await ucol.doc(id).set(d);me={id,...d};toast("PIN trocado");$("#mp1").value="";$("#mp2").value=""}catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+async function addUser(){
+const nome=$("#u_nome").value.trim(),pin=$("#u_pin").value.trim(),adm=$("#u_adm").checked,err=$("#u_err");
+if(!nome){err.textContent="Coloque o nome.";return}
+if(!/^\d{4,6}$/.test(pin)){err.textContent="O PIN precisa ter de 4 a 6 números.";return}
+const ex=users.find(u=>norm(u.nome)===norm(nome));const id=ex?ex.id:"u"+uid();
+const u={...(ex?(({id:_i,...r})=>r)(ex):{}),nome:ex?ex.nome:nome,pinHash:await hashPin(id,pin),admin:ex&&ex.id===me.id?true:adm,criadoEm:ex?ex.criadoEm:Date.now()};
+try{await ucol.doc(id).set(u);toast(ex?"PIN trocado":"Usuário criado");$("#u_nome").value="";$("#u_pin").value=""}catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+/* ---------- Início ---------- */
+renderChips();renderBoard();applyBrand();gate();
+async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
+async function carregarAssinatura(){try{const {data}=await sb.rpc("minha_assinatura",{e:KS.eid});KS.assinatura=(data&&data[0])||null}catch(_){KS.assinatura=null}}
+(async()=>{
+db=await claude.use("db");assets=await claude.use("assets");
+const {data:{session}}=await sb.auth.getSession();
+if(!session){location.replace("/entrar");return}
+KS.uid=session.user.id;KS.email=session.user.email||"";
+let ms=[];
+try{
+ms=await minhasEmpresas();
+if(!ms.length){
+const md=session.user.user_metadata||{};
+if(md.acao==="entrar"&&md.codigo){
+const {error}=await sb.rpc("entrar_empresa",{cod:md.codigo,nome_pessoa:md.nome||KS.email.split("@")[0]});
+if(error){KS.estado="erro";KS.erroMsg=String(error.message||"").includes("codigo")?"O código da equipe "+md.codigo+" não existe. Confira com o dono da loja.":"Não deu para entrar na equipe.";gate();return}
+}else{
+const cfg=md.empresa||{nome:"Minha empresa",segmento:"assistencia",atende:{},temSistema:false,marcas:[]};
+const {error}=await sb.rpc("criar_empresa",{nome_pessoa:md.nome||KS.email.split("@")[0],cfg});
+if(error){KS.estado="erro";KS.erroMsg="Não deu para criar sua empresa agora. Tente de novo em instantes.";gate();return}
+}
+ms=await minhasEmpresas();
+}
+}catch(e){KS.estado="erro";KS.erroMsg="Sem conexão com o servidor. Confira a internet e recarregue.";gate();return}
+if(!ms.length){KS.estado="erro";gate();return}
+const m=ms.find(x=>!x.pendente)||ms[0];
+KS.eid=m.empresa_id;
+if(m.pendente){const {data}=await sb.from("empresas").select("config").eq("id",KS.eid).maybeSingle();KS.empresaNome=(data&&data.config&&data.config.nome)||"";KS.estado="pendente";gate();return}
+await carregarAssinatura();
+const a=KS.assinatura;
+KS.estado=(a&&!a.plano&&Date.parse(a.trial_ate)<Date.now())?"expirado":"ok";
+sessId=KS.uid;selectWs(KS.eid,true);
+setInterval(async()=>{await carregarAssinatura();const b=KS.assinatura;if(b&&!b.plano&&Date.parse(b.trial_ate)<Date.now()&&KS.estado==="ok"){KS.estado="expirado";gate()}else renderTrial()},30*60*1000);
+})();
+</script>
+</body>
+</html>
