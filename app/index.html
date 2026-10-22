@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="Konserta">
 <title>Konserta</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 img{max-width:100%}
@@ -317,6 +317,110 @@ padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(sa
 .fab svg.i{width:28px;height:28px;stroke-width:2.2}
 }
 @media (prefers-reduced-motion:no-preference){.sheet.anim{animation:slide .2s ease-out}@keyframes slide{from{transform:translateX(28px);opacity:.5}}}
+/* ===== Konserta — identidade visual (sobrepõe o tema base) ===== */
+:root{
+--graf:#141414;--graf2:#1f1f1d;--paper:#f4f2ed;
+--bg:var(--paper);--surface:#ffffff;--surface2:#f0ede6;
+--ink:#141414;--muted:#69645a;--line:#e4dfd4;
+--brand-fg:color-mix(in srgb,var(--brand) 62%,#1a1206);
+--brand-soft:color-mix(in srgb,var(--brand) 14%,#ffffff);
+--ok:#1d7a45;--warn:#9a6a00;--bad:#bf3624;
+--shadow:0 1px 0 rgba(20,20,20,.04),0 6px 18px -8px rgba(20,20,20,.16);
+--shadow-lg:0 24px 60px -12px rgba(20,20,20,.35);
+--r:16px;
+--f-display:"Sora","Arial",sans-serif;
+--f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+--f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#121211;--surface:#1b1b19;--surface2:#232320;--ink:#efece6;--muted:#a39d91;--line:#2f2e2a;
+--brand-fg:color-mix(in srgb,var(--brand) 70%,#ffffff);--brand-soft:color-mix(in srgb,var(--brand) 20%,#1b1b19);
+--ok:#53c084;--warn:#e6b23c;--bad:#f06a52;--graf2:#0c0c0b;
+--shadow:0 1px 0 rgba(0,0,0,.3);--shadow-lg:0 24px 60px -12px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{
+--bg:#121211;--surface:#1b1b19;--surface2:#232320;--ink:#efece6;--muted:#a39d91;--line:#2f2e2a;
+--brand-fg:color-mix(in srgb,var(--brand) 70%,#ffffff);--brand-soft:color-mix(in srgb,var(--brand) 20%,#1b1b19);
+--ok:#53c084;--warn:#e6b23c;--bad:#f06a52;--graf2:#0c0c0b;
+--shadow:0 1px 0 rgba(0,0,0,.3);--shadow-lg:0 24px 60px -12px rgba(0,0,0,.7)}
+body{font-size:15px;letter-spacing:-.003em}
+/* topo */
+header.top{border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(20,20,20,.02)}
+.mark{border-radius:13px;font-family:var(--f-display);font-weight:800;letter-spacing:-.04em;background:var(--graf);color:var(--brand)}
+.logo{border-radius:13px}
+h1 #brandName{font-family:var(--f-display);font-weight:800;font-size:19px;letter-spacing:-.025em}
+h1 #brandTitle{font-family:var(--f-body);font-weight:800;font-size:10.5px;letter-spacing:.09em;color:var(--brand-fg);margin-top:4px}
+.btn{border-radius:12px;font-weight:700;letter-spacing:-.005em}
+.btn-accent{box-shadow:0 6px 16px -8px color-mix(in srgb,var(--brand) 80%,transparent)}
+.btn-ghost{border-color:var(--line);background:var(--surface)}
+.search{border-radius:12px;background:var(--surface2);border-color:transparent;padding-block:11px}
+.search:focus{background:var(--surface);border-color:var(--brand);outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent)}
+.chip{border-radius:99px;font-weight:600;background:transparent}
+.chip[aria-pressed="true"]{background:var(--graf);color:#fff;border-color:var(--graf)}
+.scope{border-radius:12px;background:var(--graf);color:#fff;border-color:var(--graf)}
+/* Liberar a loja */
+.nowbtn{background:var(--graf);color:#fff;border:0;border-radius:18px;padding:14px 16px;box-shadow:var(--shadow)}
+.nowbtn .ic{background:var(--brand);color:var(--brand-ink);border-radius:12px}
+.nowbtn b{font-family:var(--f-display);font-weight:700;letter-spacing:-.02em}
+.nowbtn span.s{color:#bdb7ab}
+.nowbtn .go{color:var(--brand)}
+/* quadro (computador) */
+.col{background:transparent;border:0;border-radius:0}
+.col-h{padding:6px 4px 12px}
+.col-h h2{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:-.015em}
+.col-h .n{background:var(--graf);color:#fff;border:0;font-weight:500}
+.col-b{padding:0 2px 12px;gap:10px}
+/* cartões */
+.card{border-radius:var(--r);border-color:var(--line);padding:13px 14px 13px 18px;gap:7px}
+.card::before{width:5px;border-radius:0}
+.card:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line));box-shadow:0 10px 24px -14px rgba(20,20,20,.35)}
+.c-name{font-weight:800;font-size:15.5px;letter-spacing:-.015em}
+.c-os{background:var(--surface2);color:var(--muted);border-radius:7px;padding:2px 7px;font-size:11px}
+.c-dev{color:var(--muted);font-size:13.5px}
+.pill{border-radius:7px;font-weight:700;font-size:11.5px;padding:3px 8px}
+.p-urg{background:var(--bad)}
+.empty-col{background:var(--surface);border:1.5px dashed var(--line);border-radius:var(--r);padding:18px 14px;text-align:center}
+/* painéis */
+.overlay{background:rgba(12,12,11,.5);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.sheet{background:var(--bg)}
+.sheet-h{border-bottom:1px solid var(--line)}
+.sheet-h::before{display:none}
+.sheet-h h3{font-family:var(--f-display);font-weight:800;font-size:19px;letter-spacing:-.025em}
+.sec{border-radius:18px;border-color:var(--line);padding:16px;box-shadow:var(--shadow)}
+.sec>h4{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:-.015em}
+.fld label{font-weight:700;font-size:12px;color:var(--muted)}
+.fld input,.fld select,.fld textarea,.inp{border-radius:12px;background:var(--surface2);border-color:transparent;padding:11px 12px}
+.fld input:focus,.fld select:focus,.fld textarea:focus,.inp:focus{background:var(--surface)}
+.st-btn{border-radius:99px;font-weight:600;background:var(--surface2);border-color:transparent}
+.st-btn[aria-pressed="true"]{background:var(--graf);color:#fff;border-color:var(--graf)}
+.tmp button[aria-pressed="true"]{background:var(--graf);color:#fff;border-color:var(--graf)}
+.sn{background:var(--graf);color:var(--brand)}
+.orc-tot b{color:var(--ink);font-family:var(--f-display);font-weight:800}
+.orc-form{background:var(--surface2)}
+.u-row,.part,.shop-i,.orc-i,.rec{border-radius:14px}
+.toast{background:var(--graf);color:#fff;border-radius:14px;font-weight:600}
+.trial{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:9px 14px}
+.trial b{color:var(--brand-fg)}
+.trial::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--brand);flex:0 0 auto}
+.trial.fim{background:var(--bad);color:#fff}.trial.fim b{color:#fff}
+.odoc-h{background:var(--graf);color:#fff}
+.odoc-mark{background:var(--brand);color:var(--graf)}
+.odoc-tot .big{background:var(--brand);color:var(--brand-ink)}
+/* entrada / estados */
+.login{background:radial-gradient(90% 60% at 50% 0%,color-mix(in srgb,var(--brand) 45%,transparent),transparent 70%),var(--graf);color:#fff}
+.login-card{border-radius:24px}
+.login-card h2{font-family:var(--f-display);font-weight:800;letter-spacing:-.03em}
+.login-card .mark{background:var(--graf);color:var(--brand)}
+@media (max-width:760px){
+.tab{background:var(--surface2);border-color:transparent;font-weight:700}
+.tab[aria-selected="true"]{background:var(--graf);color:#fff;border-color:var(--graf)}
+.tab[aria-selected="true"] .tn{color:var(--brand);opacity:1}
+.bnav{background:color-mix(in srgb,var(--surface) 92%,transparent);border-top-color:var(--line)}
+.bn{font-weight:700}
+.bn[aria-current="true"]{color:var(--ink)}
+.bn[aria-current="true"] svg.i{stroke:var(--ink);stroke-width:2.3}
+.fab{border-radius:18px;background:var(--brand);color:var(--brand-ink);box-shadow:0 10px 22px -6px color-mix(in srgb,var(--brand) 70%,transparent),0 0 0 5px var(--bg)}
+.card{padding:14px 15px 14px 19px}
+}
 </style>
 </head>
 <body style="margin:0">
