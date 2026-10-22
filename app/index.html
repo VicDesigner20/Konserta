@@ -412,8 +412,9 @@ h1 #brandTitle{font-family:var(--f-body);font-weight:800;font-size:10.5px;letter
 .login-card .mark{background:var(--graf);color:var(--brand)}
 @media (max-width:760px){
 .tab{background:var(--surface2);border-color:transparent;font-weight:700}
-.tab[aria-selected="true"]{background:var(--graf);color:#fff;border-color:var(--graf)}
-.tab[aria-selected="true"] .tn{color:var(--brand);opacity:1}
+.tab{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:800;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--brand) 80%,transparent)}
+.tab[aria-selected="true"] .tn{color:var(--brand-ink);opacity:1;font-weight:700}
 .bnav{background:color-mix(in srgb,var(--surface) 92%,transparent);border-top-color:var(--line)}
 .bn{font-weight:700}
 .bn[aria-current="true"]{color:var(--ink)}
@@ -421,6 +422,9 @@ h1 #brandTitle{font-family:var(--f-body);font-weight:800;font-size:10.5px;letter
 .fab{border-radius:18px;background:var(--brand);color:var(--brand-ink);box-shadow:0 10px 22px -6px color-mix(in srgb,var(--brand) 70%,transparent),0 0 0 5px var(--bg)}
 .card{padding:14px 15px 14px 19px}
 }
+/* filtros selecionados bem visíveis também no modo escuro */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"],:root:not([data-theme="light"]) .st-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}}
+:root[data-theme="dark"] .chip[aria-pressed="true"],:root[data-theme="dark"] .st-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 /* ===== Painel da Loja ===== */
 .lj-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px;border-radius:20px;border:0;cursor:pointer;
 background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--brand) 38%,transparent),transparent 60%),var(--graf);color:#fff;box-shadow:var(--shadow);font:inherit}
@@ -475,6 +479,30 @@ background:radial-gradient(90% 120% at 100% 0%,color-mix(in srgb,var(--brand) 55
 :root[data-theme="dark"] .pp[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
 .lj-add .fld input{background:var(--surface);border-color:var(--line)}
 .lj-hero .lj-mark{color:var(--graf);font-size:20px}
+.lj-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px;position:sticky;top:0;z-index:2;background:var(--bg)}
+.lj-tabs button{flex:0 0 auto;font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:99px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.lj-tabs button[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink);font-weight:800}
+.kv{display:flex;flex-wrap:wrap;gap:6px}
+.kv span{font-size:12px;color:var(--muted);background:var(--surface2);border-radius:9px;padding:5px 9px}
+.kv b{color:var(--ink);font-weight:700}
+.role-sem{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.role-aus-ferias{background:color-mix(in srgb,#2f6fd6 16%,var(--surface));color:#2f6fd6}
+.role-aus-folga{background:color-mix(in srgb,var(--ok) 16%,var(--surface));color:var(--ok)}
+.role-aus-atestado{background:color-mix(in srgb,var(--warn) 18%,var(--surface));color:var(--warn)}
+.role-aus-falta{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad)}
+.role-aus-outro{background:var(--surface2);color:var(--ink)}
+.aus{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:inherit;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.aus.on{border-color:var(--bad)}.aus .role{min-width:82px;text-align:center}
+.lj-fora{border-left:4px solid var(--bad)}
+.lj-sug{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;border:1px dashed var(--line)}
+.mesnav{display:flex;align-items:center;gap:10px}.mesnav b{font-family:var(--f-display);min-width:150px;text-align:center}
+.comlist{display:flex;flex-direction:column;gap:6px}.comlist .u-row{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.ag-top{display:flex;gap:8px}.ag-top .inp{flex:1}
+.ag-list{display:flex;flex-direction:column;gap:10px}
+.ag{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:18px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.ag-oq{font-size:13.5px;background:var(--brand-soft);color:var(--brand-fg);border-radius:9px;padding:5px 9px;align-self:flex-start;font-weight:700}
+.lj-add textarea,.lj-add select,#fornForm textarea{background:var(--surface)}
+.lj-add .fld select,.lj-add .fld textarea{border:1px solid var(--line)}
 </style>
 </head>
 <body style="margin:0">
@@ -487,6 +515,7 @@ background:radial-gradient(90% 120% at 100% 0%,color-mix(in srgb,var(--brand) 55
 <button class="btn btn-ghost" id="btnShop" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Compras <span class="badge-n" id="shopN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnUser" type="button" hidden></button>
 <button class="btn btn-ghost" id="btnFin" type="button" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Finanças</button>
+<button class="btn btn-ghost" id="btnAgenda" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/><path d="M5 3v18M9 8h6M9 12h6"/><path d="M19 7h2M19 12h2M19 17h2"/></svg>Agenda</button>
 <button class="btn btn-ghost" id="btnCot" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg>Cotações</button>
 <button class="btn btn-accent" id="btnNew" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova OS</button>
 </div>
@@ -523,13 +552,14 @@ const snapOf=rows=>({docs:rows.map(r=>({id:r.id,exists:true,data:()=>r.d})),size
 const nowIso=()=>new Date().toISOString();
 const rnd=()=>Math.random().toString(36).slice(2,8);
 function docsCol(eid,col){
+const TB=["funcionarios","ausencias","fornecedores"].includes(col)?"cadastros":"docs";
 const map=new Map();
 return {
 doc(id){return {
 id,
-async set(d){const {error}=await SB.from("docs").upsert({empresa_id:eid,col,id,dados:d,atualizado_em:nowIso()});if(error)throw error;map.set(id,d)},
-async update(d){const cur=map.get(id)||{};const {error}=await SB.from("docs").upsert({empresa_id:eid,col,id,dados:{...cur,...d},atualizado_em:nowIso()});if(error)throw error;map.set(id,{...cur,...d})},
-async delete(){const {error}=await SB.from("docs").delete().match({empresa_id:eid,col,id});if(error)throw error;map.delete(id)}
+async set(d){const {error}=await SB.from(TB).upsert({empresa_id:eid,col,id,dados:d,atualizado_em:nowIso()});if(error)throw error;map.set(id,d)},
+async update(d){const cur=map.get(id)||{};const {error}=await SB.from(TB).upsert({empresa_id:eid,col,id,dados:{...cur,...d},atualizado_em:nowIso()});if(error)throw error;map.set(id,{...cur,...d})},
+async delete(){const {error}=await SB.from(TB).delete().match({empresa_id:eid,col,id});if(error)throw error;map.delete(id)}
 }},
 onSnapshot(cb,onErr){
 let alive=true;
@@ -537,7 +567,7 @@ const emit=()=>{if(alive)cb(snapOf([...map].map(([id,d])=>({id,d}))))};
 const load=async()=>{
 let from=0;const step=1000;map.clear();
 for(;;){
-const {data,error}=await SB.from("docs").select("id,dados").eq("empresa_id",eid).eq("col",col).range(from,from+step-1);
+const {data,error}=await SB.from(TB).select("id,dados").eq("empresa_id",eid).eq("col",col).range(from,from+step-1);
 if(error){onErr&&onErr(error);return}
 data.forEach(r=>map.set(r.id,r.dados));
 if(data.length<step)break;from+=step;
@@ -546,7 +576,7 @@ emit();
 };
 load();
 const ch=SB.channel("d-"+col+"-"+rnd())
-.on("postgres_changes",{event:"*",schema:"public",table:"docs",filter:"empresa_id=eq."+eid},p=>{
+.on("postgres_changes",{event:"*",schema:"public",table:TB,filter:"empresa_id=eq."+eid},p=>{
 if(p.eventType==="DELETE"){const o=p.old||{};if(o.empresa_id&&o.empresa_id!==eid)return;if(o.col&&o.col!==col)return;if(map.delete(o.id))emit();return}
 const n=p.new;if(!n||n.col!==col)return;map.set(n.id,n.dados);emit();
 })
@@ -817,6 +847,7 @@ ${pode("editar_os")?`<button type="button" class="seg-opt" data-act="newos"><spa
 ${pode("cotacoes")?`<button type="button" class="seg-opt" data-act="newcot"><span class="sn">$</span><span><b>Nova cotação</b><br><small class="hint">O cliente quer saber o preço antes</small></span></button>
 <button type="button" class="seg-opt" data-act="cots"><span class="sn">≡</span><span><b>Ver cotações</b><br><small class="hint">${cotList.filter(scopeMatch).length} no total</small></span></button>`:""}
 ${KS.recursos&&KS.recursos.financas&&pode("financas")?`<button type="button" class="seg-opt" data-act="fin"><span class="sn">R$</span><span><b>Finanças</b> <span class="pill p-info">beta</span><br><small class="hint">Módulo em teste, só sua empresa vê</small></span></button>`:""}
+<button type="button" class="seg-opt" data-act="agenda"><span class="sn">☎</span><span><b>Agenda de fornecedores</b><br><small class="hint">${fornList.length?plural(fornList.length,"contato","contatos"):"Telefone e WhatsApp de quem te vende peças"}</small></span></button>
 </div>`);
 }
 function openNew(){
@@ -931,7 +962,7 @@ const items=shopItems();
 const grp=k=>items.filter(i=>i.p.status===k);
 const sec=(k,t,h)=>{const g=grp(k);return `<div class="sec"><h4>${t} <span class="mono">${g.length}</span></h4>${h?`<span class="hint">${h}</span>`:""}<div class="shop-g">${g.length?g.map(({o,p})=>`<div class="shop-i"><div class="txt"><b>${esc(p.nome)}</b><button type="button" data-open="${o.id}">${o.num?"OS "+esc(o.num)+" · ":""}${esc(o.cliente)}${o.aparelho?" · "+esc(o.aparelho):""}</button></div><button type="button" class="ps ps-${p.status}" data-scycle="${o.id}|${p.id}">${esc(PSTAT.find(s=>s.k===p.status).t)}</button></div>`).join(""):`<span class="hint">Nada aqui.</span>`}</div></div>`};
 $("#layer").innerHTML=shell("Lista de compras",`
-<div><button type="button" class="btn btn-line" data-act="copyshop">Copiar lista para o fornecedor</button></div>
+<div class="btnrow"><button type="button" class="btn btn-line" data-act="copyshop">Copiar lista para o fornecedor</button><button type="button" class="btn btn-line" data-act="agenda">Agenda de fornecedores</button></div>
 ${sec("comprar","Precisa comprar","")}
 ${sec("encomendada","Encomendada","")}
 ${restockSec()}
@@ -985,11 +1016,11 @@ let orcAdd=null;
 function orcHTML(o){
 const r=orcOf(o);const has=r.itens.length>0;const sg=seg();
 const ph=String(o.telefone||"").replace(/\D/g,"");const wa=ph.length>=10?`https://wa.me/${ph.length<=11?"55"+ph:ph}?text=${encodeURIComponent(orcMsg(o))}`:"";
-const itens=r.itens.map(i=>`<div class="orc-i"><span class="d">${i.qtd>1?i.qtd+"× ":""}${esc(i.desc)}<small>${i.tipo==="servico"?"Mão de obra":"Peça"}${i.qtd>1?" · "+fmtR(i.valor)+" cada":""}</small></span><span class="v">${fmtR(i.qtd*i.valor)}</span><button type="button" class="x" data-odel="${i.id}" aria-label="Remover item">×</button></div>`).join("");
+const itens=r.itens.map(i=>`<div class="orc-i"><span class="d">${i.qtd>1?i.qtd+"× ":""}${esc(i.desc)}<small>${i.tipo==="servico"?"Mão de obra":"Peça"}${i.qtd>1?" · "+fmtR(i.valor)+" cada":""}${i.tipo==="servico"&&!isCot(o)&&comItem(o,i)?` · comissão ${comPct(o,i)}% = ${fmtR(comItem(o,i))}`:""}</small></span><span class="v">${fmtR(i.qtd*i.valor)}</span><button type="button" class="x" data-odel="${i.id}" aria-label="Remover item">×</button></div>`).join("");
 const addForm=orcAdd?`<form class="orc-form" id="orcForm" autocomplete="off">
 <div class="fld"><label for="oa_d">${orcAdd==="servico"?"Qual serviço?":"Qual peça?"}</label><input id="oa_d" placeholder="${esc(orcAdd==="servico"?sg.moPh:sg.pcPh)}"></div>
 <div class="orc-form-row">${orcAdd==="peca"?`<div class="fld"><label for="oa_q">Qtd</label><input id="oa_q" class="mono" type="number" min="1" value="1" inputmode="numeric"></div>`:""}
-<div class="fld"><label for="oa_v">Valor${orcAdd==="peca"?" de cada":""} (R$)</label><input id="oa_v" class="mono" inputmode="decimal" placeholder="0,00"></div></div>
+<div class="fld"><label for="oa_v">Valor${orcAdd==="peca"?" de cada":""} (R$)</label><input id="oa_v" class="mono" inputmode="decimal" placeholder="0,00"></div>${orcAdd==="servico"&&!isCot(o)?`<div class="fld"><label for="oa_c">Comissão (%)</label><input id="oa_c" class="mono" inputmode="decimal" value="${comPadrao(ownerOf(o))||""}" placeholder="0"></div>`:""}</div>
 <div class="btnrow"><button class="btn btn-accent" type="submit">Adicionar</button><button type="button" class="btn btn-line" data-act="orcx">Cancelar</button></div></form>`:
 `<div class="btnrow"><button type="button" class="btn btn-line" data-oadd="servico">+ Mão de obra</button><button type="button" class="btn btn-line" data-oadd="peca">+ Peça</button></div>`;
 const step=(n,title,body,done)=>`<div class="step ${done?"done":""}"><span class="sn">${done?"✓":n}</span><div class="sb"><b>${title}</b>${body}</div></div>`;
@@ -1435,7 +1466,7 @@ if(e.target.id==="wipeForm"){wipeOS();return}
 if(e.target.id==="cotNew"){createCot();return}
 if(e.target.id==="orcForm"){const o=curObj();if(!o)return;const vv=parseMoney($("#oa_v").value);
 const d=$("#oa_d").value.trim()||(vv?(orcAdd==="peca"?"Peça":"Mão de obra"):"");if(!d){$("#oa_d").focus();toast("Escreva o serviço ou a peça e o valor.");return}
-orcOf(o).itens.push({id:uid(),tipo:orcAdd||"servico",desc:d,qtd:Math.max(1,parseInt($("#oa_q")?.value,10)||1),valor:parseMoney($("#oa_v").value)});orcAdd=null;
+orcOf(o).itens.push({id:uid(),tipo:orcAdd||"servico",desc:d,qtd:Math.max(1,parseInt($("#oa_q")?.value,10)||1),valor:parseMoney($("#oa_v").value),...($("#oa_c")&&$("#oa_c").value.trim()!==""?{comissao:parseMoney($("#oa_c").value)}:{})});orcAdd=null;
 if(o.orc.status==="recusado")o.orc.status="rascunho";save(o,true);reopen(o);renderBoard();return}
 if(e.target.id==="osdocForm"){saveEmpresa({garantia:Math.max(0,parseInt($("#d_gar").value,10)||90),retirada:Math.max(0,parseInt($("#d_ret").value,10)||90),termo:$("#d_termo").value.trim()}).then(()=>toast("Dados da OS salvos"));return}
 if(e.target.id==="recForm"){saveRec();return}
@@ -1610,8 +1641,10 @@ ucol=db.collection(base+"/usuarios");
 unsubs.push(ucol.onSnapshot(snap=>{if(cid!==id)return;
 users=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.criadoEm||0)-(b.criadoEm||0));usersLoaded=true;
 if(sessId){me=users.find(u=>u.id===sessId&&!u.pendente)||null;if(!me&&users.length)logout(true)}
-gate();renderScope();if(me)renderBoard();if(sheetMode==="acct")openAccount();if(sheetMode==="loja")openLoja();
+gate();renderScope();if(me)renderBoard();if(sheetMode==="acct")openAccount();if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();
 },()=>{usersLoaded=true;gate()}));
+for(const [c,setv] of [["funcionarios",v=>funcList=v],["ausencias",v=>ausList=v],["fornecedores",v=>fornList=v]]){const cc=db.collection(base+"/"+c);cadCols[c]=cc;
+unsubs.push(cc.onSnapshot(snap=>{if(cid!==id)return;setv(snap.docs.map(d=>({id:d.id,...d.data()})));if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();if(sheetMode==="agenda"&&!agForm)renderAgenda()},()=>{}))}
 ccol=db.collection(base+"/cotacoes");
 unsubs.push(ccol.onSnapshot(snap=>{if(cid!==id)return;cotList=snap.docs.map(d=>({id:d.id,...d.data()}))},()=>{}));
 col=db.collection(base+"/os");
@@ -1773,7 +1806,7 @@ if(error){let m=error.message;try{const j=await error.context.json();if(j&&j.err
 if(data&&data.erro)throw new Error(data.erro);
 return data||{};
 }
-let lj={edit:null,editPapel:null,editPerms:null,add:false,addPapel:"tecnico",addPerms:presetDe("tecnico"),addSenha:"",resultado:null,ocupado:false};
+let lj={aba:"resumo",form:null,edit:null,editPapel:null,editPerms:null,add:false,addPapel:"tecnico",addPerms:presetDe("tecnico"),addSenha:"",resultado:null,ocupado:false};
 function permToggles(prefix,perms,dis){
 return `<div class="pt-grid">${PERMS.map(([k,t])=>`<label class="pt"><input type="checkbox" data-${prefix}perm="${k}" ${perms[k]?"checked":""} ${dis?"disabled":""}><span>${esc(t)}</span></label>`).join("")}</div>`;
 }
@@ -1821,23 +1854,40 @@ const add=lj.add?`<form class="lj-add" id="ljAddForm" autocomplete="off">
 <div class="btnrow"><button class="btn btn-accent" type="submit" ${lj.ocupado?"disabled":""}>${lj.ocupado?"Criando…":"Criar acesso"}</button><button type="button" class="btn btn-line" data-lj="addx">Cancelar</button></div></form>`
 :`<button type="button" class="btn btn-accent lj-addbtn" data-lj="add"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar pessoa</button>`;
 const codigo=KS.assinatura&&KS.assinatura.codigo;
+const hoje=Date.now();
+const foraHoje=ausList.filter(a=>a.de<=hoje+DAY/2&&a.ate>=hoje-DAY/2);
+const abas=[["resumo","Resumo"],["acessos","Acessos"+(pend.length?` <span class="badge-n">${pend.length}</span>`:"")],["func","Funcionários"],["aus","Férias e folgas"]];
+if(full())abas.push(["com","Comissões"]);
+if(!abas.some(x=>x[0]===lj.aba))lj.aba="resumo";
+let corpo="";
+if(lj.aba==="resumo"){
+const mes=new Date().getMonth();
+const niver=funcList.filter(f=>f.nascimento&&new Date(f.nascimento).getMonth()===mes);
+corpo=`<div class="lj-stats">${stats.map(([l,v])=>`<div><small>${l}</small><b>${v}</b></div>`).join("")}</div>
+${foraHoje.length?`<div class="sec lj-fora"><h4>Fora hoje</h4>${foraHoje.map(a=>`<div class="fn"><span class="role role-aus-${a.tipo}">${esc(AUS[a.tipo]||a.tipo)}</span><span><b>${esc(nomeFicha(a.func))}</b> <span class="hint">até ${fmtDia(a.ate)}</span></span></div>`).join("")}</div>`:""}
+<div class="sec"><h4>Quem está com o quê</h4>
+${porTec.length?porTec.map(x=>`<div class="lt"><span class="lt-n">${esc(x.u.nome.split(" ")[0])}</span><span class="lt-bar"><i style="width:${Math.round(x.n/maxN*100)}%"></i></span><span class="lt-v"><b>${x.n}</b> na mão · ${x.b} na bancada · ${x.p} prontos</span></div>`).join(""):`<span class="hint">Ninguém na equipe ainda.</span>`}
+</div>
+${niver.length?`<div class="sec"><h4>Aniversariantes do mês</h4>${niver.map(f=>`<div class="fn"><span class="role role-tecnico">${new Date(f.nascimento).getDate()}/${String(mes+1).padStart(2,"0")}</span><b>${esc(f.nome)}</b></div>`).join("")}</div>`:""}`;
+}else if(lj.aba==="acessos"){
+corpo=`${pend.length?`<div class="sec lj-pend"><h4>Pedidos para entrar <span class="badge-n">${pend.length}</span></h4>${pend.map(u=>`<div class="mb"><div class="mb-top"><span class="av">${esc(iniciais(u.nome))}</span><span class="mb-n"><b>${esc(u.nome)}</b><small>${esc(u.email||"")}</small></span></div>
+<div class="btnrow"><select class="inp" id="ljp_${u.id}" aria-label="Função">${["tecnico","atendente","financeiro","gerente"].map(p=>`<option value="${p}">${PAPEIS[p].t}</option>`).join("")}</select><button type="button" class="btn btn-ok" data-lj="aprovar" data-uid="${u.id}">Aprovar</button><button type="button" class="btn btn-danger" data-udel="${u.id}">Recusar</button></div></div>`).join("")}</div>`:""}
+<div class="sec"><h4>Quem usa o app <span class="mono">${ativos.length}</span></h4>
+${res}${add}
+${ativos.sort((a,b)=>(a.papel==="dono"?-1:b.papel==="dono"?1:0)).map(linhaMembro).join("")}
+</div>
+${codigo?`<div class="sec"><h4>Convite por código</h4><span class="hint">Outra forma: a pessoa cria a própria conta com este código e aparece em "Pedidos para entrar" para você aprovar.</span><div class="codebox">${esc(codigo)}</div><div class="btnrow"><button type="button" class="btn btn-line" data-act="convite">Copiar link de convite</button></div></div>`:""}
+<div class="sec"><h4>Funções</h4>${Object.entries(PAPEIS).map(([k,v])=>`<div class="fn"><span class="role role-${k}">${v.t}</span><span class="hint">${esc(v.d)}</span></div>`).join("")}</div>`;
+}else if(lj.aba==="func")corpo=abaFuncionarios(ativos);
+else if(lj.aba==="aus")corpo=abaAusencias();
+else if(lj.aba==="com")corpo=abaComissoes(ativos);
 $("#layer").innerHTML=shell("Painel da Loja",`
 <div class="lj-hero">
 ${logoSrc()?`<img src="${esc(logoSrc())}" alt="" class="lj-logo">`:`<span class="lj-logo lj-mark">${esc(initials(empresa.nome))}</span>`}
 <div><small>PAINEL DA LOJA</small><b>${esc(empresa.nome||"Minha loja")}</b><span>${esc(me.nome)} · ${papelDe(me).t}</span></div>
 </div>
-<div class="lj-stats">${stats.map(([l,v])=>`<div><small>${l}</small><b>${v}</b></div>`).join("")}</div>
-<div class="sec"><h4>Quem está com o quê</h4>
-${porTec.length?porTec.map(x=>`<div class="lt"><span class="lt-n">${esc(x.u.nome.split(" ")[0])}</span><span class="lt-bar"><i style="width:${Math.round(x.n/maxN*100)}%"></i></span><span class="lt-v"><b>${x.n}</b> na mão · ${x.b} na bancada · ${x.p} prontos</span></div>`).join(""):`<span class="hint">Ninguém na equipe ainda.</span>`}
-</div>
-${pend.length?`<div class="sec lj-pend"><h4>Pedidos para entrar <span class="badge-n">${pend.length}</span></h4>${pend.map(u=>`<div class="mb"><div class="mb-top"><span class="av">${esc(iniciais(u.nome))}</span><span class="mb-n"><b>${esc(u.nome)}</b><small>${esc(u.email||"")}</small></span></div>
-<div class="btnrow"><select class="inp" id="ljp_${u.id}" aria-label="Função">${["tecnico","atendente","financeiro","gerente"].map(p=>`<option value="${p}">${PAPEIS[p].t}</option>`).join("")}</select><button type="button" class="btn btn-ok" data-lj="aprovar" data-uid="${u.id}">Aprovar</button><button type="button" class="btn btn-danger" data-udel="${u.id}">Recusar</button></div></div>`).join("")}</div>`:""}
-<div class="sec"><h4>Equipe <span class="mono">${ativos.length}</span></h4>
-${res}${add}
-${ativos.sort((a,b)=>(a.papel==="dono"?-1:b.papel==="dono"?1:0)).map(linhaMembro).join("")}
-</div>
-${codigo?`<div class="sec"><h4>Convite por código</h4><span class="hint">Outra forma: a pessoa cria a própria conta com este código e aparece em "Pedidos para entrar" para você aprovar.</span><div class="codebox">${esc(codigo)}</div><div class="btnrow"><button type="button" class="btn btn-line" data-act="convite">Copiar link de convite</button></div></div>`:""}
-<div class="sec"><h4>Funções</h4>${Object.entries(PAPEIS).map(([k,v])=>`<div class="fn"><span class="role role-${k}">${v.t}</span><span class="hint">${esc(v.d)}</span></div>`).join("")}</div>`);
+<div class="lj-tabs" role="tablist">${abas.map(([k,t])=>`<button type="button" role="tab" data-ljaba="${k}" aria-selected="${lj.aba===k}">${t}</button>`).join("")}</div>
+${corpo}`);
 }
 async function ljCriar(){
 const err=$("#ljErr");err.textContent="";
@@ -1857,6 +1907,7 @@ toast("Pronto: "+nome+" está na equipe");
 openLoja();
 }
 async function ljAcao(t){
+if(await ljGestao(t))return;
 const a=t.dataset.lj,uid=t.dataset.uid,u=users.find(x=>x.id===uid);
 if(a==="add"){lj.add=true;lj.addPapel="tecnico";lj.addPerms=presetDe("tecnico");lj.addSenha=senhaNova();lj.resultado=null;openLoja();setTimeout(()=>$("#lj_nome")?.focus(),0);return}
 if(a==="addx"){lj.add=false;openLoja();return}
@@ -1884,6 +1935,152 @@ const k=e.target.dataset.eperm||e.target.dataset.aperm;if(!k)return;
 if(e.target.dataset.eperm)lj.editPerms[k]=e.target.checked;else lj.addPerms[k]=e.target.checked;
 });
 document.addEventListener("submit",e=>{if(e.target.id==="ljAddForm"){e.preventDefault();ljCriar()}});
+/* ---------- Gestão: funcionários, férias e folgas, comissões, agenda de fornecedores ---------- */
+let funcList=[],ausList=[],fornList=[];const cadCols={};
+const AUS={ferias:"Férias",folga:"Folga",atestado:"Atestado",falta:"Falta",outro:"Outro"};
+const diasEntre=(a,b)=>Math.max(1,Math.round((b-a)/DAY)+1);
+function fichaDe(uid){return uid?funcList.find(f=>f.membro===uid):null}
+function nomeFicha(id){const f=funcList.find(x=>x.id===id);return f?f.nome:"(removido)"}
+function comPadrao(uid){const f=fichaDe(uid);if(f&&f.comissao!==""&&f.comissao!=null)return +f.comissao||0;return +(empresa.comissaoPadrao||0)||0}
+function comPct(o,i){return i.comissao!=null&&i.comissao!==""?(+i.comissao||0):comPadrao(ownerOf(o))}
+function comItem(o,i){if(i.tipo!=="servico"||isCot(o))return 0;return (+i.qtd||0)*(+i.valor||0)*comPct(o,i)/100}
+function tempoCasa(ts){if(!ts)return "";const m=Math.floor((Date.now()-ts)/(DAY*30.44));if(m<1)return "menos de 1 mês";const a=Math.floor(m/12),r=m%12;return [a?plural(a,"ano","anos"):"",r?plural(r,"mês","meses"):""].filter(Boolean).join(" e ")}
+function telLinks(tel){const d=String(tel||"").replace(/\D/g,"");if(d.length<8)return "";const wa=d.length<=11?"55"+d:d;
+return `<a class="btn btn-line" href="tel:${d}">Ligar</a><a class="btn btn-ok" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>`}
+function fld(id,label,val,extra=""){return `<div class="fld ${extra.includes("full")?"full":""}"><label for="${id}">${label}</label><input id="${id}" value="${esc(val??"")}" ${extra.replace("full","")}></div>`}
+/* ---- Funcionários ---- */
+function abaFuncionarios(ativos){
+const f=lj.form&&lj.form.tipo==="func"?lj.form:null;
+const semFicha=ativos.filter(u=>!fichaDe(u.id));
+const ed=f?(funcList.find(x=>x.id===f.id)||f.novo||{}):null;
+const form=f?`<form class="lj-add" id="funcForm" autocomplete="off">
+<b>${f.id&&funcList.some(x=>x.id===f.id)?"Editar ficha":"Nova ficha"}</b>
+<div class="grid2">${fld("f_nome","Nome",ed.nome,"required full")}${fld("f_cargo","Cargo",ed.cargo,'placeholder="Ex.: técnico de bancada"')}
+${fld("f_tel","Telefone / WhatsApp",ed.telefone,'inputmode="tel"')}${fld("f_doc","CPF (opcional)",ed.cpf,'inputmode="numeric"')}
+${fld("f_adm","Data de admissão",ed.admissao?toISO(ed.admissao):"",'type="date"')}${fld("f_nasc","Aniversário",ed.nascimento?toISO(ed.nascimento):"",'type="date"')}
+${fld("f_com","Comissão na mão de obra (%)",ed.comissao??"",'inputmode="decimal" class="mono" placeholder="usa o padrão da loja"')}
+<div class="fld"><label for="f_mb">Acesso no app</label><select id="f_mb"><option value="">Não usa o app</option>${ativos.map(u=>`<option value="${u.id}" ${ed.membro===u.id?"selected":""}>${esc(u.nome)}</option>`).join("")}</select></div>
+<div class="fld full"><label for="f_obs">Observações</label><textarea id="f_obs" rows="2">${esc(ed.obs||"")}</textarea></div></div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Salvar ficha</button><button type="button" class="btn btn-line" data-lj="formx">Cancelar</button>${f.id&&funcList.some(x=>x.id===f.id)?`<button type="button" class="btn btn-danger" data-lj="funcdel" data-fid="${f.id}">Apagar ficha</button>`:""}</div></form>`:"";
+const card=x=>{
+const ult=ausList.filter(a=>a.func===x.id&&a.tipo==="ferias"&&a.de>Date.now()-365*DAY).reduce((s,a)=>s+diasEntre(a.de,a.ate),0);
+const u=x.membro&&users.find(m=>m.id===x.membro);
+return `<div class="mb"><div class="mb-top"><span class="av">${esc(iniciais(x.nome))}</span><span class="mb-n"><b>${esc(x.nome)}</b><small>${esc([x.cargo,x.admissao?"há "+tempoCasa(x.admissao)+" na loja":""].filter(Boolean).join(" · "))}</small></span>${u?`<span class="role role-${u.papel}">${papelDe(u).t}</span>`:`<span class="role role-sem">Sem app</span>`}</div>
+<div class="kv">${x.telefone?`<span>Telefone <b>${esc(x.telefone)}</b></span>`:""}${x.admissao?`<span>Admissão <b>${fmtDia(x.admissao)}</b></span>`:""}${x.nascimento?`<span>Aniversário <b>${new Date(x.nascimento).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</b></span>`:""}${full()?`<span>Comissão <b>${x.comissao!==""&&x.comissao!=null?x.comissao+"%":"padrão ("+(+(empresa.comissaoPadrao||0))+"%)"}</b></span>`:""}<span>Férias nos últimos 12 meses <b>${ult} dia${ult===1?"":"s"}</b></span></div>
+${x.obs?`<span class="hint">${esc(x.obs)}</span>`:""}
+<div class="btnrow">${telLinks(x.telefone)}<button type="button" class="btn btn-line" data-lj="funced" data-fid="${x.id}">Editar</button><button type="button" class="btn btn-line" data-lj="ausnova" data-fid="${x.id}">Lançar férias/folga</button></div></div>`};
+return `<div class="sec"><h4>Funcionários <span class="mono">${funcList.length}</span></h4>
+<span class="hint">A ficha de cada pessoa da loja: contato, admissão, aniversário e comissão. Quem não usa o app também pode ter ficha.</span>
+${form||`<button type="button" class="btn btn-accent lj-addbtn" data-lj="funcnova"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Cadastrar funcionário</button>`}
+${semFicha.length&&!f?`<div class="lj-sug"><span class="hint">Estão no app e ainda não têm ficha:</span><div class="btnrow">${semFicha.map(u=>`<button type="button" class="btn btn-line" data-lj="funcde" data-uid="${u.id}">+ ${esc(u.nome.split(" ")[0])}</button>`).join("")}</div></div>`:""}
+${funcList.slice().sort((a,b)=>norm(a.nome).localeCompare(norm(b.nome))).map(card).join("")||(f?"":`<span class="hint">Nenhuma ficha ainda.</span>`)}</div>`;
+}
+/* ---- Férias e folgas ---- */
+function abaAusencias(){
+const f=lj.form&&lj.form.tipo==="aus"?lj.form:null;const ed=f?(ausList.find(x=>x.id===f.id)||f.novo||{}):null;
+const form=f?(funcList.length?`<form class="lj-add" id="ausForm" autocomplete="off"><b>${ausList.some(x=>x.id===f.id)?"Editar":"Lançar"} férias ou folga</b>
+<div class="grid2"><div class="fld"><label for="a_func">Quem</label><select id="a_func">${funcList.map(x=>`<option value="${x.id}" ${ed.func===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select></div>
+<div class="fld"><label for="a_tipo">Tipo</label><select id="a_tipo">${Object.entries(AUS).map(([k,t])=>`<option value="${k}" ${(ed.tipo||"ferias")===k?"selected":""}>${t}</option>`).join("")}</select></div>
+${fld("a_de","De",ed.de?toISO(ed.de):toISO(Date.now()),'type="date" required')}${fld("a_ate","Até (último dia fora)",ed.ate?toISO(ed.ate):"",'type="date"')}
+<div class="fld full"><label for="a_obs">Observação</label><input id="a_obs" value="${esc(ed.obs||"")}" placeholder="Ex.: volta na segunda"></div></div>
+<div class="err" id="ausErr"></div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Salvar</button><button type="button" class="btn btn-line" data-lj="formx">Cancelar</button>${ausList.some(x=>x.id===f.id)?`<button type="button" class="btn btn-danger" data-lj="ausdel" data-aid="${f.id}">Apagar</button>`:""}</div></form>`
+:`<div class="lj-add"><span>Cadastre os funcionários primeiro, na aba Funcionários.</span><div class="btnrow"><button type="button" class="btn btn-line" data-lj="formx">Ok</button></div></div>`):"";
+const hoje=Date.now()-DAY/2;
+const atuais=ausList.filter(a=>a.ate>=hoje).sort((a,b)=>a.de-b.de),passadas=ausList.filter(a=>a.ate<hoje).sort((a,b)=>b.de-a.de).slice(0,12);
+const linha=a=>{const agora=a.de<=Date.now()+DAY/2&&a.ate>=hoje;return `<button type="button" class="aus ${agora?"on":""}" data-lj="aused" data-aid="${a.id}"><span class="role role-aus-${a.tipo}">${esc(AUS[a.tipo]||a.tipo)}</span><span class="mb-n"><b>${esc(nomeFicha(a.func))}</b><small>${fmtDia(a.de)}${a.ate!==a.de?" até "+fmtDia(a.ate):""} · ${plural(diasEntre(a.de,a.ate),"dia","dias")}${a.obs?" · "+esc(a.obs):""}</small></span>${agora?`<span class="pill p-urg">fora agora</span>`:""}</button>`};
+return `<div class="sec"><h4>Férias e folgas</h4>
+<span class="hint">Lance férias, folgas, atestados e faltas. Quem está fora hoje aparece no Resumo.</span>
+${form||`<button type="button" class="btn btn-accent lj-addbtn" data-lj="ausnova"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Lançar férias ou folga</button>`}</div>
+<div class="sec"><h4>Agora e próximas</h4>${atuais.map(linha).join("")||`<span class="hint">Ninguém de férias ou folga marcada.</span>`}</div>
+${passadas.length?`<div class="sec"><h4>Anteriores</h4>${passadas.map(linha).join("")}</div>`:""}`;
+}
+/* ---- Comissões ---- */
+function abaComissoes(ativos){
+const off=lj.mes||0;const d0=new Date();d0.setDate(1);d0.setHours(0,0,0,0);d0.setMonth(d0.getMonth()+off);const d1=new Date(d0);d1.setMonth(d1.getMonth()+1);
+const t0=d0.getTime(),t1=d1.getTime();
+const ent=osList.filter(o=>o.status==="entregue"&&(o.statusDesde||0)>=t0&&(o.statusDesde||0)<t1&&o.orc&&(o.orc.itens||[]).some(i=>i.tipo==="servico"));
+const linhas=ativos.map(u=>{const os=ent.filter(o=>ownerOf(o)===u.id);
+const mo=os.reduce((s,o)=>s+(o.orc.itens||[]).filter(i=>i.tipo==="servico").reduce((a,i)=>a+(+i.qtd||0)*(+i.valor||0),0),0);
+const com=os.reduce((s,o)=>s+(o.orc.itens||[]).reduce((a,i)=>a+comItem(o,i),0),0);return {u,os,mo,com}}).filter(x=>x.os.length);
+const tot=linhas.reduce((s,x)=>s+x.com,0);
+let nomeMes=d0.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});nomeMes=nomeMes.charAt(0).toUpperCase()+nomeMes.slice(1);
+return `<div class="sec"><h4>Comissões</h4>
+<div class="mesnav"><button type="button" class="btn btn-line" data-ljmes="-1" aria-label="Mês anterior">‹</button><b>${nomeMes}</b><button type="button" class="btn btn-line" data-ljmes="1" aria-label="Próximo mês" ${off>=0?"disabled":""}>›</button></div>
+<span class="hint">Conta a mão de obra das OS <b>entregues</b> no mês, para o técnico dono da OS. O percentual vem de cada linha de mão de obra; se a linha não tiver, usa o da ficha do funcionário e, por último, o padrão da loja.</span>
+<div class="lj-stats"><div><small>Total de comissões</small><b>${fmtR(tot)}</b></div><div><small>OS entregues com mão de obra</small><b>${ent.length}</b></div></div></div>
+${linhas.map(x=>`<div class="sec"><h4>${esc(x.u.nome)} <span class="mono">${fmtR(x.com)}</span></h4><span class="hint">Mão de obra ${fmtR(x.mo)} em ${plural(x.os.length,"OS","OS")}</span>
+<div class="comlist">${x.os.map(o=>`<button type="button" class="u-row" data-open="${o.id}"><span class="nm">OS ${esc(o.num||"")} · ${esc(o.cliente||"")}<small>${esc(o.aparelho||"")} · entregue ${fmtDia(o.statusDesde)}</small></span><b class="mono">${fmtR((o.orc.itens||[]).reduce((a,i)=>a+comItem(o,i),0))}</b></button>`).join("")}</div></div>`).join("")||`<div class="sec"><span class="hint">Nenhuma OS com mão de obra entregue neste mês.</span></div>`}
+${pode("config")?`<div class="sec"><h4>Comissão padrão da loja</h4><form id="comPadForm" class="addrow" autocomplete="off"><input class="inp mono" id="cp_v" inputmode="decimal" value="${esc(empresa.comissaoPadrao??"")}" placeholder="Ex.: 10" aria-label="Percentual padrão"><button class="btn btn-line" type="submit">Salvar %</button></form><span class="hint">Vale para quem não tem percentual próprio na ficha. Já vem preenchido quando alguém lança mão de obra numa OS.</span></div>`:""}`;
+}
+/* ---- Agenda de fornecedores ---- */
+let agQ="",agForm=null;
+const podeForn=()=>pode("compras")||pode("estoque");
+function openAgenda(){
+sheetMode="agenda";
+const ed=agForm?(fornList.find(x=>x.id===agForm.id)||{}):null;
+$("#layer").innerHTML=shell("Agenda de fornecedores",`
+${agForm?`<form class="sec" id="fornForm" autocomplete="off"><h4>${fornList.some(x=>x.id===agForm.id)?"Editar contato":"Novo contato"}</h4><div class="grid2">
+${fld("g_nome","Fornecedor",ed.nome,'required placeholder="Ex.: Distribuidora Central"')}${fld("g_vend","Vendedor / contato",ed.vendedor)}
+${fld("g_tel","Telefone / WhatsApp",ed.telefone,'inputmode="tel" placeholder="(41) 9…"')}${fld("g_tel2","Outro telefone",ed.telefone2,'inputmode="tel"')}
+${fld("g_oq","O que vende",ed.oque,'full placeholder="Ex.: placas, resistências, motores"')}
+${fld("g_site","Site ou e-mail",ed.site)}${fld("g_obs","Observação",ed.obs,'placeholder="Ex.: entrega em 2 dias, pedido mínimo"')}</div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Salvar</button><button type="button" class="btn btn-line" data-ag="x">Cancelar</button>${fornList.some(x=>x.id===agForm.id)?`<button type="button" class="btn btn-danger" data-ag="del" data-gid="${agForm.id}">Apagar</button>`:""}</div></form>`
+:`<div class="ag-top"><input class="inp" id="agQ" type="search" placeholder="Buscar fornecedor, peça ou vendedor" value="${esc(agQ)}">${podeForn()?`<button type="button" class="btn btn-accent" data-ag="novo">+ Contato</button>`:""}</div>`}
+<div id="agList" class="ag-list"></div>`);
+renderAgenda();
+}
+function renderAgenda(){
+const box=$("#agList");if(!box)return;
+const l=fornList.filter(f=>!agQ||norm([f.nome,f.vendedor,f.oque,f.obs].join(" ")).includes(norm(agQ))).sort((a,b)=>norm(a.nome).localeCompare(norm(b.nome)));
+box.innerHTML=l.map(f=>`<div class="ag"><div class="mb-top"><span class="av">${esc(iniciais(f.nome))}</span><span class="mb-n"><b>${esc(f.nome)}</b><small>${esc([f.vendedor,f.telefone].filter(Boolean).join(" · "))}</small></span>${podeForn()?`<button type="button" class="linkbtn" data-ag="ed" data-gid="${f.id}">Editar</button>`:""}</div>
+${f.oque?`<span class="ag-oq">${esc(f.oque)}</span>`:""}${f.obs?`<span class="hint">${esc(f.obs)}</span>`:""}
+<div class="btnrow">${telLinks(f.telefone)}${f.telefone2?`<a class="btn btn-line" href="tel:${String(f.telefone2).replace(/\D/g,"")}">Ligar 2</a>`:""}${f.site?`<a class="btn btn-line" href="${/@/.test(f.site)?"mailto:"+esc(f.site):(/^https?:/.test(f.site)?"":"https://")+esc(f.site)}" target="_blank" rel="noopener">${/@/.test(f.site)?"E-mail":"Site"}</a>`:""}</div></div>`).join("")
+||`<div class="sec"><span class="hint">${fornList.length?"Nada encontrado.":"Nenhum fornecedor ainda. Salve aqui os contatos de quem te vende peças, para ligar ou chamar no WhatsApp com um toque."}</span></div>`;
+}
+document.addEventListener("input",e=>{if(e.target.id==="agQ"){agQ=e.target.value;renderAgenda()}});
+document.addEventListener("click",async e=>{
+const t=e.target.closest("[data-ag],[data-ljaba],[data-ljmes],#btnAgenda,[data-act='agenda']");if(!t)return;
+if(t.id==="btnAgenda"||t.dataset.act==="agenda"){agForm=null;openAgenda();return}
+if(t.dataset.ljaba){lj.aba=t.dataset.ljaba;lj.form=null;lj.edit=null;openLoja();const s=document.querySelector(".sheet");if(s)s.scrollTop=0;return}
+if(t.dataset.ljmes){lj.mes=Math.min(0,(lj.mes||0)+(+t.dataset.ljmes));openLoja();return}
+const a=t.dataset.ag;
+if(a==="novo"){agForm={id:uid()};openAgenda();setTimeout(()=>$("#g_nome")?.focus(),0);return}
+if(a==="ed"){agForm={id:t.dataset.gid};openAgenda();return}
+if(a==="x"){agForm=null;openAgenda();return}
+if(a==="del"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Confirmar";return}
+try{await cadCols.fornecedores.doc(t.dataset.gid).delete();agForm=null;toast("Contato apagado")}catch(_){toast("Não apagou. Tente de novo.")}openAgenda();return}
+});
+async function ljGestao(t){
+const a=t.dataset.lj;
+if(a==="formx"){lj.form=null;openLoja();return true}
+if(a==="funcnova"){lj.form={tipo:"func",id:uid(),novo:{}};openLoja();setTimeout(()=>$("#f_nome")?.focus(),0);return true}
+if(a==="funcde"){const u=users.find(x=>x.id===t.dataset.uid);lj.form={tipo:"func",id:uid(),novo:{nome:u?u.nome:"",membro:u?u.id:"",cargo:u?papelDe(u).t:""}};openLoja();return true}
+if(a==="funced"){lj.form={tipo:"func",id:t.dataset.fid};openLoja();return true}
+if(a==="funcdel"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Confirmar: apagar ficha";return true}
+try{await cadCols.funcionarios.doc(t.dataset.fid).delete();lj.form=null;toast("Ficha apagada")}catch(_){toast("Não apagou. Tente de novo.")}openLoja();return true}
+if(a==="ausnova"){lj.aba="aus";lj.form={tipo:"aus",id:uid(),novo:{func:t.dataset.fid||"",tipo:"ferias"}};openLoja();return true}
+if(a==="aused"){lj.form={tipo:"aus",id:t.dataset.aid};openLoja();const s=document.querySelector(".sheet");if(s)s.scrollTop=0;return true}
+if(a==="ausdel"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Confirmar";return true}
+try{await cadCols.ausencias.doc(t.dataset.aid).delete();lj.form=null;toast("Apagado")}catch(_){toast("Não apagou. Tente de novo.")}openLoja();return true}
+return false;
+}
+document.addEventListener("submit",async e=>{
+const id=e.target.id;if(!["funcForm","ausForm","comPadForm","fornForm"].includes(id))return;e.preventDefault();
+if(id==="funcForm"){const nome=$("#f_nome").value.trim();if(!nome){$("#f_nome").focus();return}
+const cv=$("#f_com").value.trim();
+const d={nome,cargo:$("#f_cargo").value.trim(),telefone:$("#f_tel").value.trim(),cpf:$("#f_doc").value.trim(),admissao:fromISO($("#f_adm").value),nascimento:fromISO($("#f_nasc").value),
+comissao:cv===""?"":parseMoney(cv),membro:$("#f_mb").value,obs:$("#f_obs").value.trim(),atualizadoEm:Date.now()};
+try{await cadCols.funcionarios.doc(lj.form.id).set(d);lj.form=null;toast("Ficha salva")}catch(_){toast("Não salvou. Tente de novo.")}openLoja();return}
+if(id==="ausForm"){const de=fromISO($("#a_de").value),ate=fromISO($("#a_ate").value)||de;const er=$("#ausErr");
+if(!de){er.textContent="Coloque a data de início.";return}if(ate<de){er.textContent="A data final é antes da inicial.";return}
+const d={func:$("#a_func").value,tipo:$("#a_tipo").value,de,ate,obs:$("#a_obs").value.trim(),atualizadoEm:Date.now()};
+try{await cadCols.ausencias.doc(lj.form.id).set(d);lj.form=null;toast(AUS[d.tipo]+" lançada")}catch(_){toast("Não salvou. Tente de novo.")}openLoja();return}
+if(id==="comPadForm"){const v=$("#cp_v").value.trim();await saveEmpresa({comissaoPadrao:v===""?"":parseMoney(v)});toast("Comissão padrão salva");openLoja();return}
+if(id==="fornForm"){const nome=$("#g_nome").value.trim();if(!nome){$("#g_nome").focus();return}
+const d={nome,vendedor:$("#g_vend").value.trim(),telefone:$("#g_tel").value.trim(),telefone2:$("#g_tel2").value.trim(),oque:$("#g_oq").value.trim(),site:$("#g_site").value.trim(),obs:$("#g_obs").value.trim(),atualizadoEm:Date.now()};
+try{await cadCols.fornecedores.doc(agForm.id).set(d);agForm=null;toast("Contato salvo")}catch(_){toast("Não salvou. Tente de novo.")}openAgenda();return}
+});
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
@@ -1897,12 +2094,16 @@ let ms=[];
 try{
 ms=await minhasEmpresas();
 if(!ms.length){
-const md=session.user.user_metadata||{};
+let md=session.user.user_metadata||{};
+if(!md.acao){let pend=null;try{pend=JSON.parse(localStorage.getItem("ks.cadastro")||"null")}catch(_){}
+if(pend&&pend.acao)md={...pend,nome:pend.nome||md.full_name||md.name};
+else{location.replace("/cadastro?completar=1");return}}
+try{localStorage.removeItem("ks.cadastro")}catch(_){}
 if(md.acao==="entrar"&&md.codigo){
 const {error}=await sb.rpc("entrar_empresa",{cod:md.codigo,nome_pessoa:md.nome||KS.email.split("@")[0]});
 if(error){KS.estado="erro";KS.erroMsg=String(error.message||"").includes("codigo")?"O código da equipe "+md.codigo+" não existe. Confira com o dono da loja.":"Não deu para entrar na equipe.";gate();return}
 }else{
-const cfg=md.empresa||{nome:"Minha empresa",segmento:"assistencia",atende:{},temSistema:false,marcas:[]};
+const cfg=md.empresa?{...md.empresa,email:md.empresa.email||KS.email}:{nome:"Minha empresa",segmento:"assistencia",atende:{},temSistema:false,marcas:[]};
 const {error}=await sb.rpc("criar_empresa",{nome_pessoa:md.nome||KS.email.split("@")[0],cfg});
 if(error){KS.estado="erro";KS.erroMsg="Não deu para criar sua empresa agora. Tente de novo em instantes.";gate();return}
 }

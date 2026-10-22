@@ -50,7 +50,8 @@ p{margin:0}
 .nav nav a{color:#b7c0cc;text-decoration:none}.nav nav a:hover{color:var(--white)}
 .nav .btn{padding:11px 18px;font-size:15px}
 .only-sm{display:none}
-.nav-login{color:#e9edf2;text-decoration:none;font-weight:600;font-size:15px}.nav-login:hover{color:#fff}
+.nav-login{color:#fff;text-decoration:none;font-weight:700;font-size:15px;border:1.5px solid rgba(255,255,255,.28);border-radius:12px;padding:9px 16px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}.nav-login:hover{border-color:#ffb21e;color:#ffb21e}
+.ja-tem{font-size:15px;color:#b7c0cc}.ja-tem a{color:#ffb21e;font-weight:700}
 .menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line2);color:var(--ink);border-radius:10px;width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
 
 /* hero */
@@ -183,8 +184,15 @@ footer{border-top:1px solid #1d2229}
   .nav nav a{padding:12px 0;border-bottom:1px solid #1a1f26}
   .menu-btn{display:inline-flex}
   .nav .btn{padding:9px 14px;font-size:14px}
-  .nav-login{display:none}
+  .nav-login{padding:8px 12px;font-size:14px}
+  .menu-btn{order:5;margin-left:0}
+  .brand{margin-right:auto}
+  .nav .wrap{gap:10px}
+  .nav .btn,.nav-login{white-space:nowrap}
   .nav nav a.only-sm{display:block;color:#ffb21e;font-weight:700}
+}
+@media (max-width:400px){
+  .brand b{display:none}
 }
 @media (prefers-reduced-motion:reduce){.phone{animation:none}.reveal,.btn,.feat{transition:none}.js .reveal:not(.in){opacity:1;transform:none}html{scroll-behavior:auto}}
 </style>
@@ -208,7 +216,7 @@ footer{border-top:1px solid #1d2229}
       <a href="#duvidas">Dúvidas</a>
       <a href="/entrar" class="only-sm">Entrar</a>
     </nav>
-    <a href="/entrar" class="nav-login">Entrar</a>
+    <a href="/entrar" class="nav-login"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Entrar</a>
     <a href="/cadastro" class="btn btn-amber">Testar grátis</a>
   </div>
 </header>
@@ -223,6 +231,7 @@ footer{border-top:1px solid #1d2229}
         <a href="/cadastro" class="btn btn-amber">Começar 14 dias grátis</a>
         <a href="#como" class="btn btn-ghost">Ver como funciona</a>
       </div>
+      <p class="ja-tem">Já tem conta? <a href="/entrar">Entrar no Konserta</a></p>
       <div class="perks">
         <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sem cartão de crédito</span>
         <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Funciona no celular</span>

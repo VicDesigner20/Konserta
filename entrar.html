@@ -15,6 +15,7 @@
 
   <div class="card" id="cLogin">
     <h1>Entrar</h1>
+    <div class="gbox" id="gbox" hidden></div>
     <form id="fLogin" novalidate>
       <div class="fld"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required></div>
       <div class="fld"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" required></div>
@@ -49,11 +50,13 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/config.js"></script>
+<script src="/google.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const show=id=>["#cLogin","#cReset","#cNova"].forEach(c=>$(c).hidden=c!==id);
 let recuperando=/type=recovery/.test(location.hash);
 if(recuperando)show("#cNova");
+KSGoogle.montar($("#gbox"),"Entrar com Google");
 sb.auth.onAuthStateChange((ev)=>{if(ev==="PASSWORD_RECOVERY"){recuperando=true;show("#cNova")}});
 sb.auth.getSession().then(({data})=>{if(data.session&&!recuperando)location.replace("/app")});
 

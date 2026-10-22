@@ -52,8 +52,11 @@
         <p class="hint" style="margin:8px 0 0">Peça o código para o dono da loja. Ele aparece em Conta, no app dele.</p>
       </div>
 
+      <div class="gbox" id="gbox" hidden></div>
+      <div id="blocoEmail" style="display:flex;flex-direction:column;gap:14px">
       <div class="fld"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required></div>
       <div class="fld"><label for="senha">Crie uma senha</label><input id="senha" type="password" autocomplete="new-password" minlength="8" required placeholder="Pelo menos 8 caracteres"></div>
+      </div>
       <div class="err" id="err" role="alert"></div>
       <button class="btn" type="submit" id="btn">Começar teste grátis</button>
       <p class="hint" style="margin:0;text-align:center">Ao criar a conta você concorda com os [Termos de uso] e a [Política de privacidade].</p>
@@ -65,6 +68,7 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="/config.js"></script>
+<script src="/google.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 let modo="nova";
@@ -77,30 +81,59 @@ function setModo(m){
   $("#btn").textContent=m==="nova"?"Começar teste grátis":"Pedir para entrar";
   $("#err").textContent="";
 }
-$("#tabNova").onclick=()=>setModo("nova");
-$("#tabEquipe").onclick=()=>setModo("equipe");
+$("#tabNova").onclick=()=>{setModo("nova");const g=$("#gbox .gbtn");if(g)g.lastChild.textContent="Criar conta com Google"};
+$("#tabEquipe").onclick=()=>{setModo("equipe");const g=$("#gbox .gbtn");if(g)g.lastChild.textContent="Continuar com Google"};
 const qs=new URLSearchParams(location.search);
 if(qs.get("codigo")){setModo("equipe");$("#codigo").value=qs.get("codigo").toUpperCase()}
 
-sb.auth.getSession().then(({data})=>{if(data.session)location.replace("/app")});
-
-$("#form").addEventListener("submit",async e=>{
-  e.preventDefault();
+let sessao=null;
+const completar=qs.get("completar")==="1";
+sb.auth.getSession().then(async({data})=>{
+  sessao=data.session;
+  if(!sessao){KSGoogle.montar($("#gbox"),modo==="nova"?"Criar conta com Google":"Continuar com Google",()=>montarMeta(true)!==null);return}
+  if(!completar){location.replace("/app");return}
+  const um=sessao.user.user_metadata||{};
+  $("#blocoEmail").hidden=true;
+  if(!$("#nome").value)$("#nome").value=um.full_name||um.name||"";
+  $("#titulo").textContent="Falta pouco";
+  $("#subt").textContent="Você entrou como "+sessao.user.email+". Diga se vai criar sua empresa ou entrar numa equipe.";
+  $("#btn").textContent=modo==="nova"?"Criar minha empresa":"Pedir para entrar";
+});
+function montarMeta(google){
   const err=$("#err");err.textContent="";
-  const nome=$("#nome").value.trim(),email=$("#email").value.trim(),senha=$("#senha").value;
-  if(!nome){err.textContent="Coloque seu nome.";$("#nome").focus();return}
+  const nome=$("#nome").value.trim(),email=$("#email").value.trim();
+  if(!nome&&!google){err.textContent="Coloque seu nome.";$("#nome").focus();return null}
   let meta={nome};
   if(modo==="nova"){
     const emp=$("#empresa").value.trim();
-    if(!emp){err.textContent="Coloque o nome da empresa.";$("#empresa").focus();return}
+    if(!emp){err.textContent="Coloque o nome da empresa"+(google?" antes de continuar com o Google.":".");$("#empresa").focus();return null}
     const temSistema=(document.querySelector('input[name="sis"]:checked')||{}).value==="sim";
     meta.acao="criar";
     meta.empresa={nome:emp,segmento:$("#ramo").value,atende:{},temSistema,telefone:$("#tel").value.trim(),email,horario:"",logoUrl:"",logoId:"",marcas:[],criadoEm:Date.now()};
   }else{
     const cod=$("#codigo").value.trim().toUpperCase();
-    if(!/^[A-Z0-9]{6}$/.test(cod)){err.textContent="O código tem 6 letras e números.";$("#codigo").focus();return}
+    if(!/^[A-Z0-9]{6}$/.test(cod)){err.textContent="O código tem 6 letras e números.";$("#codigo").focus();return null}
     meta.acao="entrar";meta.codigo=cod;
   }
+  if(google){try{localStorage.setItem("ks.cadastro",JSON.stringify(meta))}catch(_){}}
+  return meta;
+}
+
+$("#form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const err=$("#err");
+  const meta=montarMeta(false);if(!meta)return;
+  if(sessao){
+    const btn=$("#btn");btn.disabled=true;
+    const um=sessao.user.user_metadata||{};const nm=meta.nome||um.full_name||sessao.user.email.split("@")[0];
+    const r=meta.acao==="criar"
+      ?await sb.rpc("criar_empresa",{nome_pessoa:nm,cfg:{...meta.empresa,email:sessao.user.email}})
+      :await sb.rpc("entrar_empresa",{cod:meta.codigo,nome_pessoa:nm});
+    btn.disabled=false;
+    if(r.error){err.textContent=meta.acao==="entrar"&&String(r.error.message).includes("codigo")?"Esse código não existe. Confira com o dono da loja.":"Não deu: "+r.error.message;return}
+    location.replace("/app");return;
+  }
+  const nome=meta.nome,email=$("#email").value.trim(),senha=$("#senha").value;
   if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent="Confira o e-mail.";$("#email").focus();return}
   if(senha.length<8){err.textContent="A senha precisa ter pelo menos 8 caracteres.";$("#senha").focus();return}
   const btn=$("#btn");btn.disabled=true;btn.textContent="Criando…";
