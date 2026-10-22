@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Konserta — App de Ordem de Serviço para Assistências, Oficinas e Instaladores</title>
+<meta name="description" content="Organize a bancada, mande orçamentos pelo WhatsApp com seu logo, controle peças e estoque e saiba o que fazer primeiro para liberar a loja. Teste 14 dias grátis.">
+<meta name="theme-color" content="#0b0d10">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Konserta — sua bancada organizada, sua loja mais vazia">
+<meta property="og:description" content="App de OS, orçamento e bancada para assistências técnicas, oficinas mecânicas, ar-condicionado e marcenarias.">
+<meta property="og:locale" content="pt_BR">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%23ffb21e'/%3E%3Crect x='23' y='18' width='17' height='64' rx='3' fill='%23141414'/%3E%3Cpath d='M40 52 L72 84' stroke='%23141414' stroke-width='17'/%3E%3Cpath d='M40 50 L59 31' stroke='%23141414' stroke-width='17'/%3E%3Ccircle cx='67' cy='24' r='15' fill='%23141414'/%3E%3Crect x='69' y='6' width='10' height='20' fill='%23ffb21e' transform='rotate(45 74 16)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#0b0d10;--bg2:#0f1216;--card:#12161b;--card2:#151a20;--line:#222831;--line2:#2a3038;
+  --ink:#e9edf2;--white:#fff;--muted:#8b96a3;--soft:#aab4c0;
+  --amber:#ffb21e;--amber-hi:#ffd27a;--graf:#141414;--ok:#5fe39a;
+  --display:"Sora",system-ui,sans-serif;--body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%}
+a{color:var(--amber)}a:hover{color:var(--amber-hi)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1200px;margin:0 auto;padding-left:24px;padding-right:24px}
+h1,h2,h3{font-family:var(--display);color:var(--white);margin:0;text-wrap:balance}
+h2{font-weight:700;font-size:clamp(30px,3.6vw,44px);line-height:1.1;letter-spacing:-.02em}
+p{margin:0}
+.eyebrow{font-family:var(--mono);color:var(--amber);font-size:13px;letter-spacing:.08em}
+.lead{color:var(--soft);font-size:18px}
+.head{display:flex;flex-direction:column;gap:12px;max-width:720px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:16px;padding:15px 24px;border-radius:12px;text-decoration:none;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-amber{background:var(--amber);color:var(--graf)}.btn-amber:hover{background:var(--amber-hi);color:var(--graf)}
+.btn-ghost{border:1px solid #343b45;color:var(--ink)}.btn-ghost:hover{border-color:var(--muted);color:var(--white)}
+.check{display:flex;align-items:center;gap:7px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--white)}
+.brand b{font-family:var(--display);font-weight:800;letter-spacing:-.045em;font-size:24px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(11,13,16,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.scrolled{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:24px;padding-top:16px;padding-bottom:16px}
+.nav nav{display:flex;gap:22px;margin-left:auto;font-size:15px}
+.nav nav a{color:#b7c0cc;text-decoration:none}.nav nav a:hover{color:var(--white)}
+.nav .btn{padding:11px 18px;font-size:15px}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line2);color:var(--ink);border-radius:10px;width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
+
+/* hero */
+.hero{position:relative;padding-top:56px;padding-bottom:96px;display:flex;flex-wrap:wrap;gap:56px;align-items:center}
+.hero::before{content:"";position:absolute;width:620px;height:620px;right:-120px;top:-40px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,178,30,.18),rgba(255,178,30,0));pointer-events:none}
+.hero-txt{flex:999 1 480px;min-width:0;position:relative;display:flex;flex-direction:column;gap:24px}
+.badge{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--card);border-radius:99px;padding:6px 14px 6px 8px;font-size:13.5px;color:#c9d1db}
+.badge span{background:#1e3a2c;color:var(--ok);border-radius:99px;padding:2px 9px;font-weight:700;font-size:12px}
+h1{font-weight:800;font-size:clamp(38px,5.4vw,64px);line-height:1.04;letter-spacing:-.03em}
+h1 em{font-style:normal;color:var(--amber)}
+.hero .lead{font-size:19px;max-width:560px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.perks{display:flex;gap:22px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+
+/* phone */
+.phone-wrap{flex:1 1 320px;display:flex;justify-content:center;position:relative}
+.phone{width:320px;max-width:100%;border-radius:44px;background:#1a1f26;padding:12px;border:1px solid #2f3640;box-shadow:0 40px 80px rgba(0,0,0,.5);animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+.screen{border-radius:34px;background:#f6f4ef;overflow:hidden;color:#141414;font-size:12px}
+.s-top{background:#fff;padding:18px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e7e2d8}
+.s-top b{font-family:var(--display);font-size:14px;display:block;line-height:1.15}
+.s-top small{font-size:10px;color:#8a5700;font-weight:700;letter-spacing:.05em}
+.s-tabs{padding:10px 12px;display:flex;gap:6px;background:#fff}
+.s-tabs span{background:#f0eee8;color:#5f594d;border-radius:99px;padding:4px 10px;font-weight:600}
+.s-tabs span.on{background:#141414;color:var(--amber);font-weight:700}
+.s-list{padding:10px 12px 14px;display:flex;flex-direction:column;gap:8px}
+.s-now{background:#141414;color:#fff;border-radius:12px;padding:9px 11px;display:flex;align-items:center;gap:9px}
+.s-now i{width:28px;height:28px;border-radius:8px;background:var(--amber);display:flex;align-items:center;justify-content:center;font-style:normal}
+.s-now small{color:#c9c4b8;font-size:10.5px}
+.s-card{background:#fff;border:1px solid #e7e2d8;border-left:4px solid var(--c);border-radius:12px;padding:9px 11px;display:flex;flex-direction:column;gap:5px}
+.s-card .r{display:flex;justify-content:space-between}
+.s-card .r b{font-size:13px}.s-card .r span{font-family:var(--mono);color:#6b6558;font-size:10.5px}
+.s-card .d{color:#5f594d}
+.tags{display:flex;gap:4px;flex-wrap:wrap}
+.tags span{border-radius:5px;padding:1px 6px;font-weight:700;font-size:10px}
+.s-bar{background:#fff;border-top:1px solid #e7e2d8;display:flex;justify-content:space-around;align-items:center;padding:8px 6px 14px;color:#6b6558;font-size:10px;font-weight:600}
+.s-bar .plus{width:40px;height:40px;border-radius:13px;background:var(--amber);color:#141414;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500}
+
+/* problema */
+.band{background:var(--bg2);border-top:1px solid #1d2229;border-bottom:1px solid #1d2229}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px}
+.pain{display:flex;flex-direction:column;gap:6px}
+.pain b{font-family:var(--display);font-size:20px;color:var(--white)}
+.pain .x{color:var(--muted)}
+section{scroll-margin-top:80px}
+
+/* recursos */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px;min-width:0;transition:border-color .2s,transform .2s}
+.feat:hover{border-color:#3a4250;transform:translateY(-2px)}
+.feat h3{font-size:19px}
+.feat p{color:var(--muted)}
+.feat.big{grid-column:span 2;background:linear-gradient(160deg,#1a1710,#12151a 60%);border-color:#2a2a22}
+.feat.big h3{font-size:22px}.feat.big p{color:var(--soft);max-width:520px}
+.feat .ico{width:44px;height:44px;border-radius:12px;background:var(--amber);display:flex;align-items:center;justify-content:center}
+@media (max-width:700px){.feat.big{grid-column:auto}}
+
+/* passos */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.steps li{border-top:2px solid #3a4250;padding-top:18px;display:flex;flex-direction:column;gap:8px}
+.steps li:first-child{border-top-color:var(--amber)}
+.steps .n{font-family:var(--mono);color:var(--muted);font-size:14px}.steps li:first-child .n{color:var(--amber)}
+.steps b{font-family:var(--display);color:var(--white);font-size:18px}
+.steps span:last-child{color:var(--muted)}
+
+/* ramos */
+.ramos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.ramo{background:var(--card2);border:1px solid #262d36;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:6px}
+.ramo b{font-family:var(--display);color:var(--white);font-size:18px}
+.ramo span{color:var(--muted);font-size:15px}
+
+/* planos */
+.toggle{display:flex;gap:4px;background:var(--card2);border:1px solid #262d36;border-radius:99px;padding:4px}
+.toggle button{border:0;border-radius:99px;padding:10px 18px;font:600 14px var(--body);cursor:pointer;background:transparent;color:var(--soft)}
+.toggle button[aria-pressed="true"]{background:var(--amber);color:var(--graf);font-weight:700}
+.plans{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.plan{background:var(--card);border:1px solid #262d36;border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.plan.top{background:#17140c;border:2px solid var(--amber)}
+.plan .t{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.plan .t b{font-family:var(--display);font-size:20px;color:var(--white)}
+.plan .tag{background:var(--amber);color:var(--graf);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:800}
+.plan .para{color:var(--muted);font-size:15px;min-height:46px}
+.price{display:flex;align-items:baseline;gap:6px}
+.price strong{font-family:var(--display);font-weight:800;font-size:44px;color:var(--white);letter-spacing:-.02em}
+.price span{color:var(--muted)}
+.plan .obs{color:var(--muted);font-size:13.5px;min-height:20px}
+.plan .btn{padding:13px}
+.plan ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:9px}
+.plan li{display:flex;gap:9px;color:#c9d1db;font-size:15px}
+.plan li svg{flex:0 0 auto;margin-top:3px}
+
+/* história */
+.story{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:clamp(28px,4vw,56px);display:flex;flex-wrap:wrap;gap:32px;align-items:center}
+.story>div{flex:1 1 200px;display:flex;flex-direction:column;gap:8px}
+.story>div b{font-family:var(--display);color:var(--white);font-size:26px;line-height:1.15}
+.story p{flex:999 1 420px;min-width:0;color:var(--soft);font-size:18px}
+
+/* faq */
+.faq{display:flex;flex-direction:column;gap:10px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.faq summary{list-style:none;cursor:pointer;color:var(--white);padding:18px 20px;display:flex;justify-content:space-between;gap:16px;font-family:var(--display);font-weight:600;font-size:17px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--amber);font-size:22px;line-height:1;transition:transform .2s}
+.faq details[open] summary::after{content:"−"}
+.faq details p{padding:0 20px 18px;color:var(--soft)}
+
+/* cta */
+.cta{position:relative;overflow:hidden;border-radius:28px;background:var(--amber);color:var(--graf);padding:clamp(36px,5vw,72px);display:flex;flex-wrap:wrap;gap:28px;align-items:center;justify-content:space-between}
+.cta::after{content:"";position:absolute;width:420px;height:420px;right:-100px;bottom:-220px;border-radius:50%;border:60px solid rgba(20,20,20,.07);pointer-events:none}
+.cta div{flex:999 1 420px;min-width:0;display:flex;flex-direction:column;gap:10px;position:relative}
+.cta h2{color:var(--graf);font-weight:800;font-size:clamp(30px,4vw,48px);line-height:1.05;letter-spacing:-.03em}
+.cta p{font-size:18px;color:#3d3216}
+.cta .btn{position:relative;background:var(--graf);color:#fff;font-size:17px;padding:17px 28px}.cta .btn:hover{background:#000;color:#fff}
+
+/* footer */
+footer{border-top:1px solid #1d2229}
+.foot{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;padding-top:48px;padding-bottom:32px}
+.foot .col{display:flex;flex-direction:column;gap:8px;font-size:15px}
+.foot .col b{color:var(--white)}
+.foot .col a,.foot .col span{color:var(--muted);text-decoration:none}.foot .col a:hover{color:var(--white)}
+.legal{border-top:1px solid #1d2229;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;color:#6f7a87;font-size:13.5px;padding-top:18px;padding-bottom:36px}
+
+/* reveal */
+.reveal{transition:opacity .6s ease,transform .6s ease}
+.js .reveal:not(.in){opacity:0;transform:translateY(18px)}
+
+@media (max-width:860px){
+  .nav nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 24px 16px}
+  .nav nav.open{display:flex}
+  .nav nav a{padding:12px 0;border-bottom:1px solid #1a1f26}
+  .menu-btn{display:inline-flex}
+  .nav .btn{display:none}
+}
+@media (prefers-reduced-motion:reduce){.phone{animation:none}.reveal,.btn,.feat{transition:none}.js .reveal:not(.in){opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#topo" class="brand" aria-label="Konserta, início">
+      <svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#ffb21e"/><rect x="23" y="18" width="17" height="64" rx="3" fill="#141414"/><path d="M40 52 L72 84" stroke="#141414" stroke-width="17"/><path d="M40 50 L59 31" stroke="#141414" stroke-width="17"/><circle cx="67" cy="24" r="15" fill="#141414"/><rect x="69" y="6" width="10" height="20" fill="#ffb21e" transform="rotate(45 74 16)"/></svg>
+      <b>konserta</b>
+    </a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav id="menu" aria-label="Principal">
+      <a href="#recursos">Recursos</a>
+      <a href="#como">Como funciona</a>
+      <a href="#ramos">Para quem</a>
+      <a href="#planos">Planos</a>
+      <a href="#duvidas">Dúvidas</a>
+    </nav>
+    <a href="#planos" class="btn btn-amber">Testar grátis</a>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="wrap hero">
+    <div class="hero-txt">
+      <span class="badge"><span>NOVO</span>Feito por técnico, para técnico</span>
+      <h1>Sua bancada organizada.<br><em>Sua loja mais vazia.</em></h1>
+      <p class="lead">Veja cada aparelho, peça e orçamento num quadro só. Tire foto do defeito, mande o orçamento pelo WhatsApp e saiba exatamente o que fazer primeiro para liberar espaço.</p>
+      <div class="ctas">
+        <a href="#planos" class="btn btn-amber">Começar 14 dias grátis</a>
+        <a href="#como" class="btn btn-ghost">Ver como funciona</a>
+      </div>
+      <div class="perks">
+        <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sem cartão de crédito</span>
+        <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Funciona no celular</span>
+        <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Usa junto com seu sistema de OS</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap" aria-hidden="true">
+      <div class="phone"><div class="screen">
+        <div class="s-top">
+          <svg width="30" height="30" viewBox="0 0 100 100"><rect width="100" height="100" rx="26" fill="#ffb21e"/><rect x="23" y="18" width="17" height="64" rx="3" fill="#141414"/><path d="M40 52 L72 84" stroke="#141414" stroke-width="17"/><path d="M40 50 L59 31" stroke="#141414" stroke-width="17"/><circle cx="67" cy="24" r="15" fill="#141414"/><rect x="69" y="6" width="10" height="20" fill="#ffb21e" transform="rotate(45 74 16)"/></svg>
+          <span><b>Assistência Silva</b><small>MEUS APARELHOS</small></span>
+        </div>
+        <div class="s-tabs"><span class="on">Fila 12</span><span>Peças 5</span><span>Bancada 4</span></div>
+        <div class="s-list">
+          <div class="s-now"><i>⚡</i><span><b>Liberar a loja</b><br><small>6 podem sair hoje · 3 consertos rápidos</small></span></div>
+          <div class="s-card" style="--c:#c23a28"><div class="r"><b>Marcos Oliveira</b><span>#1048</span></div><span class="d">Air fryer 4L · não aquece</span><div class="tags"><span style="background:#c23a28;color:#fff">Urgente</span><span style="background:#e3f4ea;color:#1d6e40">Rápido</span><span style="background:#e3f4ea;color:#1d6e40">peça chegou</span></div></div>
+          <div class="s-card" style="--c:#2f66cf"><div class="r"><b>Carla Souza</b><span>#1046</span></div><span class="d">Gol 2015 · barulho na suspensão</span><div class="tags"><span style="background:#e6eefc;color:#2552a8">Seguradora</span><span style="background:#fff1d1;color:#7d5300">R$ 640 · enviado</span></div></div>
+          <div class="s-card" style="--c:#6b7a75"><div class="r"><b>João Pereira</b><span>#1043</span></div><span class="d">Split 12.000 BTUs · não gela</span><div class="tags"><span style="background:#f0eee8;color:#5f594d">Particular</span><span style="background:#f0eee8;color:#5f594d">2 fotos</span></div></div>
+        </div>
+        <div class="s-bar"><span>Quadro</span><span>Estoque</span><span class="plus">+</span><span>Compras</span><span>Conta</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap grid-auto" style="padding-top:56px;padding-bottom:56px">
+      <div class="pain reveal"><span class="eyebrow">ANTES</span><b>Aparelho esquecido no fundo da prateleira</b><span class="x">Ninguém lembra há quantos dias ele está ali.</span></div>
+      <div class="pain reveal"><span class="eyebrow">ANTES</span><b>Peça encomendada que ninguém cobrou</b><span class="x">O conserto para porque a lista de compras está no papel.</span></div>
+      <div class="pain reveal"><span class="eyebrow">ANTES</span><b>Cliente reclamando de risco que já existia</b><span class="x">Sem foto da entrada, é a sua palavra contra a dele.</span></div>
+    </div>
+  </section>
+
+  <section id="recursos" class="wrap" style="padding-top:104px;padding-bottom:40px;display:flex;flex-direction:column;gap:48px">
+    <div class="head reveal">
+      <span class="eyebrow">RECURSOS</span>
+      <h2>Tudo o que acontece na bancada, num só lugar</h2>
+      <p class="lead">Pensado em cima do dia a dia real de quem conserta, não de um escritório.</p>
+    </div>
+    <div class="features">
+      <article class="feat big reveal">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
+        <h3>Liberar a loja</h3>
+        <p>O app mostra o que pode sair hoje, quais consertos são rápidos e já têm peça, e quais orçamentos estão parados esperando o cliente. Você sabe por onde começar o dia.</p>
+      </article>
+      <article class="feat reveal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb21e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z"/></svg>
+        <h3>Quadro por etapa</h3>
+        <p>Fila, aguardando peça, em bancada, pronto. Cada cartão mostra há quantos dias o aparelho está na loja.</p>
+      </article>
+      <article class="feat reveal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb21e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <h3>Foto e vídeo do defeito</h3>
+        <p>Registre o aparelho na entrada direto pela câmera. Protege você e ajuda no diagnóstico.</p>
+      </article>
+      <article class="feat reveal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb21e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg>
+        <h3>Orçamento no WhatsApp</h3>
+        <p>Monte em 3 passos e envie como imagem ou PDF com seu logo e CNPJ. Enviou, a OS já vai para aguardando aprovação.</p>
+      </article>
+      <article class="feat reveal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb21e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5M12 12v9"/></svg>
+        <h3>Estoque com baixa automática</h3>
+        <p>Puxou a peça na OS, o estoque baixa sozinho. Chegou no mínimo, entra na lista de compras.</p>
+      </article>
+      <article class="feat reveal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb21e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.3"/><path d="M3 20c.9-3.4 3.2-5 6-5s5.1 1.6 6 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.5c2.3.2 4 1.7 4.8 4.5"/></svg>
+        <h3>Um quadro por técnico</h3>
+        <p>Cada técnico entra com o próprio PIN e vê só os aparelhos dele. O dono vê a equipe toda.</p>
+      </article>
+      <article class="feat reveal">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb21e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
+        <h3>Lista de compras</h3>
+        <p>Junta as peças de todas as OS. Copie e mande para o fornecedor de uma vez.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="como" class="wrap" style="padding-top:80px;padding-bottom:80px;display:flex;flex-direction:column;gap:40px">
+    <div class="head reveal"><span class="eyebrow">COMO FUNCIONA</span><h2>Do balcão à entrega, em 4 passos</h2></div>
+    <ol class="steps">
+      <li class="reveal"><span class="n">01</span><b>Chegou o aparelho</b><span>Crie a OS, tire a foto da entrada e marque se é garantia, seguradora ou particular.</span></li>
+      <li class="reveal"><span class="n">02</span><b>Orçou, enviou</b><span>Monte o orçamento e mande pelo WhatsApp com o seu logo. O quadro anda sozinho.</span></li>
+      <li class="reveal"><span class="n">03</span><b>Peça e bancada</b><span>Acompanhe cada peça de "precisa comprar" até "aplicada", e puxe do estoque com um toque.</span></li>
+      <li class="reveal"><span class="n">04</span><b>Pronto, avisado</b><span>Aviso de retirada pronto no WhatsApp e comprovante de entrega em PDF.</span></li>
+    </ol>
+  </section>
+
+  <section id="ramos" class="band">
+    <div class="wrap" style="padding-top:88px;padding-bottom:88px;display:flex;flex-direction:column;gap:36px">
+      <div class="head reveal">
+        <span class="eyebrow">PARA QUEM</span>
+        <h2>Se adapta ao seu ramo</h2>
+        <p class="lead">Já tem sistema de OS? Use só a organização da bancada. Não tem? Ligue a OS completa, com numeração, orçamento e impressão.</p>
+      </div>
+      <div class="ramos">
+        <div class="ramo reveal"><b>Assistência técnica</b><span>Eletrônicos, eletroportáteis, celulares. Garantia de fábrica e seguradora.</span></div>
+        <div class="ramo reveal"><b>Mecânica automotiva</b><span>Veículo, placa e quilometragem. Atende seguradoras e frotas.</span></div>
+        <div class="ramo reveal"><b>Ar-condicionado</b><span>Instalação e reparo, com endereço do serviço e equipamento.</span></div>
+        <div class="ramo reveal"><b>Marcenaria</b><span>Pedidos, medidas, produção e entrega.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="planos" class="wrap" style="padding-top:104px;padding-bottom:80px;display:flex;flex-direction:column;gap:36px;align-items:center">
+    <div class="head reveal" style="align-items:center;text-align:center"><span class="eyebrow">PLANOS</span><h2>Comece grátis por 14 dias</h2></div>
+    <div class="toggle" role="group" aria-label="Período de cobrança">
+      <button type="button" data-periodo="mensal" aria-pressed="true">Mensal</button>
+      <button type="button" data-periodo="anual" aria-pressed="false">Anual · 2 meses grátis</button>
+    </div>
+    <div class="plans">
+      <div class="plan reveal" data-mensal="29">
+        <div class="t"><b>Bancada</b></div>
+        <span class="para">Para quem já tem sistema de OS e quer organizar a bancada.</span>
+        <div class="price"><strong>R$ 29</strong><span>/mês</span></div>
+        <span class="obs">Cancele quando quiser</span>
+        <a href="#comecar" class="btn btn-ghost">Testar grátis</a>
+        <ul><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Quadro por etapa e dias parados</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Foto e vídeo do defeito</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Peças, estoque e lista de compras</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Liberar a loja</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>1 usuário</li></ul>
+      </div>
+      <div class="plan top reveal" data-mensal="49">
+        <div class="t"><b>Completo</b><span class="tag">MAIS ESCOLHIDO</span></div>
+        <span class="para">Para quem não tem sistema: a OS inteira dentro do app.</span>
+        <div class="price"><strong>R$ 49</strong><span>/mês</span></div>
+        <span class="obs">Cancele quando quiser</span>
+        <a href="#comecar" class="btn btn-amber">Testar grátis</a>
+        <ul><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Tudo do plano Bancada</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>OS com numeração automática</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Orçamento e cotação no WhatsApp</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>PDF de entrada, orçamento e entrega</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Logo e cores da sua empresa</li></ul>
+      </div>
+      <div class="plan reveal" data-mensal="89">
+        <div class="t"><b>Equipe</b></div>
+        <span class="para">Para lojas com vários técnicos na bancada.</span>
+        <div class="price"><strong>R$ 89</strong><span>/mês</span></div>
+        <span class="obs">Cancele quando quiser</span>
+        <a href="#comecar" class="btn btn-ghost">Testar grátis</a>
+        <ul><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Tudo do plano Completo</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Até 5 técnicos</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Um quadro para cada técnico</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Visão da equipe toda</li><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5fe39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Suporte prioritário</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:24px;padding-bottom:88px">
+    <div class="story reveal">
+      <div><span class="eyebrow">QUEM FEZ</span><b>Nasceu dentro de uma assistência técnica</b></div>
+      <p>[Conte aqui a sua história: há quantos anos você trabalha na bancada, qual problema te fez criar o Konserta e como ele mudou o dia a dia da sua loja. Técnico confia em técnico.]</p>
+    </div>
+  </section>
+
+  <section id="duvidas" class="wrap" style="max-width:860px;padding-top:40px;padding-bottom:96px;display:flex;flex-direction:column;gap:28px">
+    <h2 style="text-align:center">Dúvidas frequentes</h2>
+    <div class="faq">
+      <details open><summary>Preciso largar o sistema de OS que eu já uso?</summary><p>Não. No plano Bancada o Konserta só organiza a bancada, e o número da OS continua vindo do seu sistema. Se você não tem sistema, o plano Completo faz a OS inteira.</p></details>
+      <details><summary>Funciona no celular?</summary><p>Sim. Foi feito para ser usado com o celular na mão, na bancada: tire foto, mude a etapa e mande o orçamento sem ir até o computador.</p></details>
+      <details><summary>Meus técnicos conseguem usar?</summary><p>Sim. Cada técnico entra com o próprio nome e PIN, e vê os aparelhos dele. O dono vê a equipe toda e aprova quem entra.</p></details>
+      <details><summary>Serve para oficina mecânica ou ar-condicionado?</summary><p>Serve. No cadastro você escolhe o ramo, e os campos mudam: veículo, placa e quilometragem na oficina, endereço do serviço no ar-condicionado.</p></details>
+      <details><summary>Como funciona o teste grátis?</summary><p>Você usa tudo por 14 dias sem cadastrar cartão. Se gostar, escolhe um plano. Se não, sua conta só para de funcionar.</p></details>
+    </div>
+  </section>
+
+  <section id="comecar" class="wrap" style="padding-bottom:96px">
+    <div class="cta reveal">
+      <div>
+        <h2>Menos aparelho parado.<br>Mais conserto entregue.</h2>
+        <p>Teste 14 dias grátis. Leva 2 minutos para cadastrar a sua loja.</p>
+      </div>
+      <a href="[LINK-WHATSAPP-OU-CADASTRO]" class="btn">Criar minha conta</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="col" style="flex:1 1 260px;gap:12px">
+      <a href="#topo" class="brand"><svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#ffb21e"/><rect x="23" y="18" width="17" height="64" rx="3" fill="#141414"/><path d="M40 52 L72 84" stroke="#141414" stroke-width="17"/><path d="M40 50 L59 31" stroke="#141414" stroke-width="17"/><circle cx="67" cy="24" r="15" fill="#141414"/><rect x="69" y="6" width="10" height="20" fill="#ffb21e" transform="rotate(45 74 16)"/></svg><b style="font-size:21px">konserta</b></a>
+      <span style="max-width:320px">Organização de bancada e ordem de serviço para assistências técnicas, oficinas e instaladores.</span>
+    </div>
+    <div class="col"><b>Produto</b><a href="#recursos">Recursos</a><a href="#planos">Planos</a><a href="#duvidas">Dúvidas</a></div>
+    <div class="col"><b>Contato</b><span>[WhatsApp de vendas]</span><span>[e-mail de contato]</span><span>[@instagram]</span></div>
+  </div>
+  <div class="wrap legal">
+    <span>© <span id="ano">2026</span> Konserta · [CNPJ]</span>
+    <span>[Termos de uso] · [Política de privacidade]</span>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+// menu do celular
+const menuBtn=document.getElementById("menuBtn"),menu=document.getElementById("menu");
+menuBtn.addEventListener("click",()=>{const o=menu.classList.toggle("open");menuBtn.setAttribute("aria-expanded",o)});
+menu.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{menu.classList.remove("open");menuBtn.setAttribute("aria-expanded","false")}));
+// borda do menu ao rolar
+const nav=document.getElementById("nav");
+addEventListener("scroll",()=>nav.classList.toggle("scrolled",scrollY>8),{passive:true});
+// mensal / anual
+document.querySelectorAll("[data-periodo]").forEach(b=>b.addEventListener("click",()=>{
+  const anual=b.dataset.periodo==="anual";
+  document.querySelectorAll("[data-periodo]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  document.querySelectorAll(".plan").forEach(p=>{const m=+p.dataset.mensal;
+    p.querySelector(".price strong").textContent="R$ "+(anual?Math.round(m*10/12):m);
+    p.querySelector(".obs").textContent=anual?"R$ "+(m*10)+" cobrados por ano":"Cancele quando quiser"});
+}));
+// animação ao aparecer
+if("IntersectionObserver" in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+}else document.querySelectorAll(".reveal").forEach(el=>el.classList.add("in"));
+document.getElementById("ano").textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
