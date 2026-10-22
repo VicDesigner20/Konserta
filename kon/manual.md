@@ -17,6 +17,7 @@ O Konserta organiza a bancada de assistências técnicas, oficinas mecânicas, m
 - Campos: número da OS (automático se a loja usa a OS completa do Konserta; se a loja já tem outro sistema, digita o número de lá), cliente, telefone/WhatsApp, aparelho, defeito, tipo de atendimento, marca do fabricante (garantia de fábrica), data de chegada, prioridade e status inicial.
 - Dentro da OS: tempo estimado (Rápido, Médio, Demorado), prioridade (Baixa, Normal, Alta, Urgente), fotos e vídeos do defeito (até 20 MB por vídeo), peças, orçamento, histórico, PDF e apagar.
 - Duas OS do mesmo cliente aparecem ligadas (o cliente tem 2 aparelhos na loja).
+- "Cliente quer para": data que o cliente pediu (na criação da OS, ou depois em Dados, dentro da OS). O cartão mostra o prazo; um dia antes aparece no topo do quadro o aviso "Amanhã o cliente vem buscar", dizendo se o aparelho já está pronto. No dia vira "Hoje o cliente vem buscar" e, se passar, "Prazo já passou", em vermelho.
 
 ## Peças, estoque e compras
 - Na OS, em Peças, adicione cada peça com status: precisa comprar, encomendada, chegou, aplicada. Dá para puxar uma peça do Estoque, e o estoque baixa sozinho.

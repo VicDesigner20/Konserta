@@ -449,6 +449,21 @@ Coluna vazia fica estreita; as que têm OS dividem o resto. */
 @media (min-width:761px){.nowbtn{justify-content:flex-start}.nowbtn>span:nth-child(2){flex:0 1 auto}}
 @media (max-width:760px){.nowbtn .go{margin-left:auto;padding:8px 12px}}
 @media (max-width:760px){.go-x{display:none}}
+/* prazo do cliente */
+.p-pz{background:color-mix(in srgb,#2f6fd6 14%,var(--surface));color:#2f6fd6}
+.p-pz-am{background:color-mix(in srgb,var(--warn) 20%,var(--surface));color:var(--warn)}
+.p-pz-hoje,.p-pz-atr{background:var(--bad);color:#fff}
+.pz{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1.5px solid color-mix(in srgb,var(--warn) 55%,var(--line));border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.pz-ic{font-size:22px;line-height:1.2}
+.pz-c{display:flex;flex-direction:column;gap:10px;flex:1;min-width:0}
+.pz-g{display:flex;flex-direction:column;gap:6px}
+.pz-g>b{font-family:var(--f-display);font-size:14.5px;letter-spacing:-.01em}
+.pz-g.atr>b,.pz-g.hoje>b{color:var(--bad)}.pz-g.am>b{color:var(--warn)}
+.pz-i{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 10px;border-radius:12px;background:var(--surface2)}
+.pz-i:hover{outline:2px solid var(--brand)}
+.pz-n{font-weight:800}.pz-n small{color:var(--muted);font-weight:500}
+.pz-s{font-size:13px;color:var(--muted)}
+.pz-s em{font-style:normal;font-weight:700}.pz-s em.ok{color:var(--ok)}.pz-s em.falta{color:var(--bad)}
 /* ===== Painel da Loja ===== */
 .lj-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px;border-radius:20px;border:0;cursor:pointer;
 background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--brand) 38%,transparent),transparent 60%),var(--graf);color:#fff;box-shadow:var(--shadow);font:inherit}
@@ -878,6 +893,7 @@ const buy=pecas.filter(p=>p.status==="comprar").length, enc=pecas.filter(p=>p.st
 const nm=(o.midia||[]).length;const tw=twinsOf(o).length;
 const pr=priOf(o.prioridade);
 let meta=pr.k==="urgente"?`<span class="pill p-urg">Urgente</span>`:pr.k==="alta"?`<span class="pill p-alta">Prioridade alta</span>`:"";
+meta+=prazoPill(o);
 meta+=`<span class="pill p-tipo">${esc(o.tipo==="fabrica"&&o.marca?"Fábrica · "+o.marca:tp.t)}</span>`;
 if(o.status!=="entregue")meta+=`<span class="pill p-days ${dc}" title="${w?"Dias aguardando retirada":"Dias desde que chegou"}">${w?(d===0?"pronto hoje":plural(d,"dia","dias")+" aguardando"):(d===0?"chegou hoje":plural(d,"dia","dias")+" na loja")}</span>`;
 if(buy)meta+=`<span class="pill p-buy">${buy} a comprar</span>`;
@@ -957,6 +973,7 @@ ${full()?`<div class="fld"><label for="n_doc">CPF do cliente (opcional)</label><
 <div class="fld"><label for="n_acc">${esc(seg().xl)}</label><input id="n_acc" placeholder="${esc(seg().xp)}"></div>
 <div class="fld full"><label for="n_est">${esc(seg().el)}</label><input id="n_est" placeholder="${esc(seg().ep)}"></div>`:""}
 <div class="fld"><label for="n_ent">Data que chegou</label><input id="n_ent" type="date" value="${toISO(Date.now())}" max="${toISO(Date.now())}"></div>
+<div class="fld"><label for="n_prazo">Cliente quer para <small class="hint">(opcional)</small></label><input id="n_prazo" type="date" min="${toISO(Date.now())}"><span class="hint">Um dia antes o app avisa que o cliente vem buscar.</span></div>
 <div class="fld"><label for="n_st">Começa em</label><select id="n_st">${STATUS.filter(s=>s.k!=="entregue").map(s=>`<option value="${s.k}">${s.t}</option>`).join("")}</select></div>
 <div class="full"><button class="btn btn-accent" type="submit">Criar OS</button></div>
 </form>
@@ -970,7 +987,7 @@ let num=$("#n_num").value.trim();if(full()&&!num)num=String(nextNum());
 if(full()&&/^\d+$/.test(num)&&+num>=nextNum()-0)saveEmpresa({proxNum:+num+1});
 const extra=full()?{doc:$("#n_doc").value.trim(),[seg().xk]:$("#n_acc").value.trim(),estado:$("#n_est").value.trim()}:{};
 const o={id:uid(),num,...extra,cliente:cli,aparelho:$("#n_ap").value.trim(),telefone:$("#n_tel").value.trim(),
-defeito:$("#n_def").value.trim(),tipo:$("#n_tipo").value,marca:$("#n_tipo").value==="fabrica"?$("#n_marca").value.trim():"",prioridade:$("#n_pri").value,tempo:$("#n_tempo").value,status:st,entrada:ent,criadoEm:now,statusDesde:now,pecas:[],midia:[],notas:"",criadoPor:me?me.nome:"",dono:(scope!=="me"&&scope!=="all"?scope:(me?me.id:"")),historico:[{s:st,em:now,por:me?me.nome:""}]};
+defeito:$("#n_def").value.trim(),tipo:$("#n_tipo").value,marca:$("#n_tipo").value==="fabrica"?$("#n_marca").value.trim():"",prioridade:$("#n_pri").value,tempo:$("#n_tempo").value,status:st,entrada:ent,prazo:fromISO(($("#n_prazo")||{}).value)||null,criadoEm:now,statusDesde:now,pecas:[],midia:[],notas:"",criadoPor:me?me.nome:"",dono:(scope!=="me"&&scope!=="all"?scope:(me?me.id:"")),historico:[{s:st,em:now,por:me?me.nome:""}]};
 osList.push(o);activeTab=st;renderBoard();
 await save(o,true);toast("OS criada");openOS(o.id);
 }
@@ -1014,6 +1031,7 @@ ${full()&&pode("orcamentos")?orcHTML(o):""}
 <div class="grid2">
 <div class="fld"><label for="f_num">Nº da OS</label><input id="f_num" class="mono" inputmode="numeric" value="${esc(o.num)}"></div>
 <div class="fld"><label for="f_ent">Data que chegou</label><input id="f_ent" type="date" value="${toISO(entradaOf(o))}" max="${toISO(Date.now())}"></div>
+<div class="fld"><label for="f_prazo">Cliente quer para</label><input id="f_prazo" type="date" value="${o.prazo?toISO(o.prazo):""}"></div>
 <div class="fld"><label for="f_tipo">Tipo de atendimento</label>${tipoSelect("f_tipo",o.tipo)}</div>
 ${activeUsers().length>1?`<div class="fld"><label for="f_dono">Técnico responsável</label><select id="f_dono">${activeUsers().map(u=>`<option value="${u.id}" ${ownerOf(o)===u.id?"selected":""}>${esc(u.nome)}</option>`).join("")}</select></div>`:""}
 ${marcaField("f_marca",o.marca,o.tipo==="fabrica")}
@@ -1357,9 +1375,10 @@ return {sair,resp,rap,semTempo:cand.filter(o=>!o.tempo).length,travadas:mine.fil
 function renderNowBar(){
 const bar=$("#nowbar");if(!me||!loaded){bar.hidden=true;return}
 const L=nowLists();const n=L.sair.length+Math.min(L.rap.length,5);
-if(!L.total){bar.hidden=true;return}
+const PZ=prazosHTML();
+if(!L.total&&!PZ){bar.hidden=true;return}
 bar.hidden=false;
-bar.innerHTML=`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver<span class="go-x"> o que fazer</span> →</span></button>`;
+bar.innerHTML=PZ+`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver<span class="go-x"> o que fazer</span> →</span></button>`;
 }
 function recItem(o,i,why,actions){
 return `<div class="rec"><div class="rec-top"><span class="rec-n">${i}</span><div class="rec-t"><b>${o.num?"#"+esc(o.num)+" · ":""}${esc(o.cliente||"")}</b><small>${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))}</small></div></div>
@@ -1580,6 +1599,7 @@ if(e.target.id==="o_desc")r.desconto=parseMoney(e.target.value);else if(e.target
 const tt=$("#orcTot");if(tt)tt.textContent=fmtR(orcTotal(o));const ot=$("#orcText");if(ot)ot.textContent=orcMsg(o);saveSoon(o);return}
 if(["ct_cli","ct_tel","ct_ap","ct_def"].includes(e.target.id)){const o=curObj();if(!isCot(o))return;o[{ct_cli:"cliente",ct_tel:"telefone",ct_ap:"aparelho",ct_def:"defeito"}[e.target.id]]=e.target.value;saveSoon(o);return}
 if(e.target.id==="stockQ"){stockQ=e.target.value;renderStockList();return}
+if(e.target.id==="f_prazo"){const o=osList.find(x=>x.id===openId);if(o){o.prazo=fromISO(e.target.value)||null;saveSoon(o);renderBoard();toast(o.prazo?"Prazo: "+fmtDia(o.prazo):"Prazo removido")}return}
 if(e.target.id==="f_ent"){const o=osList.find(x=>x.id===openId);const ts=fromISO(e.target.value);if(o&&ts){o.entrada=ts;
 if((o.historico||[]).length<=1&&ts<(o.statusDesde||0))o.statusDesde=ts;saveSoon(o);renderBoard()}return}
 const k=e.target.id==="f_acc"?seg().xk:FMAP[e.target.id];if(!k)return;const o=osList.find(x=>x.id===openId);if(!o)return;
@@ -2233,6 +2253,7 @@ const KON_FAQ=[
 {k:["apagar os","excluir os","deletar","zerar","apagar tudo"],r:"Pra apagar uma OS: abra a OS e, lá no fim, **Apagar OS do quadro**. Pra começar do zero: **Conta** → **Zerar OS** (pede pra digitar APAGAR). Apagar depende da sua função; técnico normalmente não apaga."},
 {k:["buscar","procurar","achar os","pesquisar","filtro"],r:"Use o campo **Buscar** no topo: procura por cliente, número da OS ou marca. Os botões Todos, Particular, Garantia e Seguradora filtram por tipo. E em **Meus aparelhos** dá pra ver o quadro de outra pessoa, se a sua função deixar."},
 {k:["teste","assinar","plano","preco","pagar","mensalidade","quanto custa o konserta"],r:"Você tem 14 dias grátis. Pra assinar, toque em **Assinar** no aviso do teste ou fale com o Konserta pelo WhatsApp de vendas."},
+{k:["prazo","cliente quer para","data de entrega","quando o cliente busca","aviso de retirada","lembrete","cliente vem buscar","dia que o cliente quer"],r:"Na hora de criar a OS, preencha **Cliente quer para** com a data que o cliente pediu (dá pra mudar depois, dentro da OS, em Dados).\nO cartão ganha um selo com o prazo e, **um dia antes**, aparece um aviso no topo do quadro: \"Amanhã o cliente vem buscar\", mostrando se o aparelho já está pronto ou ainda não. No dia, vira \"Hoje\", e se passar, fica em vermelho."},
 {k:["duas os","mesmo cliente","dois aparelhos","duplicada"],r:"Quando o mesmo cliente tem dois aparelhos na loja, as duas OS aparecem ligadas, pra você não esquecer de avisar das duas juntas."}
 ];
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
@@ -2351,6 +2372,24 @@ if(kon.aberto&&kon.modo==="humano"){await humCarregar();konRender()}else{kon.hum
 }
 setInterval(()=>{if(document.visibilityState!=="visible")return;if(kon.aberto&&kon.modo==="humano")humChecar();else if(!humChecar._t||Date.now()-humChecar._t>120000){humChecar._t=Date.now();humChecar()}},15000);
 (function(){const f=$("#konFab");if(f)f.innerHTML=konSVG("fab");const h=$("#konHead");if(h)h.innerHTML=konSVG("head")+`<div><b>Kon</b><small id="konStatus">guia rápido do Konserta</small></div><div class="kx"><button type="button" data-kon="humano" id="konHumBtn">Falar com uma pessoa</button><button type="button" data-kon="limpar" title="Começar conversa nova">Nova</button><button type="button" data-kon="fechar" aria-label="Fechar">✕</button></div>`})();
+/* ---------- Prazo: "cliente quer para" ---------- */
+function diasAte(ts){const a=new Date();a.setHours(0,0,0,0);const b=new Date(ts);b.setHours(0,0,0,0);return Math.round((b-a)/DAY)}
+function prazoAtivo(o){return o.prazo&&o.status!=="entregue"}
+function prazoPill(o){
+if(!prazoAtivo(o))return "";const d=diasAte(o.prazo);
+if(d<0)return `<span class="pill p-pz p-pz-atr" title="Prazo que o cliente pediu">Prazo passou ${d===-1?"ontem":"há "+(-d)+" dias"}</span>`;
+if(d===0)return `<span class="pill p-pz p-pz-hoje" title="Prazo que o cliente pediu">Cliente quer hoje</span>`;
+if(d===1)return `<span class="pill p-pz p-pz-am" title="Prazo que o cliente pediu">Cliente quer amanhã</span>`;
+return `<span class="pill p-pz" title="Prazo que o cliente pediu">Para ${new Date(o.prazo).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}${d<=3?" ("+d+" dias)":""}</span>`;
+}
+function prazosHTML(){
+const l=osList.filter(o=>prazoAtivo(o)&&(scopeMatch(o)||pode("ver_todas_os"))&&diasAte(o.prazo)<=1).sort((a,b)=>a.prazo-b.prazo);
+if(!l.length)return "";
+const grupo=(t,cls,arr)=>arr.length?`<div class="pz-g ${cls}"><b>${t}</b>${arr.map(o=>{const st=stOf(o.status);const ok=WAIT(o.status);
+return `<button type="button" class="pz-i" data-open="${o.id}"><span class="pz-n">${esc(o.cliente||"Cliente")}${o.num?` <small class="mono">#${esc(o.num)}</small>`:""}</span><span class="pz-s">${esc(o.aparelho||"")} · <em class="${ok?"ok":"falta"}">${ok?"✓ pronto pra retirar":"ainda não está pronto ("+esc(st.t)+")"}</em>${me&&ownerOf(o)!==me.id?` · com ${esc(firstName(ownerOf(o)))}`:""}</span></button>`}).join("")}</div>`:"";
+const atr=l.filter(o=>diasAte(o.prazo)<0),hoje=l.filter(o=>diasAte(o.prazo)===0),am=l.filter(o=>diasAte(o.prazo)===1);
+return `<div class="pz" role="status"><span class="pz-ic">📅</span><div class="pz-c">${grupo("Prazo já passou","atr",atr)}${grupo("Hoje o cliente vem buscar","hoje",hoje)}${grupo("Amanhã o cliente vem buscar","am",am)}</div></div>`;
+}
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
