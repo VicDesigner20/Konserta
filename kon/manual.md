@@ -26,6 +26,7 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - No quadro, o cartão da OS de fábrica mostra "30 dias: faltam X" e, quando faltam 5 dias ou menos, aparece um aviso no topo do quadro.
 - "+ Lançar nota fiscal": número da nota, fábrica/marca, data que chegou e as peças (nome, código opcional, quantidade e para qual OS). A peça entra na OS como "Chegou" (se a OS já tinha a peça como "Precisa comprar" ou "Encomendada", ela é atualizada).
 - Aba "Peças a usar": peças que chegaram e ainda não foram usadas. Botão "Usei" tira a peça da lista e marca como Aplicada na OS. Marcar como Aplicada dentro da OS também tira da lista.
+- Peça que sobrou: em "Peças a usar" (ou "Sobrou → estoque" na aba Notas fiscais) toque em "Sobrou: mandar pro estoque". Escolha quantas sobraram e se soma numa peça que já existe no estoque ou cadastra uma nova (código, nome, local e preço). Se sobrou tudo, a peça sai da OS; se sobrou só uma parte, o resto conta como usado. A nota continua registrada com a anotação "foi pro estoque". Só quem tem permissão de Estoque vê esse botão.
 - Aba "Notas fiscais": todas as notas ficam registradas mesmo depois das peças usadas, com busca por número da nota, peça, código, número da OS ou cliente. Dá para editar ou apagar a nota.
 - Quem pode lançar nota: quem pode editar OS ou mexer no estoque.
 
