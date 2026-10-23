@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sugestões · Konserta</title>
+<meta name="description" content="Tem uma ideia para melhorar o Konserta? Conte para a gente.">
+<meta name="theme-color" content="#0b0d10">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Manrope:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/auth.css">
+<style>
+textarea{font:inherit;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 13px;width:100%;min-height:150px;resize:vertical}
+textarea:focus{outline:0;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,178,30,.3)}
+.tipos{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media (max-width:440px){.tipos{grid-template-columns:repeat(2,1fr)}}
+.tipos label{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--line);border-radius:12px;padding:10px 6px;cursor:pointer;font-weight:700;font-size:14px;text-align:center}
+.tipos label span{font-size:22px}
+.tipos label{position:relative}.tipos input{position:absolute;opacity:0;pointer-events:none;width:0;height:0;left:0;top:0}
+.tipos label:has(input:checked){border-color:#141414;background:#fff7e3}
+.tipos label:has(input:focus-visible){outline:2px solid var(--amber)}
+.opc{color:var(--muted);font-weight:400}
+.ok{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:10px 0}
+.ok b{font-family:"Sora",sans-serif;font-size:22px}
+.ok .big{font-size:46px}
+</style>
+</head>
+<body>
+<main class="box">
+  <a href="/" class="brand"><img src="/icon.svg" width="44" height="44" alt=""><b>konserta</b></a>
+  <div class="card" id="card">
+    <div>
+      <h1>Você tem sugestões para melhorar o app?</h1>
+      <p class="sub" style="margin-top:6px">Deixe aqui. Cada ideia é lida pela equipe do Konserta, e muitas das melhorias do app nasceram de sugestões de técnicos.</p>
+    </div>
+    <form id="form" novalidate>
+      <div class="fld"><span class="lbl">É sobre o quê?</span>
+        <div class="tipos" role="radiogroup">
+          <label><input type="radio" name="tipo" value="ideia" checked><span>💡</span>Ideia</label>
+          <label><input type="radio" name="tipo" value="problema"><span>🛠️</span>Problema</label>
+          <label><input type="radio" name="tipo" value="elogio"><span>👏</span>Elogio</label>
+          <label><input type="radio" name="tipo" value="outro"><span>💬</span>Outro</label>
+        </div></div>
+      <div class="fld"><label for="texto">Sua sugestão</label><textarea id="texto" maxlength="3000" placeholder="Ex.: queria que o app avisasse quando uma peça encomendada está atrasada…" required></textarea></div>
+      <div class="row2">
+        <div class="fld"><label for="nome">Seu nome <span class="opc">(opcional)</span></label><input id="nome" autocomplete="name" maxlength="80"></div>
+        <div class="fld"><label for="contato">WhatsApp ou e-mail <span class="opc">(opcional)</span></label><input id="contato" maxlength="120" placeholder="Se quiser resposta"></div>
+      </div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn" type="submit" id="btn">Enviar sugestão</button>
+      <p class="hint" style="margin:0;text-align:center">Usamos seu contato só para responder sobre a sugestão. Veja a <a href="/privacidade">Política de privacidade</a>.</p>
+    </form>
+  </div>
+  <p class="foot"><a href="/">← Voltar ao site</a> · <a href="/entrar">Entrar no Konserta</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/config.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+$("#form").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("#err");err.textContent="";
+  const texto=$("#texto").value.trim();
+  if(texto.length<3){err.textContent="Escreva sua sugestão.";$("#texto").focus();return}
+  const tipo=(document.querySelector('input[name="tipo"]:checked')||{}).value||"ideia";
+  const b=$("#btn");b.disabled=true;b.textContent="Enviando…";
+  const {error}=await sb.rpc("sugestao_enviar",{p_texto:texto,p_tipo:tipo,p_nome:$("#nome").value.trim()||null,p_contato:$("#contato").value.trim()||null,p_empresa:null});
+  b.disabled=false;b.textContent="Enviar sugestão";
+  if(error){err.textContent=String(error.message||"").includes("muitas")?"Muitas sugestões agora. Tente de novo mais tarde.":"Não deu para enviar agora. Tente de novo em instantes.";return}
+  $("#card").innerHTML=`<div class="ok"><span class="big">🙌</span><b>Valeu pela sugestão!</b><p class="sub" style="margin:0">Ela chegou para a equipe do Konserta.${$("#contato")&&$("#contato").value?" Se precisarmos de mais detalhes, falamos com você.":""}</p><a class="btn" href="/sugestoes" style="text-decoration:none;align-self:stretch;text-align:center">Mandar outra</a><a href="/">Voltar ao site</a></div>`;
+});
+</script>
+</body>
+</html>

@@ -32,6 +32,7 @@ const FAQ=[
  {k:["cadastrar","criar conta","comecar","como faco pra usar","quero usar","assinar","contratar"],r:"É só criar sua conta: leva uns 2 minutos. Você coloca seu nome, o nome da loja, o ramo e se já tem sistema de OS. Já cai direto no app com os 14 dias grátis.",a:"cadastro"},
  {k:["entrar","login","logar","ja tenho conta","acessar","senha"],r:"Se você já tem conta, é só entrar com seu e-mail e senha. Esqueceu a senha? Na tela de entrada tem \"Esqueci minha senha\".",a:"entrar"},
  {k:["suporte","ajuda","falar com alguem","atendimento","contato","whatsapp de vendas","humano"],r:"__SUPORTE__",a:"contato"},
+ {k:["sugestao","sugestoes","sugerir","ideia","melhoria","melhorar","feedback","opiniao"],r:"Sua ideia é muito bem-vinda! 💡 Na página **Sugestões** você manda direto pra equipe do Konserta, que lê todas.",a:"sug"},
  {k:["liberar a loja","loja cheia","lotada","espaco"],r:"O **Liberar a loja** mostra o que pode sair hoje (prontos esperando retirada, com aviso no WhatsApp) e quais consertos são rápidos e já têm peça. Você sabe por onde começar o dia e a prateleira esvazia.",a:"cadastro"}
 ];
 const tok=x=>norm(x).replace(/[^\p{L}\p{N} ]/gu," ").split(" ").filter(w=>w.length>1&&!["de","da","do","um","uma","e","eu","me","meu","minha","como","que","pra","para","no","na","em","com","se","ta","to","voces","vcs"].includes(w)).map(w=>w.slice(0,5));
@@ -41,7 +42,7 @@ function responder(q){const t=new Set(tok(q));let best=null,bs=0;
   for(const f of FAQ){let sc=0;for(const k of f.k){const ws=tok(k);if(ws.length&&ws.every(w=>t.has(w)))sc+=ws.length*2}if(sc>bs){bs=sc;best=f}}
   if(!best||bs<2)return {r:"Essa eu não sei responder daqui. 🔧 Mas posso te contar sobre preços, teste grátis, ramos atendidos, equipe e como funciona. Ou crie sua conta e me pergunte lá dentro, que eu conheço o app inteiro.",a:"cadastro"};
   return best}
-const ACOES={cadastro:["Testar 14 dias grátis","/cadastro"],entrar:["Entrar","/entrar"],planos:["Ver os planos","#planos"],como:["Ver como funciona","#como"],
+const ACOES={cadastro:["Testar 14 dias grátis","/cadastro"],entrar:["Entrar","/entrar"],sug:["Mandar sugestão","/sugestoes"],planos:["Ver os planos","#planos"],como:["Ver como funciona","#como"],
   contato:W?["Falar no WhatsApp","https://wa.me/"+W+"?text="+encodeURIComponent("Oi! Tenho uma dúvida sobre o Konserta.")]:null};
 let msgs=[],aberto=false,modo="kon",hum=null,humMsgs=[],ocupado=false,etapa=null;
 try{hum=JSON.parse(localStorage.getItem("konserta.humano")||"null")}catch(_){}

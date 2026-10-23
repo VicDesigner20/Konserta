@@ -1984,7 +1984,7 @@ ${resetMode?`<form id="wipeForm" autocomplete="off" style="display:flex;flex-dir
 `<span class="hint">Apaga as OS para começar o quadro do zero.</span>
 <div style="display:flex;gap:8px;flex-wrap:wrap">${pode("apagar_os")?`<button type="button" class="btn btn-danger" data-act="wipeMine">Apagar todas as minhas OS</button>`:`<span class="hint">Quem apaga OS é o dono ou o gerente.</span>`}${pode("apagar_os")&&pode("equipe")?`<button type="button" class="btn btn-danger" data-act="wipeAll">Apagar todas as OS da empresa</button>`:""}</div>`}</div>
 ${KS.superadmin?`<div class="sec"><h4>Painel do Konserta</h4><span class="hint">Só você vê isto: todas as empresas, testes, planos e módulos em teste.</span><a class="btn btn-accent" style="align-self:flex-start" href="/admin">Abrir painel</a></div>`:""}
-<div class="sec"><h4>Precisa de ajuda?</h4><span class="hint">Cada pessoa entra com o próprio e-mail e senha. Esqueceu a senha? Use "Esqueci minha senha" na tela de entrada.</span><span class="hint"><a href="/termos" target="_blank">Termos de uso</a> · <a href="/privacidade" target="_blank">Política de privacidade</a></span></div>`);
+<div class="sec"><h4>Precisa de ajuda?</h4><span class="hint">Cada pessoa entra com o próprio e-mail e senha. Esqueceu a senha? Use "Esqueci minha senha" na tela de entrada.</span><a class="btn btn-line" href="/sugestoes" target="_blank" rel="noopener" style="align-self:flex-start">💡 Mandar uma sugestão para o app</a><span class="hint"><a href="/termos" target="_blank">Termos de uso</a> · <a href="/privacidade" target="_blank">Política de privacidade</a></span></div>`);
 }
 let resetMode=null;
 async function wipeOS(){
@@ -2408,11 +2408,12 @@ const KON_FAQ=[
 {k:["buscar","procurar","achar os","pesquisar","filtro"],r:"Use o campo **Buscar** no topo: procura por cliente, número da OS ou marca. Os botões Todos, Particular, Garantia e Seguradora filtram por tipo. E em **Meus aparelhos** dá pra ver o quadro de outra pessoa, se a sua função deixar."},
 {k:["teste","assinar","plano","preco","pagar","mensalidade","quanto custa o konserta"],r:"Você tem 14 dias grátis. Pra assinar, toque em **Assinar** no aviso do teste ou fale com o Konserta pelo WhatsApp de vendas."},
 {k:["prazo","cliente quer para","data de entrega","quando o cliente busca","aviso de retirada","lembrete","cliente vem buscar","dia que o cliente quer"],r:"Na hora de criar a OS, preencha **Cliente quer para** com a data que o cliente pediu (dá pra mudar depois, dentro da OS, em Dados).\nO cartão ganha um selo com o prazo e, **um dia antes**, aparece um aviso no topo do quadro: \"Amanhã o cliente vem buscar\", mostrando se o aparelho já está pronto ou ainda não. No dia, vira \"Hoje\", e se passar, fica em vermelho."},
+{k:["sugestao","sugestão","sugerir","ideia","melhoria","melhorar o app","pedir funcao","nova funcao","feedback","reclamar do app"],r:"Adoro ideia nova! 💡 Mande sua sugestão na página **Sugestões**: ela vai direto pra equipe do Konserta, que lê todas. Também fica em **Conta** → **Precisa de ajuda?**.",a:"sug"},
 {k:["duas os","mesmo cliente","dois aparelhos","duplicada"],r:"Quando o mesmo cliente tem dois aparelhos na loja, as duas OS aparecem ligadas, pra você não esquecer de avisar das duas juntas."}
 ];
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],estoque_completo:["Abrir Estoque completo",()=>true,()=>openEstq()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
 cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Fornecedores",()=>true,()=>{agForm=null;openAgenda()}],agd:["Abrir a Agenda",()=>true,()=>{AG.vista="proximos";openAgd()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
-conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],relatorio:["Abrir Relatório do mês",()=>podeFaturamento(),()=>{relMes=0;openRel()}]};
+conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],sug:["Abrir Sugestões",()=>true,()=>window.open("/sugestoes","_blank","noopener")],relatorio:["Abrir Relatório do mês",()=>podeFaturamento(),()=>{relMes=0;openRel()}]};
 let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
 function konChave(){return "konserta.kon."+(KS.uid||"")}
 try{}catch(_){}

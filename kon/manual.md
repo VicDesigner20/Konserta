@@ -90,5 +90,8 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Instalar no iPhone: abra no Safari → botão Compartilhar → "Adicionar à Tela de Início". No Android: Chrome → menu ⋮ → "Instalar app" ou "Adicionar à tela inicial".
 - Os dados ficam na nuvem e aparecem em todos os aparelhos da equipe na hora.
 
+## Sugestões
+- Para sugerir melhorias, relatar um problema ou elogiar: página konserta.vercel.app/sugestoes (link "Sugestões" no menu do site e em Conta → Precisa de ajuda? no app). A equipe do Konserta lê todas.
+
 ## Planos
 - 14 dias grátis. Depois, para assinar, use o botão "Assinar" no aviso do teste ou fale com o Konserta pelo WhatsApp de vendas.
