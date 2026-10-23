@@ -674,6 +674,47 @@ body.estq-on{overflow:hidden}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 @media (prefers-reduced-motion:reduce){.sheet.shake{animation:none}}
 .rasc{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 50%,var(--line));border-radius:12px;padding:9px 12px;font-size:14px;font-weight:600}
+/* ===== Agenda ===== */
+.agd{z-index:42}
+.ag-wrap{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+@media (max-width:860px){.ag-wrap{grid-template-columns:1fr}}
+.ag-wrap aside{display:flex;flex-direction:column;gap:12px;position:sticky;top:76px}
+@media (max-width:860px){.ag-wrap aside{position:static}}
+.ag-wrap main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ag-cal{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px}
+.ag-cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.ag-cal-h b{font-family:var(--f-display)}
+.ag-sem,.ag-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.ag-sem span{font-size:11.5px;font-weight:800;color:var(--muted)}
+.ag-d{position:relative;aspect-ratio:1;border:0;border-radius:10px;background:transparent;color:var(--ink);font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.ag-d:hover{background:var(--surface2)}.ag-d.pass{color:var(--muted);font-weight:500}
+.ag-d.hoje{outline:2px solid var(--brand);outline-offset:-2px}
+.ag-d.sel{background:var(--graf);color:#fff}
+.ag-d i{position:absolute;right:3px;top:3px;min-width:16px;height:16px;border-radius:8px;background:var(--brand);color:var(--brand-ink);font-style:normal;font-size:10.5px;line-height:16px;font-weight:800;padding:0 3px}
+.ag-meus{background:var(--surface)}
+.ag-tabs{position:static;background:transparent}
+.ag-tabs .ag-n{background:var(--graf);color:#fff}
+.ag-gr{display:flex;flex-direction:column;gap:8px}
+.ag-gr h4{margin:4px 0 0;font-family:var(--f-display);font-size:15.5px}
+.ag-i{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.ag-i:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+.ag-i.fechado{opacity:.6;box-shadow:none}.ag-i.atras{border-left:5px solid var(--bad)}
+.ag-h{display:flex;flex-direction:column;align-items:center;min-width:58px}
+.ag-h b{font-family:var(--f-display);font-size:19px;letter-spacing:-.02em}.ag-h small{color:var(--muted);font-size:11.5px}
+.ag-c{display:flex;flex-direction:column;gap:2px;min-width:0}.ag-c>b{font-size:15.5px}.ag-c>small{color:var(--muted);font-size:13px}
+.ag-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.ag-tags .pill{font-size:11.5px}
+.ag-vis{background:color-mix(in srgb,var(--warn) 18%,var(--surface));color:var(--warn)}
+.ag-s-ag{background:var(--surface2);color:var(--ink)}.ag-s-cf{background:color-mix(in srgb,#2f6fd6 15%,var(--surface));color:#2f6fd6}
+.ag-s-ok{background:color-mix(in srgb,var(--ok) 15%,var(--surface));color:var(--ok)}.ag-s-ft{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad)}.ag-s-cc{background:var(--surface2);color:var(--muted);text-decoration:line-through}
+.ag-det{display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.ag-det-n{font-family:var(--f-display);font-size:19px}
+.ag-onde{display:inline-flex;gap:6px;align-items:center;cursor:pointer}.ag-onde input{accent-color:var(--graf)}
+.ag-onde:has(input:checked){background:var(--graf);color:#fff}
+.ag-bar{border-color:color-mix(in srgb,#2f6fd6 50%,var(--line))}
+.ag-bar .pz-g.hoje>b{color:#2f6fd6}
+.ag-am,.ag-at{align-self:flex-start;font-weight:800}.ag-at{color:var(--bad)}
+.ag-onde{position:relative;white-space:nowrap;padding:10px 16px}
+.ag-onde input{position:absolute;opacity:0;pointer-events:none}
+.ag-onde:has(input:focus-visible){outline:2px solid var(--brand)}
 </style>
 </head>
 <body style="margin:0">
@@ -682,11 +723,11 @@ body.estq-on{overflow:hidden}
 <div class="brand"><span class="mark" id="brandMark">B</span><img class="logo" id="brandLogo" alt="" hidden><h1><span id="brandName">&nbsp;</span><span id="brandTitle">Controle de Bancada</span></h1></div>
 <div class="navtop">
 <button class="btn btn-ghost" id="btnLoja" type="button" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20H3z"/><path d="M9 20v-6h6v6"/></svg>Painel da Loja</button>
+<button class="btn btn-ghost" id="btnAgd" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda <span class="badge-n" id="agdN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnStock" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg>Estoque <span class="badge-n" id="stockN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnShop" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Compras <span class="badge-n" id="shopN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnUser" type="button" hidden></button>
 <button class="btn btn-ghost" id="btnFin" type="button" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Finanças</button>
-<button class="btn btn-ghost" id="btnAgenda" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5z"/><path d="M5 3v18M9 8h6M9 12h6"/><path d="M19 7h2M19 12h2M19 17h2"/></svg>Agenda</button>
 <button class="btn btn-ghost" id="btnCot" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg>Cotações</button>
 <button class="btn btn-accent" id="btnNew" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova OS</button>
 </div>
@@ -731,7 +772,7 @@ const snapOf=rows=>({docs:rows.map(r=>({id:r.id,exists:true,data:()=>r.d})),size
 const nowIso=()=>new Date().toISOString();
 const rnd=()=>Math.random().toString(36).slice(2,8);
 function docsCol(eid,col){
-const TB=["funcionarios","ausencias","fornecedores"].includes(col)?"cadastros":"docs";
+const TB=col==="compromissos"?"compromissos":["funcionarios","ausencias","fornecedores"].includes(col)?"cadastros":"docs";
 const map=new Map();
 return {
 doc(id){return {
@@ -1047,11 +1088,13 @@ sheetMode="plus";
 $("#layer").innerHTML=shell("Criar",`
 <div class="seg-list">
 ${pode("editar_os")?`<button type="button" class="seg-opt" data-act="newos"><span class="sn">+</span><span><b>Nova OS</b><br><small class="hint">O ${esc(seg().noun)} chegou na loja</small></span></button>`:""}
+<button type="button" class="seg-opt" data-act="agd"><span class="sn">🗓</span><span><b>Agenda</b><br><small class="hint">${(()=>{const h=diaIni(Date.now());const n=agList.filter(a=>diaIni(a.quando)===h&&agAberto(a)).length;return n?plural(n,"atendimento","atendimentos")+" hoje":"Garantias e visitas marcadas"})()}</small></span></button>
+${pode("editar_os")?`<button type="button" class="seg-opt" data-act="agdnovo"><span class="sn">+</span><span><b>Novo agendamento</b><br><small class="hint">Marcar dia e hora com o cliente</small></span></button>`:""}
 ${pode("cotacoes")?`<button type="button" class="seg-opt" data-act="newcot"><span class="sn">$</span><span><b>Nova cotação</b><br><small class="hint">O cliente quer saber o preço antes</small></span></button>
 <button type="button" class="seg-opt" data-act="cots"><span class="sn">≡</span><span><b>Ver cotações</b><br><small class="hint">${cotList.filter(scopeMatch).length} no total</small></span></button>`:""}
 ${KS.recursos&&KS.recursos.financas&&pode("financas")?`<button type="button" class="seg-opt" data-act="fin"><span class="sn">R$</span><span><b>Finanças</b> <span class="pill p-info">beta</span><br><small class="hint">Módulo em teste, só sua empresa vê</small></span></button>`:""}
 ${pode("orcamentos")?`<button type="button" class="seg-opt" data-act="rel"><span class="sn">R$</span><span><b>Relatório do mês</b><br><small class="hint">Entregues e faturamento</small></span></button>`:""}
-<button type="button" class="seg-opt" data-act="agenda"><span class="sn">☎</span><span><b>Agenda de fornecedores</b><br><small class="hint">${fornList.length?plural(fornList.length,"contato","contatos"):"Telefone e WhatsApp de quem te vende peças"}</small></span></button>
+<button type="button" class="seg-opt" data-act="agenda"><span class="sn">☎</span><span><b>Fornecedores</b><br><small class="hint">${fornList.length?plural(fornList.length,"contato","contatos"):"Telefone e WhatsApp de quem te vende peças"}</small></span></button>
 </div>`);
 }
 function openNew(){
@@ -1087,7 +1130,7 @@ const extra=full()?{doc:$("#n_doc").value.trim(),[seg().xk]:$("#n_acc").value.tr
 const o={id:uid(),num,...extra,cliente:cli,aparelho:$("#n_ap").value.trim(),telefone:$("#n_tel").value.trim(),
 defeito:$("#n_def").value.trim(),tipo:$("#n_tipo").value,marca:$("#n_tipo").value==="fabrica"?$("#n_marca").value.trim():"",prioridade:$("#n_pri").value,tempo:$("#n_tempo").value,status:st,entrada:ent,prazo:fromISO(($("#n_prazo")||{}).value)||null,criadoEm:now,statusDesde:now,pecas:[],midia:[],notas:"",criadoPor:me?me.nome:"",dono:(scope!=="me"&&scope!=="all"?scope:(me?me.id:"")),historico:[{s:st,em:now,por:me?me.nome:""}]};
 osList.push(o);activeTab=st;renderBoard();
-rascunhoLimpar();await save(o,true);toast("OS criada");openOS(o.id);
+rascunhoLimpar();if(window.agVincular)agVincular(o);await save(o,true);toast("OS criada");openOS(o.id);
 }
 function openOS(id){
 const o=osList.find(x=>x.id===id);if(!o){closeSheet();return}
@@ -1169,7 +1212,7 @@ const items=shopItems();
 const grp=k=>items.filter(i=>i.p.status===k);
 const sec=(k,t,h)=>{const g=grp(k);return `<div class="sec"><h4>${t} <span class="mono">${g.length}</span></h4>${h?`<span class="hint">${h}</span>`:""}<div class="shop-g">${g.length?g.map(({o,p})=>`<div class="shop-i"><div class="txt"><b>${esc(p.nome)}</b><button type="button" data-open="${o.id}">${o.num?"OS "+esc(o.num)+" · ":""}${esc(o.cliente)}${o.aparelho?" · "+esc(o.aparelho):""}</button></div><button type="button" class="ps ps-${p.status}" data-scycle="${o.id}|${p.id}">${esc(PSTAT.find(s=>s.k===p.status).t)}</button></div>`).join(""):`<span class="hint">Nada aqui.</span>`}</div></div>`};
 $("#layer").innerHTML=shell("Lista de compras",`
-<div class="btnrow"><button type="button" class="btn btn-line" data-act="copyshop">Copiar lista para o fornecedor</button><button type="button" class="btn btn-line" data-act="agenda">Agenda de fornecedores</button></div>
+<div class="btnrow"><button type="button" class="btn btn-line" data-act="copyshop">Copiar lista para o fornecedor</button><button type="button" class="btn btn-line" data-act="agenda">Fornecedores</button></div>
 ${sec("comprar","Precisa comprar","")}
 ${sec("encomendada","Encomendada","")}
 ${restockSec()}
@@ -1474,7 +1517,7 @@ return {sair,resp,rap,semTempo:cand.filter(o=>!o.tempo).length,travadas:mine.fil
 function renderNowBar(){
 const bar=$("#nowbar");if(!me||!loaded){bar.hidden=true;return}
 const L=nowLists();const n=L.sair.length+Math.min(L.rap.length,5);
-const PZ=prazosHTML();
+const PZ=agendaHTML()+prazosHTML();agBadge();
 if(!L.total&&!PZ){bar.hidden=true;return}
 bar.hidden=false;
 bar.innerHTML=PZ+`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver<span class="go-x"> o que fazer</span> →</span></button>`;
@@ -1862,8 +1905,8 @@ users=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.criadoEm||0)-(b.c
 if(sessId){me=users.find(u=>u.id===sessId&&!u.pendente)||null;if(!me&&users.length)logout(true)}
 gate();renderScope();if(me)renderBoard();if(sheetMode==="acct")openAccount();if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();
 },()=>{usersLoaded=true;gate()}));
-for(const [c,setv] of [["funcionarios",v=>funcList=v],["ausencias",v=>ausList=v],["fornecedores",v=>fornList=v]]){const cc=db.collection(base+"/"+c);cadCols[c]=cc;
-unsubs.push(cc.onSnapshot(snap=>{if(cid!==id)return;setv(snap.docs.map(d=>({id:d.id,...d.data()})));if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();if(sheetMode==="agenda"&&!agForm)renderAgenda()},()=>{}))}
+for(const [c,setv] of [["funcionarios",v=>funcList=v],["ausencias",v=>ausList=v],["fornecedores",v=>fornList=v],["compromissos",v=>agList=v]]){const cc=db.collection(base+"/"+c);cadCols[c]=cc;if(c==="compromissos")agCol=cc;
+unsubs.push(cc.onSnapshot(snap=>{if(cid!==id)return;setv(snap.docs.map(d=>({id:d.id,...d.data()})));if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();if(sheetMode==="agenda"&&!agForm)renderAgenda();if(c==="compromissos"){renderNowBar();if($("#agd")&&!$("#agd").hidden&&!AG.form)renderAgd()}},()=>{}))}
 ccol=db.collection(base+"/cotacoes");
 unsubs.push(ccol.onSnapshot(snap=>{if(cid!==id)return;cotList=snap.docs.map(d=>({id:d.id,...d.data()}))},()=>{}));
 col=db.collection(base+"/os");
@@ -2269,7 +2312,7 @@ const podeForn=()=>pode("compras")||pode("estoque");
 function openAgenda(){
 sheetMode="agenda";
 const ed=agForm?(fornList.find(x=>x.id===agForm.id)||{}):null;
-$("#layer").innerHTML=shell("Agenda de fornecedores",`
+$("#layer").innerHTML=shell("Fornecedores",`
 ${agForm?`<form class="sec" id="fornForm" autocomplete="off"><h4>${fornList.some(x=>x.id===agForm.id)?"Editar contato":"Novo contato"}</h4><div class="grid2">
 ${fld("g_nome","Fornecedor",ed.nome,'required placeholder="Ex.: Distribuidora Central"')}${fld("g_vend","Vendedor / contato",ed.vendedor)}
 ${fld("g_tel","Telefone / WhatsApp",ed.telefone,'inputmode="tel" placeholder="(41) 9…"')}${fld("g_tel2","Outro telefone",ed.telefone2,'inputmode="tel"')}
@@ -2347,7 +2390,8 @@ const KON_FAQ=[
 {k:["estoque completo","etiqueta","etiquetas","pimaco","imprimir etiqueta","codigo da peca","codigo de barras","valor do estoque","valor em estoque","custo","margem","planilha do estoque"],r:"O **Estoque completo** é a página própria do estoque. Abra **Estoque** e toque em **Estoque completo** (ou pela Conta).\n- Cada peça tem **código**, categoria, local, custo, venda e margem, e no topo aparece o valor total em estoque.\n- Para **etiquetas**: marque as peças, toque em **Etiquetas**, escolha a folha (Pimaco A4, Pimaco Carta ou A4 comum pra recortar) e imprima em **Tamanho real / 100%**.\n- Folha nova? Imprima antes a **Página de teste** em papel comum e confira contra a luz.",a:"estoque_completo"},
 {k:["estoque","peca no estoque","baixa","prateleira","item do estoque","repor"],r:"No **Estoque** você cadastra cada item com quantidade, mínimo e onde fica. Quando o item fica abaixo do mínimo, aparece o número vermelho.\nPra usar uma peça numa OS: abra a OS, vá em **Peças** e puxe do estoque. A baixa é automática.",a:"estoque"},
 {k:["compras","comprar","lista de compras","encomendada","encomendar","pecas que faltam","fornecedor lista"],r:"Em **Compras** ficam juntas todas as peças que precisam ser compradas, as encomendadas e as que chegaram, de todas as OS, mais o que está abaixo do mínimo no estoque. Use **Copiar lista para o fornecedor** pra mandar de uma vez.",a:"compras"},
-{k:["agenda","fornecedor","telefone do fornecedor","contato","vendedor","distribuidora"],r:"A **Agenda de fornecedores** guarda o contato de quem te vende peça: o que vende, vendedor, telefones e site, com botões **Ligar** e **WhatsApp**. Dá pra buscar pela peça (ex.: \"resistência\"). Fica no botão **Agenda**, no **+** ou dentro de Compras.",a:"agenda"},
+{k:["agendar","agendamento","marcar horario","marcar atendimento","marcar visita","visita","agenda de atendimento","esqueci o atendimento","lembrete","lembrar","garantia marcada","horario com cliente","compromisso"],r:"Use a **Agenda**: botão **Agenda** no topo ou **+** → **Novo agendamento**.\n1. Coloque dia, horário, tipo (garantia de fábrica com marca e protocolo, particular…), se é **na loja** ou **na casa do cliente**, e os dados do cliente.\n2. No atendimento, toque em **Confirmar no WhatsApp** pra mandar a confirmação pro cliente.\n3. Toque em **📅 Lembrar no meu celular**: o alarme toca 1 dia antes e 1 hora antes, mesmo com o app fechado.\nOs atendimentos de hoje aparecem no topo do quadro. Depois, marque **Atendido** ou **Não compareceu**, e dá pra **criar a OS** com os dados.",a:"agd"},
+{k:["fornecedor","telefone do fornecedor","contato","vendedor","distribuidora"],r:"Em **Fornecedores** ficam o contato de quem te vende peça: o que vende, vendedor, telefones e site, com botões **Ligar** e **WhatsApp**. Dá pra buscar pela peça (ex.: \"resistência\"). Fica no botão **Fornecedores** (no topo), no **+** ou dentro de Compras.",a:"agenda"},
 {k:["liberar a loja","loja cheia","cheia","lotada","lotado","espaco","sem espaco","esvaziar","acumulado","muito aparelho","o que fazer primeiro","consertos rapidos","prioridade do dia"],r:"O **Liberar a loja** é o cartão escuro no topo do quadro. Toque em **Ver o que fazer**:\n1. **Pode sair hoje**: prontos e devolvidos esperando retirada, com botão pra avisar o cliente no WhatsApp.\n2. **Consertos rápidos**: o que dá pra fazer agora pra abrir espaço.\nMarcar o tempo estimado (Rápido, Médio, Demorado) nas OS deixa a sugestão mais certeira.",a:"liberar"},
 {k:["funcionario","adicionar pessoa","cadastrar tecnico","cadastro tecnico","cadastrar pessoa","equipe","convidar","pai","filho","irmao","colega","novo usuario","acesso","login para"],r:"Quem cadastra a equipe é o dono (ou quem tem a permissão Gerenciar a equipe):\n1. Abra o **Painel da Loja** → aba **Acessos**.\n2. Toque em **Adicionar pessoa**: nome, e-mail e função.\n3. Escolha como mandar o acesso: **convite por e-mail** (mais seguro) ou **senha provisória** pro WhatsApp, que vale só 5 minutos.\nNo primeiro acesso, a pessoa é obrigada a criar a própria senha.",a:"loja"},
 {k:["funcao","permissao","papel","nao consigo","nao aparece","sumiu","sem permissao","bloqueado","nao vejo"],r:"Cada pessoa tem uma função: **Dono** (pode tudo), **Gerente**, **Atendente**, **Técnico** (vê só as próprias OS) e **Financeiro**. Se um botão não aparece pra você, é a sua função que não libera. Quem muda isso é o dono ou o gerente, no **Painel da Loja** → **Acessos** → **Editar função**."},
@@ -2367,7 +2411,7 @@ const KON_FAQ=[
 {k:["duas os","mesmo cliente","dois aparelhos","duplicada"],r:"Quando o mesmo cliente tem dois aparelhos na loja, as duas OS aparecem ligadas, pra você não esquecer de avisar das duas juntas."}
 ];
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],estoque_completo:["Abrir Estoque completo",()=>true,()=>openEstq()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
-cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Agenda",()=>true,()=>{agForm=null;openAgenda()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
+cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Fornecedores",()=>true,()=>{agForm=null;openAgenda()}],agd:["Abrir a Agenda",()=>true,()=>{AG.vista="proximos";openAgd()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
 conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],relatorio:["Abrir Relatório do mês",()=>pode("orcamentos"),()=>{relMes=0;openRel()}]};
 let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
 function konChave(){return "konserta.kon."+(KS.uid||"")}
@@ -2865,6 +2909,215 @@ const f=$("#newForm");if(f&&!$("#rascAviso")){const b=document.createElement("di
 sheetSujo=true;
 }
 document.addEventListener("click",e=>{const t=e.target.closest('[data-act="rascdesc"]');if(!t)return;rascunhoLimpar();sheetSujo=false;openNew();toast("Rascunho descartado")});
+/* ---------- Agenda de atendimentos (página própria) ---------- */
+let agList=[],agCol=null;
+const AG={vista:"proximos",dia:null,mesOff:0,form:null,det:null,meus:false};
+const AG_ST={agendado:{t:"Agendado",c:"ag-s-ag"},confirmado:{t:"Confirmado",c:"ag-s-cf"},feito:{t:"Atendido",c:"ag-s-ok"},faltou:{t:"Não compareceu",c:"ag-s-ft"},cancelado:{t:"Cancelado",c:"ag-s-cc"}};
+const agAberto=a=>a.status!=="feito"&&a.status!=="cancelado"&&a.status!=="faltou";
+const diaIni=ts=>{const d=new Date(ts);d.setHours(0,0,0,0);return d.getTime()};
+const fmtHora=ts=>new Date(ts).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+const fmtDiaLongo=ts=>{const d=new Date(ts),h=diaIni(Date.now()),x=diaIni(ts);const rel=x===h?"Hoje":x===h+DAY?"Amanhã":x===h-DAY?"Ontem":"";let s=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"2-digit"});s=s.charAt(0).toUpperCase()+s.slice(1);return rel?rel+" · "+s:s};
+function agTipoTxt(a){const t=tipoOf(a.tipo).t;return a.tipo==="fabrica"&&a.marca?"Garantia "+a.marca:t}
+function agVisiveis(){return agList.filter(a=>!AG.meus||!a.resp||a.resp===(me&&me.id))}
+function agFiltrados(){
+const hoje=diaIni(Date.now());let l=agVisiveis();
+if(AG.vista==="hoje")l=l.filter(a=>diaIni(a.quando)===hoje);
+else if(AG.vista==="amanha")l=l.filter(a=>diaIni(a.quando)===hoje+DAY);
+else if(AG.vista==="proximos")l=l.filter(a=>a.quando>=hoje&&a.quando<hoje+8*DAY);
+else if(AG.vista==="atrasados")l=l.filter(a=>agAberto(a)&&a.quando<Date.now()-60*60000);
+else if(AG.vista==="dia")l=l.filter(a=>diaIni(a.quando)===AG.dia);
+return l.sort((a,b)=>a.quando-b.quando);
+}
+function openAgd(dia){
+let el=$("#agd");
+if(!el){el=document.createElement("section");el.id="agd";el.className="estq agd";el.setAttribute("aria-label","Agenda");document.body.appendChild(el)}
+if(dia){AG.vista="dia";AG.dia=diaIni(dia)}
+el.hidden=false;document.body.classList.add("estq-on");
+if(location.hash!=="#agenda")try{history.pushState({agd:1},"","#agenda")}catch(_){}
+closeSheet(true);renderAgd();
+}
+function fecharAgd(viaHist){const el=$("#agd");if(el)el.hidden=true;if(!($("#estq")&&!$("#estq").hidden))document.body.classList.remove("estq-on");AG.form=null;AG.det=null;
+if(!viaHist&&location.hash==="#agenda")try{history.back()}catch(_){}}
+window.addEventListener("popstate",()=>{const el=$("#agd");if(el&&!el.hidden&&location.hash!=="#agenda"){if(AG.form||AG.det){AG.form=null;AG.det=null;try{history.pushState({agd:1},"","#agenda")}catch(_){}renderAgd();return}fecharAgd(true)}});
+function agCalendario(){
+const base=new Date();base.setDate(1);base.setHours(0,0,0,0);base.setMonth(base.getMonth()+AG.mesOff);
+const ano=base.getFullYear(),mes=base.getMonth();const prim=(new Date(ano,mes,1).getDay()+6)%7;const dias=new Date(ano,mes+1,0).getDate();
+const hoje=diaIni(Date.now());const vis=agVisiveis();
+const cont={};vis.forEach(a=>{if(a.status==="cancelado")return;const k=diaIni(a.quando);cont[k]=(cont[k]||0)+1});
+let nm=base.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});nm=nm.charAt(0).toUpperCase()+nm.slice(1);
+let cells="";for(let i=0;i<prim;i++)cells+=`<span></span>`;
+for(let d=1;d<=dias;d++){const k=new Date(ano,mes,d).getTime();const n=cont[k]||0;
+cells+=`<button type="button" class="ag-d ${k===hoje?"hoje":""} ${AG.vista==="dia"&&AG.dia===k?"sel":""} ${k<hoje?"pass":""}" data-agdia="${k}" aria-label="${d}${n?", "+n+" atendimento"+(n>1?"s":""):""}">${d}${n?`<i>${n}</i>`:""}</button>`}
+return `<div class="ag-cal"><div class="ag-cal-h"><button type="button" class="btn btn-line" data-agmes="-1" aria-label="Mês anterior">‹</button><b>${esc(nm)}</b><button type="button" class="btn btn-line" data-agmes="1" aria-label="Próximo mês">›</button></div>
+<div class="ag-sem">${["S","T","Q","Q","S","S","D"].map(x=>`<span>${x}</span>`).join("")}</div><div class="ag-grid">${cells}</div></div>`;
+}
+function agItem(a){
+const st=AG_ST[a.status]||AG_ST.agendado;const resp=a.resp&&users.find(u=>u.id===a.resp);
+const atras=agAberto(a)&&a.quando<Date.now()-60*60000;
+return `<button type="button" class="ag-i ${agAberto(a)?"":"fechado"} ${atras?"atras":""}" data-agdet="${a.id}">
+<span class="ag-h"><b>${fmtHora(a.quando)}</b>${a.dur?`<small>${a.dur} min</small>`:""}</span>
+<span class="ag-c"><b>${esc(a.cliente||"Sem nome")}</b><small>${esc([a.aparelho,a.defeito].filter(Boolean).join(" · "))}</small>
+<span class="ag-tags"><span class="pill p-tipo">${esc(agTipoTxt(a))}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita${a.endereco?" · "+esc(a.endereco):""}</span>`:`<span class="pill pn">Na loja</span>`}${a.protocolo?`<span class="pill pn mono">Prot. ${esc(a.protocolo)}</span>`:""}${resp&&activeUsers().length>1?`<span class="pill pn">${esc(resp.nome.split(" ")[0])}</span>`:""}<span class="pill ${st.c}">${atras?"Atrasado":st.t}</span></span></span></button>`;
+}
+function renderAgd(){
+const el=$("#agd");if(!el||el.hidden)return;
+const hoje=diaIni(Date.now()),vis=agVisiveis();
+const nH=vis.filter(a=>diaIni(a.quando)===hoje&&a.status!=="cancelado").length,nA=vis.filter(a=>diaIni(a.quando)===hoje+DAY&&a.status!=="cancelado").length;
+const nAt=vis.filter(a=>agAberto(a)&&a.quando<Date.now()-60*60000).length;
+const l=agFiltrados();const grupos=[];let g=null;l.forEach(a=>{const k=diaIni(a.quando);if(!g||g.k!==k){g={k,l:[]};grupos.push(g)}g.l.push(a)});
+const podeCriar=pode("editar_os");
+const chips=[["hoje","Hoje",nH],["amanha","Amanhã",nA],["proximos","Próximos 7 dias",null],["atrasados","Atrasados",nAt]];
+const notif=("Notification" in window)&&Notification.permission!=="granted"&&Notification.permission!=="denied";
+el.innerHTML=`<header class="eq-top"><button type="button" class="btn btn-line" data-ag="fechar">← Voltar</button><h2>Agenda</h2>
+<div class="eq-acts">${notif?`<button type="button" class="btn btn-line" data-ag="notif">🔔 Avisar neste aparelho</button>`:""}${podeCriar?`<button type="button" class="btn btn-accent" data-ag="novo">+ Novo agendamento</button>`:""}</div></header>
+<div class="eq-wrap ag-wrap">
+<aside>${agCalendario()}${pode("ver_todas_os")&&activeUsers().length>1?`<label class="pt ag-meus"><input type="checkbox" data-ag="meus" ${AG.meus?"checked":""}><span>Só os meus</span></label>`:""}
+<p class="hint">Dica: use <b>Lembrar no celular</b> em cada atendimento para o alarme tocar mesmo com o app fechado.</p></aside>
+<main>
+<div class="lj-tabs ag-tabs">${chips.map(([k,t,n])=>`<button type="button" data-agvista="${k}" aria-selected="${AG.vista===k}">${t}${n?` <span class="badge-n ${k==="atrasados"?"":"ag-n"}">${n}</span>`:""}</button>`).join("")}${AG.vista==="dia"?`<button type="button" aria-selected="true">${esc(fmtDiaLongo(AG.dia))}</button>`:""}</div>
+${grupos.length?grupos.map(gr=>`<div class="ag-gr"><h4>${esc(fmtDiaLongo(gr.k))} <span class="mono">${gr.l.length}</span></h4>${gr.l.map(agItem).join("")}</div>`).join("")
+:`<div class="sec"><span class="hint">${AG.vista==="atrasados"?"Nada atrasado. 👍":"Nenhum atendimento "+({hoje:"hoje",amanha:"amanhã",proximos:"nos próximos 7 dias",dia:"neste dia"}[AG.vista]||"")+"."}</span>${podeCriar?`<button type="button" class="btn btn-line" data-ag="novo" style="align-self:flex-start">+ Agendar</button>`:""}</div>`}
+</main>
+</div>${AG.form?agFormHTML():""}${AG.det?agDetHTML():""}`;
+}
+function agFormHTML(){
+const a=AG.form.id?(agList.find(x=>x.id===AG.form.id)||{}):(AG.form.novo||{});
+const q=a.quando||(()=>{const d=new Date(AG.vista==="dia"&&AG.dia?AG.dia:Date.now()+DAY);d.setHours(9,0,0,0);return d.getTime()})();
+const d=new Date(q),hh=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+const tipos=tiposOn();const tp=a.tipo||(tipos.some(t=>t.k==="fabrica")?"fabrica":"particular");
+const f=(id,lbl,val,extra="")=>`<div class="fld"><label for="${id}">${lbl}</label><input id="${id}" value="${esc(val??"")}" ${extra}></div>`;
+return `<div class="eq-modal" role="dialog" aria-modal="true" aria-label="Agendamento"><form class="eq-card" id="agForm" autocomplete="off">
+<div class="eq-mh"><b>${AG.form.id?"Editar agendamento":"Novo agendamento"}</b><button type="button" class="btn btn-line" data-ag="formx">✕</button></div>
+<div class="grid2">
+<div class="fld"><label for="ag_data">Dia</label><input id="ag_data" type="date" value="${toISO(q)}" required></div>
+<div class="fld"><label for="ag_hora">Horário</label><input id="ag_hora" type="time" value="${hh}" required></div>
+<div class="fld"><label for="ag_tipo">Tipo</label><select id="ag_tipo">${tipos.map(t=>`<option value="${t.k}" ${t.k===tp?"selected":""}>${esc(t.t)}</option>`).join("")}</select></div>
+<div class="fld" id="ag_w_marca" ${tp==="fabrica"?"":"hidden"}><label for="ag_marca">Marca do fabricante</label><input id="ag_marca" list="agMarcas" value="${esc(a.marca||"")}" placeholder="Ex.: Mondial"><datalist id="agMarcas">${(empresa.marcas||[]).map(m=>`<option value="${esc(m)}">`).join("")}</datalist></div>
+<div class="fld" id="ag_w_prot" ${["fabrica","seguradora"].includes(tp)?"":"hidden"}><label for="ag_prot">Protocolo / OS do fabricante</label><input id="ag_prot" class="mono" value="${esc(a.protocolo||"")}"></div>
+<div class="fld"><label for="ag_dur">Duração</label><select id="ag_dur">${[["","Não sei"],[30,"30 min"],[60,"1 hora"],[90,"1h30"],[120,"2 horas"],[180,"3 horas"]].map(([v,t])=>`<option value="${v}" ${String(a.dur||"")===String(v)?"selected":""}>${t}</option>`).join("")}</select></div>
+<div class="fld full"><span class="lj-lbl">Onde</span><div class="status-row"><label class="st-btn ag-onde"><input type="radio" name="ag_local" value="loja" ${a.local!=="cliente"?"checked":""}> 🏪 Na loja</label><label class="st-btn ag-onde"><input type="radio" name="ag_local" value="cliente" ${a.local==="cliente"?"checked":""}> 🏠 Na casa do cliente</label></div></div>
+<div class="fld full" id="ag_w_end" ${a.local==="cliente"?"":"hidden"}><label for="ag_end">Endereço</label><input id="ag_end" value="${esc(a.endereco||"")}" placeholder="Rua, número, bairro, cidade"></div>
+${f("ag_cli","Cliente",a.cliente,"required")}
+${f("ag_tel","WhatsApp / telefone",a.telefone,'inputmode="tel" placeholder="(41) 9…"')}
+${f("ag_ap",esc(seg().item),a.aparelho,`placeholder="${esc(seg().ph)}"`)}
+${f("ag_def",esc(seg().def),a.defeito)}
+${activeUsers().length>1?`<div class="fld"><label for="ag_resp">Quem vai atender</label><select id="ag_resp"><option value="">Qualquer um</option>${activeUsers().map(u=>`<option value="${u.id}" ${(a.resp||(!AG.form.id&&me?me.id:""))===u.id?"selected":""}>${esc(u.nome)}</option>`).join("")}</select></div>`:""}
+<div class="fld full"><label for="ag_obs">Observações</label><textarea id="ag_obs" rows="2" placeholder="Ex.: ligar antes de sair, portão azul">${esc(a.obs||"")}</textarea></div>
+</div>
+<div class="err" id="agErr"></div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Salvar</button>${AG.form.id?`<button type="button" class="btn btn-danger" data-ag="apagar" data-id="${AG.form.id}">Apagar</button>`:""}</div>
+</form></div>`;
+}
+function agMsg(a){const dd=new Date(a.quando);let dia=dd.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"2-digit"});
+return `Olá${a.cliente?" "+a.cliente.split(" ")[0]:""}! Aqui é da ${empresa.nome||"assistência"}. Confirmando o atendimento${a.tipo==="fabrica"?" da garantia"+(a.marca?" "+a.marca:""):""}${a.aparelho?" do seu "+a.aparelho:""} ${dia} às ${fmtHora(a.quando)}${a.local==="cliente"?(a.endereco?" no endereço "+a.endereco:" na sua casa"):" aqui na loja"+(empresa.endereco?" ("+empresa.endereco+")":"")}. Se precisar mudar, é só responder esta mensagem.`}
+function agDetHTML(){
+const a=agList.find(x=>x.id===AG.det);if(!a)return "";
+const st=AG_ST[a.status]||AG_ST.agendado;const ph=String(a.telefone||"").replace(/\D/g,"");const wa=ph.length>=10?(ph.length<=11?"55"+ph:ph):"";
+const resp=a.resp&&users.find(u=>u.id===a.resp);const pc=pode("editar_os");
+const os=a.osId&&osList.find(o=>o.id===a.osId);
+return `<div class="eq-modal" role="dialog" aria-modal="true" aria-label="Atendimento"><div class="eq-card">
+<div class="eq-mh"><b>${esc(fmtDiaLongo(a.quando))} · ${fmtHora(a.quando)}</b><button type="button" class="btn btn-line" data-ag="detx">✕</button></div>
+<div class="ag-det"><b class="ag-det-n">${esc(a.cliente||"")}</b>
+<span>${esc(agTipoTxt(a))}${a.protocolo?" · protocolo <b class='mono'>"+esc(a.protocolo)+"</b>":""}</span>
+${a.aparelho||a.defeito?`<span>${esc([a.aparelho,a.defeito].filter(Boolean).join(" · "))}</span>`:""}
+<span>${a.local==="cliente"?"🏠 Na casa do cliente"+(a.endereco?": "+esc(a.endereco):""):"🏪 Na loja"}${a.dur?" · "+a.dur+" min":""}${resp?" · com "+esc(resp.nome.split(" ")[0]):""}</span>
+${a.obs?`<span class="hint">${esc(a.obs)}</span>`:""}
+<span class="pill ${st.c}" style="align-self:flex-start">${st.t}</span></div>
+<div class="btnrow">${wa?`<a class="btn btn-ok" href="https://wa.me/${wa}?text=${encodeURIComponent(agMsg(a))}" target="_blank" rel="noopener" data-ag="waok" data-id="${a.id}">Confirmar no WhatsApp</a><a class="btn btn-line" href="tel:${ph}">Ligar</a>`:""}${a.local==="cliente"&&a.endereco?`<a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.endereco)}" target="_blank" rel="noopener">Ver no mapa</a>`:""}</div>
+<span class="lj-lbl">Lembrete no celular (toca mesmo com o app fechado)</span>
+<div class="btnrow"><button type="button" class="btn btn-accent" data-ag="ics" data-id="${a.id}">📅 Lembrar no meu celular</button><a class="btn btn-line" href="${agGoogle(a)}" target="_blank" rel="noopener">Google Agenda</a></div>
+<span class="hint">iPhone: toque em "Lembrar no meu celular" e depois em Adicionar. Android: use "Google Agenda". O alarme toca 1 dia antes e 1 hora antes.</span>
+${pc?`<span class="lj-lbl">Como foi?</span><div class="status-row">${Object.entries(AG_ST).map(([k,s])=>`<button type="button" class="st-btn" data-agst="${k}" data-id="${a.id}" aria-pressed="${(a.status||"agendado")===k}">${s.t}</button>`).join("")}</div>
+<div class="btnrow">${os?`<button type="button" class="btn btn-line" data-open-os="${os.id}">Abrir OS ${esc(os.num||"")}</button>`:`<button type="button" class="btn btn-line" data-ag="viraros" data-id="${a.id}">Criar OS com estes dados</button>`}<button type="button" class="btn btn-line" data-ag="editar" data-id="${a.id}">Editar / remarcar</button></div>`:""}
+</div></div>`;
+}
+const icsData=ts=>{const d=new Date(ts),p=n=>String(n).padStart(2,"0");return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"T"+p(d.getHours())+p(d.getMinutes())+"00"};
+const icsEsc=s=>String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+function agTitulo(a){return (a.local==="cliente"?"Visita: ":"Atendimento: ")+(a.cliente||"")+(a.aparelho?" · "+a.aparelho:"")}
+function agDesc(a){return [agTipoTxt(a)+(a.protocolo?" · protocolo "+a.protocolo:""),a.defeito,a.telefone?"Tel.: "+a.telefone:"",a.obs].filter(Boolean).join("\n")}
+function agGoogle(a){const fim=a.quando+(a.dur||60)*60000;return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(agTitulo(a))+"&dates="+icsData(a.quando)+"/"+icsData(fim)+"&ctz=America/Sao_Paulo&details="+encodeURIComponent(agDesc(a))+(a.local==="cliente"&&a.endereco?"&location="+encodeURIComponent(a.endereco):"")}
+function agICS(a){
+const fim=a.quando+(a.dur||60)*60000;
+const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Konserta//Agenda//PT","CALSCALE:GREGORIAN","BEGIN:VEVENT","UID:"+a.id+"@konserta","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,""),
+"DTSTART:"+icsData(a.quando),"DTEND:"+icsData(fim),"SUMMARY:"+icsEsc(agTitulo(a)),"DESCRIPTION:"+icsEsc(agDesc(a)),...(a.local==="cliente"&&a.endereco?["LOCATION:"+icsEsc(a.endereco)]:[]),
+"BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(agTitulo(a)),"TRIGGER:-P1D","END:VALARM","BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(agTitulo(a)),"TRIGGER:-PT1H","END:VALARM","END:VEVENT","END:VCALENDAR"];
+const blob=new Blob([L.join("\r\n")],{type:"text/calendar;charset=utf-8"});const u=URL.createObjectURL(blob);
+const x=document.createElement("a");x.href=u;x.download="atendimento-"+toISO(a.quando)+".ics";document.body.appendChild(x);x.click();setTimeout(()=>{URL.revokeObjectURL(u);x.remove()},1500);
+}
+async function agSalvar(){
+const err=$("#agErr");err.textContent="";
+const dia=fromISO($("#ag_data").value),hora=$("#ag_hora").value;const cli=$("#ag_cli").value.trim();
+if(!dia||!/^\d{2}:\d{2}$/.test(hora)){err.textContent="Coloque o dia e o horário.";return}
+if(!cli){err.textContent="Coloque o nome do cliente.";$("#ag_cli").focus();return}
+const d=new Date(dia);const [h,m]=hora.split(":").map(Number);d.setHours(h,m,0,0);
+const id=AG.form.id;const ex=id?(agList.find(x=>x.id===id)||{}):{};const {id:_i,...base}=ex;
+const tipo=$("#ag_tipo").value,local=(document.querySelector('input[name="ag_local"]:checked')||{}).value||"loja";
+const reag=id&&ex.quando!==d.getTime();
+const dados={...base,quando:d.getTime(),dur:+$("#ag_dur").value||null,tipo,marca:tipo==="fabrica"?$("#ag_marca").value.trim():"",protocolo:["fabrica","seguradora"].includes(tipo)?$("#ag_prot").value.trim():"",
+local,endereco:local==="cliente"?$("#ag_end").value.trim():"",cliente:cli,telefone:$("#ag_tel").value.trim(),aparelho:$("#ag_ap").value.trim(),defeito:$("#ag_def").value.trim(),
+resp:$("#ag_resp")?$("#ag_resp").value:(me?me.id:""),obs:$("#ag_obs").value.trim(),status:reag&&["faltou","cancelado"].includes(ex.status)?"agendado":(ex.status||"agendado"),
+criadoPor:ex.criadoPor||(me?me.nome:""),criadoEm:ex.criadoEm||Date.now(),atualizadoEm:Date.now()};
+if(reag)delete dados.avisado;
+try{const nid=id||"a"+uid();await agCol.doc(nid).set(dados);AG.form=null;AG.det=nid;toast(id?"Agendamento atualizado":"Agendado para "+fmtDiaLongo(dados.quando).split(" · ")[0].toLowerCase()+" às "+fmtHora(dados.quando));renderAgd();renderBoard()}
+catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+let agPendOS=null;
+window.agVincular=async o=>{if(!agPendOS)return;const a=agList.find(x=>x.id===agPendOS);agPendOS=null;if(!a)return;try{const {id:_i,...b}=a;await agCol.doc(a.id).set({...b,osId:o.id,status:a.status==="agendado"||a.status==="confirmado"?"feito":a.status,atualizadoEm:Date.now()})}catch(_){}};
+document.addEventListener("click",async e=>{
+const t=e.target.closest("[data-ag],[data-agdia],[data-agmes],[data-agvista],[data-agdet],[data-agst],[data-open-os],#btnAgd,[data-act='agd'],[data-act='agdnovo'],[data-agbar]");if(!t)return;
+if(t.id==="btnAgd"||t.dataset.act==="agd"){AG.vista="proximos";openAgd();return}
+if(t.dataset.act==="agdnovo"){openAgd();AG.form={id:null};renderAgd();setTimeout(()=>$("#ag_cli")?.focus(),50);return}
+if(t.dataset.agbar){AG.vista=t.dataset.agbar;openAgd();return}
+if(t.dataset.agdia){AG.vista="dia";AG.dia=+t.dataset.agdia;renderAgd();return}
+if(t.dataset.agmes){AG.mesOff+= +t.dataset.agmes;renderAgd();return}
+if(t.dataset.agvista){if(t.dataset.agvista)AG.vista=t.dataset.agvista;renderAgd();return}
+if(t.dataset.agdet){AG.det=t.dataset.agdet;renderAgd();return}
+if(t.dataset.openOs){const id=t.dataset.openOs;fecharAgd();setTimeout(()=>openOS(id),60);return}
+if(t.dataset.agst){const a=agList.find(x=>x.id===t.dataset.id);if(!a)return;const {id:_i,...b}=a;try{await agCol.doc(a.id).set({...b,status:t.dataset.agst,atualizadoEm:Date.now()});toast(AG_ST[t.dataset.agst].t)}catch(_){toast("Não salvou. Tente de novo.")}renderAgd();renderBoard();return}
+const k=t.dataset.ag;if(!k)return;
+if(k==="fechar"){fecharAgd();return}
+if(k==="novo"){AG.form={id:null};AG.det=null;renderAgd();setTimeout(()=>$("#ag_cli")?.focus(),50);return}
+if(k==="formx"){AG.form=null;renderAgd();return}
+if(k==="detx"){AG.det=null;renderAgd();return}
+if(k==="editar"){AG.form={id:t.dataset.id};AG.det=null;renderAgd();return}
+if(k==="ics"){const a=agList.find(x=>x.id===t.dataset.id);if(a){agICS(a);toast("Abra o arquivo para adicionar ao calendário")}return}
+if(k==="waok"){const a=agList.find(x=>x.id===t.dataset.id);if(a&&(a.status||"agendado")==="agendado"){const {id:_i,...b}=a;agCol.doc(a.id).set({...b,status:"confirmado",atualizadoEm:Date.now()}).catch(()=>{})}return}
+if(k==="viraros"){const a=agList.find(x=>x.id===t.dataset.id);if(!a)return;agPendOS=a.id;fecharAgd();setTimeout(()=>{openNew();const set=(id,v)=>{const el=$("#"+id);if(el&&v){el.value=v;el.dispatchEvent(new Event("input",{bubbles:true}))}};
+set("n_cli",a.cliente);set("n_tel",a.telefone);set("n_ap",a.aparelho);set("n_def",a.defeito);const tp=$("#n_tipo");if(tp&&a.tipo&&[...tp.options].some(o=>o.value===a.tipo)){tp.value=a.tipo;tp.dispatchEvent(new Event("change",{bubbles:true}))}set("n_marca",a.marca)},80);return}
+if(k==="notif"){try{const r=await Notification.requestPermission();toast(r==="granted"?"Pronto: este aparelho avisa antes dos atendimentos (com o app aberto)":"Avisos não liberados")}catch(_){}renderAgd();return}
+if(k==="apagar"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Confirmar: apagar";return}try{await agCol.doc(t.dataset.id).delete();AG.form=null;AG.det=null;toast("Agendamento apagado");renderAgd();renderBoard()}catch(_){toast("Não apagou. Tente de novo.")}return}
+});
+document.addEventListener("change",e=>{const t=e.target;
+if(t.id==="ag_tipo"){const w=$("#ag_w_marca");if(w)w.hidden=t.value!=="fabrica";const p=$("#ag_w_prot");if(p)p.hidden=!["fabrica","seguradora"].includes(t.value);return}
+if(t.name==="ag_local"){const w=$("#ag_w_end");if(w)w.hidden=t.value!=="cliente";return}
+if(t.dataset&&t.dataset.ag==="meus"){AG.meus=t.checked;renderAgd();return}
+});
+document.addEventListener("submit",e=>{if(e.target.id==="agForm"){e.preventDefault();agSalvar()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#agd")&&!$("#agd").hidden){if(AG.form||AG.det){AG.form=null;AG.det=null;renderAgd()}else fecharAgd()}});
+/* aviso no topo do quadro */
+function agendaHTML(){
+if(!agList.length)return "";const hoje=diaIni(Date.now());const vis=agVisiveis().filter(a=>a.status!=="cancelado");
+const h=vis.filter(a=>diaIni(a.quando)===hoje&&agAberto(a)).sort((a,b)=>a.quando-b.quando),am=vis.filter(a=>diaIni(a.quando)===hoje+DAY&&agAberto(a)),at=vis.filter(a=>agAberto(a)&&a.quando<hoje);
+if(!h.length&&!am.length&&!at.length)return "";
+const it=a=>`<button type="button" class="pz-i" data-agbar="hoje" ><span class="pz-n">${fmtHora(a.quando)} · ${esc(a.cliente||"")}</span><span class="pz-s">${esc(agTipoTxt(a))}${a.local==="cliente"?" · 🏠 visita":""}${a.aparelho?" · "+esc(a.aparelho):""}</span></button>`;
+return `<div class="pz ag-bar" role="status"><span class="pz-ic">🗓️</span><div class="pz-c">${h.length?`<div class="pz-g hoje"><b>Hoje na agenda</b>${h.slice(0,4).map(it).join("")}${h.length>4?`<button type="button" class="linkbtn" data-agbar="hoje">+ ${h.length-4} atendimento(s)</button>`:""}</div>`:""}
+${am.length?`<button type="button" class="linkbtn ag-am" data-agbar="amanha">Amanhã: ${plural(am.length,"atendimento","atendimentos")} ›</button>`:""}${at.length?`<button type="button" class="linkbtn ag-at" data-agbar="atrasados">${plural(at.length,"atendimento passado","atendimentos passados")} sem resposta ›</button>`:""}</div></div>`;
+}
+/* lembrete com o app aberto */
+function agAvisos(){
+const agora=Date.now();let mudou=false;
+agVisiveis().filter(agAberto).forEach(a=>{const falta=a.quando-agora;
+[[60,"em 1 hora"],[15,"em 15 minutos"]].forEach(([min,txt])=>{const k="ag."+a.id+"."+min+"."+a.quando;let ja=false;try{ja=!!localStorage.getItem(k)}catch(_){}
+if(!ja&&falta>0&&falta<=min*60000&&falta>(min===60?15:0)*60000){try{localStorage.setItem(k,"1")}catch(_){}
+const tit=(a.local==="cliente"?"Visita ":"Atendimento ")+txt+" ("+fmtHora(a.quando)+")",corpo=[a.cliente,agTipoTxt(a),a.aparelho,a.local==="cliente"?a.endereco:""].filter(Boolean).join(" · ");
+toast("🗓️ "+tit+": "+(a.cliente||""));
+try{if("Notification" in window&&Notification.permission==="granted")new Notification(tit,{body:corpo,tag:k,icon:"/icon-192.png"})}catch(_){}mudou=true}})});
+if(mudou)renderBoard();
+}
+setInterval(()=>{if(me)agAvisos()},60000);
+function agBadge(){const b=$("#agdN");if(!b)return;const h=diaIni(Date.now());const n=agVisiveis().filter(a=>diaIni(a.quando)===h&&agAberto(a)).length;b.textContent=n;b.hidden=!n}
+setInterval(agBadge,30000);
+setTimeout(()=>{if(location.hash==="#agenda"){const tt=setInterval(()=>{if(me&&agCol){clearInterval(tt);openAgd()}},400);setTimeout(()=>clearInterval(tt),15000)}},500);
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}

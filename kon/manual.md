@@ -20,6 +20,14 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Duas OS do mesmo cliente aparecem ligadas (o cliente tem 2 aparelhos na loja).
 - "Cliente quer para": data que o cliente pediu (na criação da OS, ou depois em Dados, dentro da OS). O cartão mostra o prazo; um dia antes aparece no topo do quadro o aviso "Amanhã o cliente vem buscar", dizendo se o aparelho já está pronto. No dia vira "Hoje o cliente vem buscar" e, se passar, "Prazo já passou", em vermelho.
 
+## Agenda de atendimentos
+- Para marcar dia e hora com o cliente: garantias de fábrica, visitas na casa do cliente, particulares que ligam. Abre pelo botão "Agenda" no topo (computador) ou pelo + → "Agenda" / "Novo agendamento".
+- No agendamento: dia, horário, duração, tipo (garantia de fábrica com marca e protocolo, garantia da loja, seguradora, particular), onde (na loja ou na casa do cliente, com endereço), cliente, telefone, aparelho, defeito, quem vai atender e observações.
+- A página tem calendário do mês (com a quantidade por dia) e as abas Hoje, Amanhã, Próximos 7 dias e Atrasados. "Só os meus" filtra pelos seus.
+- Em cada atendimento: "Confirmar no WhatsApp" (manda a confirmação e marca como Confirmado), Ligar, Ver no mapa, "📅 Lembrar no meu celular" (adiciona ao calendário do celular com alarme 1 dia antes e 1 hora antes, toca mesmo com o app fechado; no Android use "Google Agenda"), "Como foi?" (Agendado, Confirmado, Atendido, Não compareceu, Cancelado), "Criar OS com estes dados" e "Editar / remarcar".
+- No topo do quadro aparece "Hoje na agenda" com os horários do dia, e os avisos de amanhã e de atendimentos passados sem resposta. Com o app aberto, ele avisa 1 hora e 15 minutos antes; em "🔔 Avisar neste aparelho" dá para liberar a notificação do navegador.
+- O técnico vê só os atendimentos dele (e os sem responsável); quem vê todas as OS vê a agenda toda.
+
 ## Peças, estoque e compras
 - Na OS, em Peças, adicione cada peça com status: precisa comprar, encomendada, chegou, aplicada. Dá para puxar uma peça do Estoque, e o estoque baixa sozinho.
 - Estoque (botão Estoque): cadastre item, quantidade, mínimo para avisar reposição, preço de venda e onde fica. O número vermelho mostra itens abaixo do mínimo.
@@ -73,8 +81,8 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Férias e folgas: lançar férias, folga, atestado ou falta com datas.
 - Comissões: total do mês por técnico, das OS entregues com mão de obra. Comissão padrão da loja fica nessa aba.
 
-## Agenda de fornecedores
-- Botão "Agenda" no topo, + → "Agenda de fornecedores", ou dentro de Compras. Contatos com o que vendem, vendedor, telefones, site, e botões Ligar e WhatsApp. Busca também pela peça.
+## Fornecedores
+- No menu + → "Fornecedores", ou dentro de Compras. Contatos com o que vendem, vendedor, telefones, site, e botões Ligar e WhatsApp. Busca também pela peça.
 
 ## Entrar, senha e celular
 - Entrar: konserta.vercel.app/entrar (e-mail e senha, ou Google quando estiver ligado). "Esqueci minha senha" manda um link por e-mail.
