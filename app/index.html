@@ -747,13 +747,26 @@ if(p[0]==="ws"&&p.length===2)return empresaDoc(p[1]);
 return {set:async()=>{},onSnapshot(){return ()=>{}}};
 }
 };
+/* arquivos privados: links temporários (assinados) com cache */
+const ARQ=new Map(),FILA=new Set();let filaT=null;const VALE=12*3600;
+function caminho(x){x=String(x||"");if(!x)return "";const m=x.match(/\/object\/(?:public|sign)\/arquivos\/([^?]+)/);if(m)return decodeURIComponent(m[1]);if(/^https?:|^data:|^blob:|^\//.test(x))return "";return x}
+async function buscarFila(){filaT=null;const ps=[...FILA];FILA.clear();if(!ps.length)return;
+for(let i=0;i<ps.length;i+=100){const lote=ps.slice(i,i+100);
+try{const {data,error}=await SB.storage.from("arquivos").createSignedUrls(lote,VALE);if(error)throw error;
+(data||[]).forEach(d=>{if(d&&d.signedUrl&&d.path)ARQ.set(d.path,{u:d.signedUrl,ate:Date.now()+(VALE-1800)*1000})})}catch(_){}}
+document.querySelectorAll("[data-arq]").forEach(el=>{const c=ARQ.get(el.dataset.arq);if(c&&el.getAttribute("src")!==c.u){el.setAttribute("src",c.u);if(el.tagName==="A")el.setAttribute("href",c.u)}});
+if(typeof window.KSarqPronto==="function")try{window.KSarqPronto()}catch(_){}}
+KS.arq=function(x){const p=caminho(x);if(!p)return /^(https?:|data:|blob:|\/)/.test(String(x||""))?String(x):"";const c=ARQ.get(p);
+if(c&&c.ate>Date.now())return c.u;FILA.add(p);if(!filaT)filaT=setTimeout(buscarFila,30);return c?c.u:""};
+KS.arqPath=caminho;
+KS.arqPre=function(lista){(lista||[]).forEach(x=>KS.arq(x))};
 const assets={
 async upload(file){
 const nome=(file.name||"arquivo").normalize("NFD").replace(/[^\w.\-]+/g,"_").slice(-60);
 const path=KS.eid+"/"+(crypto.randomUUID?crypto.randomUUID():Date.now()+rnd())+"-"+nome;
 const {error}=await SB.storage.from("arquivos").upload(path,file,{contentType:file.type||undefined,upsert:false});
 if(error)throw error;
-const url=SB.storage.from("arquivos").getPublicUrl(path).data.publicUrl;
+let url="";try{const {data}=await SB.storage.from("arquivos").createSignedUrl(path,VALE);if(data&&data.signedUrl){url=data.signedUrl;ARQ.set(path,{u:url,ate:Date.now()+(VALE-1800)*1000})}}catch(_){}
 return {id:path,url,sizeBytes:file.size,contentType:file.type};
 },
 async delete(id){if(!id||!String(id).includes("/"))return {deleted:false};const {error}=await SB.storage.from("arquivos").remove([id]);if(error)throw error;return {deleted:true}},
@@ -831,7 +844,7 @@ const fromISO=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||"");return m?new D
 const fmtDia=ts=>new Date(ts).toLocaleDateString("pt-BR");
 const plural=(n,a,b)=>n+" "+(n===1?a:b);
 let empresa={nome:"",horario:"",logoId:"",logoUrl:""};
-const logoSrc=()=>empresa.logoUrl||(empresa.logoId?"/_blob/"+empresa.logoId:"");
+const logoSrc=()=>KS.arq(empresa.logoId||empresa.logoUrl);
 const fmtD=ts=>{const d=new Date(ts);return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
@@ -1000,7 +1013,7 @@ openId=id;sheetMode="os";
 const tw=twinsOf(o);
 const twin=tw.length?`<div class="twin-box">Este cliente tem mais ${tw.length} ${tw.length>1?seg().nouns:seg().noun} com você: ${tw.map(t=>`<a href="#" data-open="${t.id}">${t.num?"#"+esc(t.num):"OS"} (${esc(stOf(t.status).t)})</a>`).join(", ")}.</div>`:"";
 const pecas=(o.pecas||[]).map(p=>`<div class="part"><span class="nm">${p.qtd>1?p.qtd+"× ":""}${esc(p.nome)}${p.estoqueId?`<span class="tag-est">ESTOQUE</span>`:""}</span><button type="button" class="ps ps-${p.status}" data-pcycle="${p.id}" title="Toque para mudar">${esc((PSTAT.find(s=>s.k===p.status)||PSTAT[0]).t)}</button><button type="button" class="x" data-pdel="${p.id}" aria-label="Remover peça">×</button></div>`).join("");
-const mid=(o.midia||[]).map(m=>{const src=m.url||("/_blob/"+m.id);return `<div class="m-item">${m.tipo==="video"?`<video src="${esc(src)}" controls playsinline preload="metadata"></video><span class="vtag">VÍDEO</span>`:`<a href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="${esc(m.nome||"foto")}" loading="lazy"></a>`}<button type="button" class="x" data-mdel="${esc(m.id)}" aria-label="Apagar mídia">×</button></div>`}).join("");
+const mid=(o.midia||[]).map(m=>{const pa=esc(KS.arqPath(m.id||m.url));const src=KS.arq(m.id||m.url);return `<div class="m-item">${m.tipo==="video"?`<video src="${esc(src)}" data-arq="${pa}" controls playsinline preload="metadata"></video><span class="vtag">VÍDEO</span>`:`<a href="${esc(src)}" data-arq="${pa}" target="_blank" rel="noopener"><img src="${esc(src)}" data-arq="${pa}" alt="${esc(m.nome||"foto")}" loading="lazy"></a>`}<button type="button" class="x" data-mdel="${esc(m.id)}" aria-label="Apagar mídia">×</button></div>`}).join("");
 const hist=(o.historico||[]).slice().reverse().map(h=>`<li><span class="when">${fmtD(h.em)}</span><span>${esc(stOf(h.s).t)}${h.por?` <span class="hint">· ${esc(h.por)}</span>`:""}</span></li>`).join("");
 let wa="";
 if(o.status==="pronto"||o.status==="devolvido"){
@@ -1762,7 +1775,7 @@ unsubs.push(cc.onSnapshot(snap=>{if(cid!==id)return;setv(snap.docs.map(d=>({id:d
 ccol=db.collection(base+"/cotacoes");
 unsubs.push(ccol.onSnapshot(snap=>{if(cid!==id)return;cotList=snap.docs.map(d=>({id:d.id,...d.data()}))},()=>{}));
 col=db.collection(base+"/os");
-unsubs.push(col.onSnapshot(snap=>{if(cid!==id)return;osList=snap.docs.map(d=>({id:d.id,...d.data()}));loaded=true;renderBoard()},
+unsubs.push(col.onSnapshot(snap=>{if(cid!==id)return;osList=snap.docs.map(d=>({id:d.id,...d.data()}));loaded=true;KS.arqPre(osList.filter(o=>o.status!=="entregue").flatMap(o=>(o.midia||[]).map(m=>m.id||m.url)));renderBoard()},
 ()=>{loaded=true;notice("A conexão com o quadro caiu. Recarregue a página.");renderBoard()}));
 gate();renderBoard();
 }
@@ -2390,6 +2403,8 @@ return `<button type="button" class="pz-i" data-open="${o.id}"><span class="pz-n
 const atr=l.filter(o=>diasAte(o.prazo)<0),hoje=l.filter(o=>diasAte(o.prazo)===0),am=l.filter(o=>diasAte(o.prazo)===1);
 return `<div class="pz" role="status"><span class="pz-ic">📅</span><div class="pz-c">${grupo("Prazo já passou","atr",atr)}${grupo("Hoje o cliente vem buscar","hoje",hoje)}${grupo("Amanhã o cliente vem buscar","am",am)}</div></div>`;
 }
+window.KSarqPronto=()=>{try{applyBrand()}catch(_){}};
+setInterval(()=>{try{applyBrand()}catch(_){}},3600*1000);
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
