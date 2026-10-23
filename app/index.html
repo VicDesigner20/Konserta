@@ -1093,7 +1093,7 @@ ${pode("editar_os")?`<button type="button" class="seg-opt" data-act="agdnovo"><s
 ${pode("cotacoes")?`<button type="button" class="seg-opt" data-act="newcot"><span class="sn">$</span><span><b>Nova cotação</b><br><small class="hint">O cliente quer saber o preço antes</small></span></button>
 <button type="button" class="seg-opt" data-act="cots"><span class="sn">≡</span><span><b>Ver cotações</b><br><small class="hint">${cotList.filter(scopeMatch).length} no total</small></span></button>`:""}
 ${KS.recursos&&KS.recursos.financas&&pode("financas")?`<button type="button" class="seg-opt" data-act="fin"><span class="sn">R$</span><span><b>Finanças</b> <span class="pill p-info">beta</span><br><small class="hint">Módulo em teste, só sua empresa vê</small></span></button>`:""}
-${pode("orcamentos")?`<button type="button" class="seg-opt" data-act="rel"><span class="sn">R$</span><span><b>Relatório do mês</b><br><small class="hint">Entregues e faturamento</small></span></button>`:""}
+${podeFaturamento()?`<button type="button" class="seg-opt" data-act="rel"><span class="sn">R$</span><span><b>Relatório do mês</b><br><small class="hint">Entregues e faturamento</small></span></button>`:""}
 <button type="button" class="seg-opt" data-act="agenda"><span class="sn">☎</span><span><b>Fornecedores</b><br><small class="hint">${fornList.length?plural(fornList.length,"contato","contatos"):"Telefone e WhatsApp de quem te vende peças"}</small></span></button>
 </div>`);
 }
@@ -2098,8 +2098,8 @@ const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);const t0=ini.getTime()
 const entreguesMes=osList.filter(o=>o.status==="entregue"&&(o.statusDesde||0)>=t0).length;
 const aprovadoMes=osList.filter(o=>o.orc&&o.orc.status==="aprovado"&&(o.orc.aprovadoEm||0)>=t0).reduce((a,o)=>a+orcTotal(o),0);
 const stats=[["Na loja",abertas.length],["Prontos p/ retirar",abertas.filter(o=>WAIT(o.status)).length],["Esperando o cliente",abertas.filter(o=>o.status==="aprovacao").length],["Entregues no mês",entreguesMes]];
-if(full())stats.push(["Aprovado no mês",fmtR(aprovadoMes)]);
-if(pode("orcamentos"))stats.push(["Faturado no mês",fmtR(osList.filter(o=>o.status==="entregue"&&(o.statusDesde||0)>=t0).reduce((s2,o)=>s2+(valorDe(o)||0),0))]);
+if(full()&&podeFaturamento())stats.push(["Aprovado no mês",fmtR(aprovadoMes)]);
+if(podeFaturamento())stats.push(["Faturado no mês",fmtR(osList.filter(o=>o.status==="entregue"&&(o.statusDesde||0)>=t0).reduce((s2,o)=>s2+(valorDe(o)||0),0))]);
 const porTec=ativos.map(u=>{const m=abertas.filter(o=>ownerOf(o)===u.id);return {u,n:m.length,b:m.filter(o=>o.status==="bancada").length,p:m.filter(o=>WAIT(o.status)).length}});
 const maxN=Math.max(1,...porTec.map(x=>x.n));
 const linhaMembro=u=>{
@@ -2144,7 +2144,7 @@ if(lj.aba==="resumo"){
 const mes=new Date().getMonth();
 const niver=funcList.filter(f=>f.nascimento&&new Date(f.nascimento).getMonth()===mes);
 corpo=`<div class="lj-stats">${stats.map(([l,v])=>`<div><small>${l}</small><b>${v}</b></div>`).join("")}</div>
-${pode("orcamentos")?`<button type="button" class="eq-link" data-act="rel"><span class="eq-link-ic">R$</span><span><b>Relatório do mês</b><small>Entregues, faturamento, ticket médio, por tipo e por técnico</small></span><span class="go">›</span></button>`:""}
+${podeFaturamento()?`<button type="button" class="eq-link" data-act="rel"><span class="eq-link-ic">R$</span><span><b>Relatório do mês</b><small>Entregues, faturamento, ticket médio, por tipo e por técnico</small></span><span class="go">›</span></button>`:""}
 ${foraHoje.length?`<div class="sec lj-fora"><h4>Fora hoje</h4>${foraHoje.map(a=>`<div class="fn"><span class="role role-aus-${a.tipo}">${esc(AUS[a.tipo]||a.tipo)}</span><span><b>${esc(nomeFicha(a.func))}</b> <span class="hint">até ${fmtDia(a.ate)}</span></span></div>`).join("")}</div>`:""}
 <div class="sec"><h4>Quem está com o quê</h4>
 ${porTec.length?porTec.map(x=>`<div class="lt"><span class="lt-n">${esc(x.u.nome.split(" ")[0])}</span><span class="lt-bar"><i style="width:${Math.round(x.n/maxN*100)}%"></i></span><span class="lt-v"><b>${x.n}</b> na mão · ${x.b} na bancada · ${x.p} prontos</span></div>`).join(""):`<span class="hint">Ninguém na equipe ainda.</span>`}
@@ -2412,7 +2412,7 @@ const KON_FAQ=[
 ];
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],estoque_completo:["Abrir Estoque completo",()=>true,()=>openEstq()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
 cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Fornecedores",()=>true,()=>{agForm=null;openAgenda()}],agd:["Abrir a Agenda",()=>true,()=>{AG.vista="proximos";openAgd()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
-conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],relatorio:["Abrir Relatório do mês",()=>pode("orcamentos"),()=>{relMes=0;openRel()}]};
+conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],relatorio:["Abrir Relatório do mês",()=>podeFaturamento(),()=>{relMes=0;openRel()}]};
 let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
 function konChave(){return "konserta.kon."+(KS.uid||"")}
 try{}catch(_){}
@@ -2810,9 +2810,9 @@ const l=osList.filter(o=>o.status==="entregue"&&scopeMatch(o)&&(!qq||norm([o.num
 .sort((a,b)=>(b.statusDesde||0)-(a.statusDesde||0));
 const vis=l.slice(0,histMax);const grupos=[];let atual=null;
 vis.forEach(o=>{const d=new Date(o.statusDesde||o.criadoEm||Date.now());let m=d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});m=m.charAt(0).toUpperCase()+m.slice(1);if(!atual||atual.m!==m){atual={m,l:[]};grupos.push(atual)}atual.l.push(o)});
-const val=o=>full()&&pode("orcamentos")&&o.orc&&(o.orc.itens||[]).length?`<b class="mono">${fmtR(orcTotal(o))}</b>`:"";
+const val=o=>full()&&pode("financas")&&o.orc&&(o.orc.itens||[]).length?`<b class="mono">${fmtR(orcTotal(o))}</b>`:"";
 $("#layer").innerHTML=shell("Histórico de entregues",`
-${pode("orcamentos")?`<button type="button" class="eq-link" data-act="rel"><span class="eq-link-ic">R$</span><span><b>Relatório do mês</b><small>Aparelhos entregues e quanto faturou</small></span><span class="go">›</span></button>`:""}
+${podeFaturamento()?`<button type="button" class="eq-link" data-act="rel"><span class="eq-link-ic">R$</span><span><b>Relatório do mês</b><small>Aparelhos entregues e quanto faturou</small></span><span class="go">›</span></button>`:""}
 <input class="inp" id="histQ" type="search" placeholder="Buscar cliente, nº da OS, aparelho, telefone…" value="${esc(histQ)}">
 <span class="hint">${l.length} entregue${l.length===1?"":"s"}${histQ?" encontrada"+(l.length===1?"":"s"):""}. No quadro ficam só as dos últimos ${ENT_DIAS} dias; aqui fica tudo.</span>
 ${grupos.map(g=>`<div class="sec"><h4>${esc(g.m)} <span class="mono">${g.l.length}</span></h4>${g.l.map(o=>`<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"Sem nome")}<small>${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))} · entregue ${fmtDia(o.statusDesde||o.criadoEm)}</small></span>${val(o)}</button>`).join("")}</div>`).join("")
@@ -2825,6 +2825,7 @@ if(t.dataset.act==="histmais"){histMax+=100;const sh=document.querySelector(".sh
 document.addEventListener("input",e=>{if(e.target.id==="histQ"){histQ=e.target.value;const p=e.target.selectionStart;openHist();const i=$("#histQ");if(i){i.focus();try{i.setSelectionRange(p,p)}catch(_){}}}});
 /* ---------- Valor final e Relatório do mês ---------- */
 let pedirValor=null,relMes=0;
+const podeFaturamento=()=>pode("financas");
 function valorDe(o){if(o.garantiaSemCusto)return 0;if(o.valorFinal!=null&&o.valorFinal!=="")return +o.valorFinal||0;if(full()&&o.orc&&o.orc.status==="aprovado"&&(o.orc.itens||[]).length)return orcTotal(o);return null}
 function valorSec(o){
 if(!pode("orcamentos"))return "";
@@ -2840,7 +2841,7 @@ return `<div class="finish vf-ask"><b>Quanto foi cobrado?</b><div class="addrow"
 <button type="button" class="linkbtn" data-act="vf_pular">Finalizar sem valor (coloco depois)</button><span class="hint">O valor entra no Relatório do mês.</span></div>`;
 }
 function openRel(){
-if(!pode("orcamentos")){toast("Sua função não vê valores.");return}
+if(!podeFaturamento()){toast("O faturamento só aparece para o dono, o gerente e o financeiro.");return}
 sheetMode="rel";
 const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);ini.setMonth(ini.getMonth()+relMes);const fim=new Date(ini);fim.setMonth(fim.getMonth()+1);
 const ant=new Date(ini);ant.setMonth(ant.getMonth()-1);
