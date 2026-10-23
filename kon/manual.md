@@ -38,6 +38,12 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Em "Desconto, prazo e validade" dá para dar desconto e definir validade.
 - Comissão: ao lançar mão de obra aparece o campo "Comissão (%)", já preenchido com o percentual do técnico (da ficha dele) ou o padrão da loja.
 
+## Valor final e Relatório do mês
+- Toda OS tem o campo "Valor final" (quanto foi cobrado do cliente), dentro da OS. Serve principalmente para quem usa o Konserta só como organizador de bancada, sem o orçamento detalhado. Na OS completa, se o campo ficar vazio, vale o total do orçamento aprovado.
+- Ao tocar em "Finalizar OS — cliente retirou", o app pergunta "Quanto foi cobrado?". Dá para finalizar sem valor, mas aí a OS não entra no total.
+- Relatório do mês: no menu + (Relatório do mês), no Histórico de entregues ou no Painel da Loja. Mostra quantos aparelhos foram entregues, quanto faturou, o ticket médio, a comparação com o mês anterior, os entregues sem valor (para completar), o total por tipo de atendimento e por técnico, e a lista do mês. Tem "Baixar planilha do mês". Dá para ver meses anteriores.
+- Só quem tem a permissão de ver valores (orçamentos) vê o valor final e o relatório.
+
 ## Cotações
 - Para quando o cliente quer saber o preço antes de deixar o aparelho. Botão "Cotações" no topo, ou + → "Nova cotação".
 - Monte os itens, envie em PDF ou WhatsApp. Se o cliente aprovar, a cotação vira OS com um toque.

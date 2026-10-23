@@ -652,6 +652,17 @@ body.estq-on{overflow:hidden}
 .hist-btn:hover{border-color:var(--brand);background:var(--brand-soft)}
 .hist-i{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
 .hist-i b{margin-left:auto;white-space:nowrap}
+.p-vf{background:color-mix(in srgb,var(--ok) 14%,var(--surface));color:var(--ok)}
+.vf-ask{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:var(--brand-soft);border:1.5px solid var(--brand)}
+.vf-ask b{font-family:var(--f-display)}.vf-ask .addrow{display:flex;gap:8px}.vf-ask .inp{flex:1;background:var(--surface)}
+.vf-ask .linkbtn{align-self:flex-start}
+.lj-stats small.up{color:var(--ok);font-weight:800;margin-top:2px}.lj-stats small.down{color:var(--bad);font-weight:800;margin-top:2px}
+.lj-stats .warn{border-color:var(--warn)}.lj-stats .warn b{color:var(--warn)}
+.rel-b{display:grid;grid-template-columns:110px 1fr;gap:3px 10px;align-items:center}
+.rel-n{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rel-bar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden}.rel-bar i{display:block;height:100%;background:var(--brand);border-radius:99px}
+.rel-v{grid-column:2;font-size:12.5px;color:var(--muted)}.rel-v b{color:var(--ink)}
+.rel-sem{border-left:4px solid var(--warn)}
+.eq-link-ic{font-family:var(--f-display);font-weight:800;font-size:14px}
 </style>
 </head>
 <body style="margin:0">
@@ -962,6 +973,7 @@ const nm=(o.midia||[]).length;const tw=twinsOf(o).length;
 const pr=priOf(o.prioridade);
 let meta=pr.k==="urgente"?`<span class="pill p-urg">Urgente</span>`:pr.k==="alta"?`<span class="pill p-alta">Prioridade alta</span>`:"";
 meta+=prazoPill(o);
+if(o.valorFinal!=null&&o.valorFinal!==""&&pode("orcamentos")&&!(full()&&o.orc&&(o.orc.itens||[]).length))meta+=`<span class="pill p-vf mono">${fmtR(o.valorFinal)}</span>`;
 meta+=`<span class="pill p-tipo">${esc(o.tipo==="fabrica"&&o.marca?"Fábrica · "+o.marca:tp.t)}</span>`;
 if(o.status!=="entregue")meta+=`<span class="pill p-days ${dc}" title="${w?"Dias aguardando retirada":"Dias desde que chegou"}">${w?(d===0?"pronto hoje":plural(d,"dia","dias")+" aguardando"):(d===0?"chegou hoje":plural(d,"dia","dias")+" na loja")}</span>`;
 if(buy)meta+=`<span class="pill p-buy">${buy} a comprar</span>`;
@@ -1021,6 +1033,7 @@ ${pode("editar_os")?`<button type="button" class="seg-opt" data-act="newos"><spa
 ${pode("cotacoes")?`<button type="button" class="seg-opt" data-act="newcot"><span class="sn">$</span><span><b>Nova cotação</b><br><small class="hint">O cliente quer saber o preço antes</small></span></button>
 <button type="button" class="seg-opt" data-act="cots"><span class="sn">≡</span><span><b>Ver cotações</b><br><small class="hint">${cotList.filter(scopeMatch).length} no total</small></span></button>`:""}
 ${KS.recursos&&KS.recursos.financas&&pode("financas")?`<button type="button" class="seg-opt" data-act="fin"><span class="sn">R$</span><span><b>Finanças</b> <span class="pill p-info">beta</span><br><small class="hint">Módulo em teste, só sua empresa vê</small></span></button>`:""}
+${pode("orcamentos")?`<button type="button" class="seg-opt" data-act="rel"><span class="sn">R$</span><span><b>Relatório do mês</b><br><small class="hint">Entregues e faturamento</small></span></button>`:""}
 <button type="button" class="seg-opt" data-act="agenda"><span class="sn">☎</span><span><b>Agenda de fornecedores</b><br><small class="hint">${fornList.length?plural(fornList.length,"contato","contatos"):"Telefone e WhatsApp de quem te vende peças"}</small></span></button>
 </div>`);
 }
@@ -1081,9 +1094,10 @@ ${twin}
 <div class="sec"><h4>Tempo estimado</h4>${tempoChips(o,"data-ostmp")}<span class="hint">Ajuda o app a sugerir o que dá para fazer rápido.</span></div>
 <div class="sec"><h4>Prioridade</h4><div class="status-row">${PRI.slice().reverse().map(p=>`<button type="button" class="st-btn" data-pri="${p.k}" aria-pressed="${priOf(o.prioridade).k===p.k}">${p.t}</button>`).join("")}</div></div>
 <div class="sec"><h4>Status</h4><div class="status-row">${STATUS.map(s=>`<button type="button" class="st-btn" data-st="${s.k}" aria-pressed="${o.status===s.k}">${esc(s.t)}</button>`).join("")}</div>
-${o.status==="pronto"||o.status==="devolvido"?`<div class="finish"><button type="button" class="btn btn-ok" data-act="finalizar">✓ Finalizar OS — cliente retirou</button><span class="hint">Move para Entregue e tira da frente. Dá para reabrir mudando o status.</span></div>`:""}
+${pedirValor===o.id&&(o.status==="pronto"||o.status==="devolvido")?vfAsk(o):o.status==="pronto"||o.status==="devolvido"?`<div class="finish"><button type="button" class="btn btn-ok" data-act="finalizar">✓ Finalizar OS — cliente retirou</button><span class="hint">Move para Entregue e tira da frente. Dá para reabrir mudando o status.</span></div>`:""}
 <span class="hint">Chegou em ${fmtDia(entradaOf(o))} (${daysShop(o)===0?"hoje":"há "+plural(daysShop(o),"dia","dias")}). Neste status há ${daysIn(o)===0?"menos de 1 dia":plural(daysIn(o),"dia","dias")}.</span></div>
 ${wa}
+${valorSec(o)}
 ${full()&&pode("orcamentos")?orcHTML(o):""}
 <div class="sec"><h4>Fotos e vídeos</h4>
 <div class="media">${mid}<label class="m-add" for="fileIn"><b>+</b>Foto ou vídeo</label></div>
@@ -1168,7 +1182,7 @@ v=/^\d{1,3}(\.\d{3})+$/.test(v)?v.replace(/\./g,""):v.replace(/\./g,(m,i)=>i===l
 }
 const n=parseFloat(v);return isFinite(n)?Math.round((neg?-n:n)*100)/100:0}
 const fmtMoneyIn=n=>(+n||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
-const MONEY_IDS=["oa_v","o_desc","k_preco"];
+const MONEY_IDS=["oa_v","o_desc","k_preco","o_vf","vf_ask","eq_custo","eq_preco"];
 document.addEventListener("focusout",e=>{const el=e.target;if(!el||!MONEY_IDS.includes(el.id)||!el.value.trim())return;el.value=fmtMoneyIn(parseMoney(el.value))});
 function orcOf(o){return o.orc||(o.orc={itens:[],desconto:0,validade:7,prazo:"",status:"rascunho"})}
 function orcSub(o){return (o.orc?.itens||[]).reduce((a,i)=>a+(+i.qtd||0)*(+i.valor||0),0)}
@@ -1610,7 +1624,7 @@ if(t.dataset.pdf&&o){makePDF(o,t.dataset.pdf);return}
 if(act==="copyorc"&&o){copy($("#orcText").textContent,$("#orcText"));if(orcOf(o).status==="rascunho"){setOrcStatus(o,"enviado");renderBoard();if(!isCot(o))toast("Copiado · OS em Aguardando Aprovação")}return}
 if(act==="waorc"&&o){if(orcOf(o).status==="rascunho"){setTimeout(()=>{setOrcStatus(o,"enviado");renderBoard();if(!isCot(o))toast("OS movida para Aguardando Aprovação")},300)}return}
 if(t.dataset.pri&&o){o.prioridade=t.dataset.pri;save(o,true);openOS(o.id);renderBoard();return}
-if(t.dataset.st&&o){setStatus(o,t.dataset.st);openOS(o.id);renderBoard();return}
+if(t.dataset.st&&o){const ia=t.dataset.st;setStatus(o,ia);openOS(o.id);renderBoard();if(ia==="entregue"&&pode("orcamentos")&&valorDe(o)==null){toast("Entregue! Coloque o valor final para entrar no relatório");setTimeout(()=>{const i=$("#o_vf");if(i){i.scrollIntoView({block:"center"});i.focus()}},80)}return}
 if(t.dataset.pcycle&&o){cyclePart(o,t.dataset.pcycle);openOS(o.id);renderBoard();return}
 if(t.dataset.pdel&&o){const p=(o.pecas||[]).find(x=>x.id===t.dataset.pdel);o.pecas=o.pecas.filter(x=>x.id!==t.dataset.pdel);
 if(o.orc&&o.orc.itens)o.orc.itens=o.orc.itens.filter(i=>i.pecaId!==t.dataset.pdel);
@@ -1621,7 +1635,8 @@ if(t.dataset.scycle){const [oid,pid]=t.dataset.scycle.split("|");const so=osList
 if(act==="copywa"){copy($("#waText").textContent,$("#waText"));return}
 if(act==="copyshop"){const g=shopItems().filter(i=>i.p.status==="comprar");const r=lowStock();const lines=g.map(i=>"- "+i.p.nome+(i.o.aparelho?" ("+i.o.aparelho+")":"")).concat(r.map(i=>"- "+i.nome+" (repor estoque)"));copy(lines.length?"Peças para comprar:\n"+lines.join("\n"):"Nenhuma peça para comprar.");return}
 if(act==="logodel"){const old=empresa.logoId;await saveEmpresa({logoId:"",logoUrl:""});try{if(old&&assets)await assets.delete(old)}catch(_){}toast("Logo removido");return}
-if(act==="finalizar"&&o){setStatus(o,"entregue");closeSheet();renderBoard();toast("OS finalizada");return}
+if(act==="finalizar"&&o){if(pode("orcamentos")&&valorDe(o)==null){pedirValor=o.id;openOS(o.id);setTimeout(()=>{const i=$("#vf_ask");if(i){i.scrollIntoView({block:"center"});i.focus()}},60);return}setStatus(o,"entregue");closeSheet();renderBoard();toast("OS finalizada");return}
+if((act==="vf_ok"||act==="vf_pular")&&o){if(act==="vf_ok"){const v=($("#vf_ask")||{}).value||"";if(!v.trim()){$("#vf_ask")?.focus();toast("Coloque o valor ou toque em Finalizar sem valor");return}o.valorFinal=parseMoney(v)}pedirValor=null;setStatus(o,"entregue");closeSheet();renderBoard();toast(act==="vf_ok"?"OS finalizada · "+fmtR(o.valorFinal):"OS finalizada sem valor");return}
 if(act==="del1"&&pode("apagar_os")){delConfirm=true;openOS(o.id);return}
 if(act==="del0"){delConfirm=false;openOS(o.id);return}
 if(act==="del2"&&o){
@@ -1668,6 +1683,7 @@ if(e.target.id==="o_desc")r.desconto=parseMoney(e.target.value);else if(e.target
 const tt=$("#orcTot");if(tt)tt.textContent=fmtR(orcTotal(o));const ot=$("#orcText");if(ot)ot.textContent=orcMsg(o);saveSoon(o);return}
 if(["ct_cli","ct_tel","ct_ap","ct_def"].includes(e.target.id)){const o=curObj();if(!isCot(o))return;o[{ct_cli:"cliente",ct_tel:"telefone",ct_ap:"aparelho",ct_def:"defeito"}[e.target.id]]=e.target.value;saveSoon(o);return}
 if(e.target.id==="stockQ"){stockQ=e.target.value;renderStockList();return}
+if(e.target.id==="o_vf"){const o=osList.find(x=>x.id===openId);if(o){const v=e.target.value.trim();o.valorFinal=v===""?null:parseMoney(v);saveSoon(o);renderBoard();toast(v===""?"Valor removido":"Valor final: "+fmtR(o.valorFinal))}return}
 if(e.target.id==="f_prazo"){const o=osList.find(x=>x.id===openId);if(o){o.prazo=fromISO(e.target.value)||null;saveSoon(o);renderBoard();toast(o.prazo?"Prazo: "+fmtDia(o.prazo):"Prazo removido")}return}
 if(e.target.id==="f_ent"){const o=osList.find(x=>x.id===openId);const ts=fromISO(e.target.value);if(o&&ts){o.entrada=ts;
 if((o.historico||[]).length<=1&&ts<(o.statusDesde||0))o.statusDesde=ts;saveSoon(o);renderBoard()}return}
@@ -2020,6 +2036,7 @@ const entreguesMes=osList.filter(o=>o.status==="entregue"&&(o.statusDesde||0)>=t
 const aprovadoMes=osList.filter(o=>o.orc&&o.orc.status==="aprovado"&&(o.orc.aprovadoEm||0)>=t0).reduce((a,o)=>a+orcTotal(o),0);
 const stats=[["Na loja",abertas.length],["Prontos p/ retirar",abertas.filter(o=>WAIT(o.status)).length],["Esperando o cliente",abertas.filter(o=>o.status==="aprovacao").length],["Entregues no mês",entreguesMes]];
 if(full())stats.push(["Aprovado no mês",fmtR(aprovadoMes)]);
+if(pode("orcamentos"))stats.push(["Faturado no mês",fmtR(osList.filter(o=>o.status==="entregue"&&(o.statusDesde||0)>=t0).reduce((s2,o)=>s2+(valorDe(o)||0),0))]);
 const porTec=ativos.map(u=>{const m=abertas.filter(o=>ownerOf(o)===u.id);return {u,n:m.length,b:m.filter(o=>o.status==="bancada").length,p:m.filter(o=>WAIT(o.status)).length}});
 const maxN=Math.max(1,...porTec.map(x=>x.n));
 const linhaMembro=u=>{
@@ -2064,6 +2081,7 @@ if(lj.aba==="resumo"){
 const mes=new Date().getMonth();
 const niver=funcList.filter(f=>f.nascimento&&new Date(f.nascimento).getMonth()===mes);
 corpo=`<div class="lj-stats">${stats.map(([l,v])=>`<div><small>${l}</small><b>${v}</b></div>`).join("")}</div>
+${pode("orcamentos")?`<button type="button" class="eq-link" data-act="rel"><span class="eq-link-ic">R$</span><span><b>Relatório do mês</b><small>Entregues, faturamento, ticket médio, por tipo e por técnico</small></span><span class="go">›</span></button>`:""}
 ${foraHoje.length?`<div class="sec lj-fora"><h4>Fora hoje</h4>${foraHoje.map(a=>`<div class="fn"><span class="role role-aus-${a.tipo}">${esc(AUS[a.tipo]||a.tipo)}</span><span><b>${esc(nomeFicha(a.func))}</b> <span class="hint">até ${fmtDia(a.ate)}</span></span></div>`).join("")}</div>`:""}
 <div class="sec"><h4>Quem está com o quê</h4>
 ${porTec.length?porTec.map(x=>`<div class="lt"><span class="lt-n">${esc(x.u.nome.split(" ")[0])}</span><span class="lt-bar"><i style="width:${Math.round(x.n/maxN*100)}%"></i></span><span class="lt-v"><b>${x.n}</b> na mão · ${x.b} na bancada · ${x.p} prontos</span></div>`).join(""):`<span class="hint">Ninguém na equipe ainda.</span>`}
@@ -2315,6 +2333,7 @@ const KON_FAQ=[
 {k:["funcao","permissao","papel","nao consigo","nao aparece","sumiu","sem permissao","bloqueado","nao vejo"],r:"Cada pessoa tem uma função: **Dono** (pode tudo), **Gerente**, **Atendente**, **Técnico** (vê só as próprias OS) e **Financeiro**. Se um botão não aparece pra você, é a sua função que não libera. Quem muda isso é o dono ou o gerente, no **Painel da Loja** → **Acessos** → **Editar função**."},
 {k:["senha provisoria","senha venceu","senha expirou","5 minutos","nova senha","trocar senha","esqueci","esqueci minha senha","recuperar senha"],r:"Se esqueceu a sua senha, toque em **Esqueci minha senha** na tela de entrada; chega um link no e-mail.\nSe a senha provisória venceu (ela vale só 5 minutos), peça pro dono gerar outra em **Painel da Loja** → **Acessos** → **Nova senha**."},
 {k:["ferias","folga","atestado","falta","ausencia"],r:"No **Painel da Loja** → **Férias e folgas** você lança férias, folga, atestado ou falta com as datas. Quem está fora hoje aparece no **Resumo**.",a:"loja"},
+{k:["relatorio","relatório","faturamento","faturei","quanto faturei","valor final","valores do mes","fechamento do mes","quanto ganhei","ticket medio"],r:"Coloque o **Valor final** em cada OS (quando você toca em **Finalizar OS**, o app já pergunta quanto foi cobrado).\nDepois abra o **Relatório do mês** (no **+**, no Histórico de entregues ou no Painel da Loja): mostra quantos aparelhos foram entregues, quanto faturou, ticket médio, por tipo e por técnico, e as entregues que ficaram sem valor.",a:"relatorio"},
 {k:["comissao","comissão","porcentagem","percentual"],r:"A comissão sai da mão de obra:\n1. Ao lançar **+ Mão de obra** numa OS, aparece o campo **Comissão (%)**, já preenchido.\n2. O percentual vem da ficha do técnico ou do padrão da loja.\n3. No **Painel da Loja** → **Comissões** você vê o total do mês por técnico, das OS **entregues**.",a:"loja"},
 {k:["ficha","cadastro de funcionario","admissao","aniversario","cpf"],r:"No **Painel da Loja** → **Funcionários** cada pessoa tem uma ficha: cargo, telefone, CPF, admissão, aniversário, comissão e observações. Até quem não usa o app pode ter ficha.",a:"loja"},
 {k:["pdf","imprimir","impressao","comprovante","termo","garantia impressa"],r:"Dentro da OS, em **Imprimir / PDF**, tem a OS de entrada, o Orçamento e o comprovante de entrega. Garantia, prazo de retirada e o termo você ajusta em **Conta** → **OS impressa**."},
@@ -2329,7 +2348,7 @@ const KON_FAQ=[
 ];
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],estoque_completo:["Abrir Estoque completo",()=>true,()=>openEstq()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
 cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Agenda",()=>true,()=>{agForm=null;openAgenda()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
-conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()]};
+conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],relatorio:["Abrir Relatório do mês",()=>pode("orcamentos"),()=>{relMes=0;openRel()}]};
 let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
 function konChave(){return "konserta.kon."+(KS.uid||"")}
 try{}catch(_){}
@@ -2729,6 +2748,7 @@ const vis=l.slice(0,histMax);const grupos=[];let atual=null;
 vis.forEach(o=>{const d=new Date(o.statusDesde||o.criadoEm||Date.now());let m=d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});m=m.charAt(0).toUpperCase()+m.slice(1);if(!atual||atual.m!==m){atual={m,l:[]};grupos.push(atual)}atual.l.push(o)});
 const val=o=>full()&&pode("orcamentos")&&o.orc&&(o.orc.itens||[]).length?`<b class="mono">${fmtR(orcTotal(o))}</b>`:"";
 $("#layer").innerHTML=shell("Histórico de entregues",`
+${pode("orcamentos")?`<button type="button" class="eq-link" data-act="rel"><span class="eq-link-ic">R$</span><span><b>Relatório do mês</b><small>Aparelhos entregues e quanto faturou</small></span><span class="go">›</span></button>`:""}
 <input class="inp" id="histQ" type="search" placeholder="Buscar cliente, nº da OS, aparelho, telefone…" value="${esc(histQ)}">
 <span class="hint">${l.length} entregue${l.length===1?"":"s"}${histQ?" encontrada"+(l.length===1?"":"s"):""}. No quadro ficam só as dos últimos ${ENT_DIAS} dias; aqui fica tudo.</span>
 ${grupos.map(g=>`<div class="sec"><h4>${esc(g.m)} <span class="mono">${g.l.length}</span></h4>${g.l.map(o=>`<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"Sem nome")}<small>${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))} · entregue ${fmtDia(o.statusDesde||o.criadoEm)}</small></span>${val(o)}</button>`).join("")}</div>`).join("")
@@ -2739,6 +2759,56 @@ document.addEventListener("click",e=>{const t=e.target.closest('[data-act="hist"
 if(t.dataset.act==="hist"){histMax=60;openHist();return}
 if(t.dataset.act==="histmais"){histMax+=100;const sh=document.querySelector(".sheet"),k=sh?sh.scrollTop:0;openHist();const s2=document.querySelector(".sheet");if(s2)s2.scrollTop=k}});
 document.addEventListener("input",e=>{if(e.target.id==="histQ"){histQ=e.target.value;const p=e.target.selectionStart;openHist();const i=$("#histQ");if(i){i.focus();try{i.setSelectionRange(p,p)}catch(_){}}}});
+/* ---------- Valor final e Relatório do mês ---------- */
+let pedirValor=null,relMes=0;
+function valorDe(o){if(o.valorFinal!=null&&o.valorFinal!=="")return +o.valorFinal||0;if(full()&&o.orc&&o.orc.status==="aprovado"&&(o.orc.itens||[]).length)return orcTotal(o);return null}
+function valorSec(o){
+if(!pode("orcamentos"))return "";
+const temOrc=full()&&o.orc&&(o.orc.itens||[]).length;
+const v=o.valorFinal!=null&&o.valorFinal!==""?fmtMoneyIn(o.valorFinal):"";
+return `<div class="sec vf-sec"><h4>Valor final</h4><div class="fld"><label for="o_vf">Quanto foi cobrado do cliente (R$)</label><input id="o_vf" class="mono" inputmode="decimal" value="${esc(v)}" placeholder="${temOrc?"Vazio = usa o orçamento ("+esc(fmtR(orcTotal(o)))+")":"0,00"}"></div>
+<span class="hint">Entra no Relatório do mês quando a OS for entregue.${temOrc?" Preencha só se o valor final for diferente do orçamento.":""}</span></div>`;
+}
+function vfAsk(o){
+return `<div class="finish vf-ask"><b>Quanto foi cobrado?</b><div class="addrow"><input class="inp mono" id="vf_ask" inputmode="decimal" placeholder="0,00" aria-label="Valor final"><button type="button" class="btn btn-ok" data-act="vf_ok">✓ Finalizar</button></div>
+<button type="button" class="linkbtn" data-act="vf_pular">Finalizar sem valor</button><span class="hint">O valor entra no Relatório do mês.</span></div>`;
+}
+function openRel(){
+if(!pode("orcamentos")){toast("Sua função não vê valores.");return}
+sheetMode="rel";
+const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);ini.setMonth(ini.getMonth()+relMes);const fim=new Date(ini);fim.setMonth(fim.getMonth()+1);
+const ant=new Date(ini);ant.setMonth(ant.getMonth()-1);
+const noMes=(a,b)=>osList.filter(o=>o.status==="entregue"&&scopeMatch(o)&&(o.statusDesde||0)>=a.getTime()&&(o.statusDesde||0)<b.getTime());
+const l=noMes(ini,fim).sort((a,b)=>(b.statusDesde||0)-(a.statusDesde||0)),la=noMes(ant,ini);
+const soma=arr=>arr.reduce((s,o)=>s+(valorDe(o)||0),0);
+const tot=soma(l),totA=soma(la),comV=l.filter(o=>valorDe(o)!=null),semV=l.filter(o=>valorDe(o)==null);
+const tick=comV.length?tot/comV.length:0;
+const varP=totA?Math.round((tot-totA)/totA*100):null;
+let nm=ini.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});nm=nm.charAt(0).toUpperCase()+nm.slice(1);
+const porTipo=TIPOS.map(t=>{const a=l.filter(o=>(o.tipo||"particular")===t.k);return {t:t.t,n:a.length,v:soma(a)}}).filter(x=>x.n);
+const au=activeUsers();const porTec=au.length>1?au.map(u=>{const a=l.filter(o=>ownerOf(o)===u.id);return {t:u.nome.split(" ")[0],n:a.length,v:soma(a)}}).filter(x=>x.n):[];
+const maxV=Math.max(1,...porTipo.map(x=>x.v),...porTec.map(x=>x.v));
+const barras=arr=>arr.map(x=>`<div class="rel-b"><span class="rel-n">${esc(x.t)}</span><span class="rel-bar"><i style="width:${Math.max(2,Math.round(x.v/maxV*100))}%"></i></span><span class="rel-v"><b class="mono">${fmtR(x.v)}</b> · ${plural(x.n,seg().noun,seg().nouns)}</span></div>`).join("");
+$("#layer").innerHTML=shell("Relatório do mês",`
+<div class="mesnav"><button type="button" class="btn btn-line" data-relmes="-1" aria-label="Mês anterior">‹</button><b>${esc(nm)}</b><button type="button" class="btn btn-line" data-relmes="1" aria-label="Próximo mês" ${relMes>=0?"disabled":""}>›</button></div>
+<div class="lj-stats"><div><small>${seg().nouns.charAt(0).toUpperCase()+seg().nouns.slice(1)} entregues</small><b>${l.length}</b></div><div><small>Faturado</small><b>${fmtR(tot)}</b>${varP!=null?`<small class="${varP>=0?"up":"down"}">${varP>=0?"▲":"▼"} ${Math.abs(varP)}% vs. mês anterior</small>`:""}</div><div><small>Ticket médio</small><b>${fmtR(tick)}</b></div>${semV.length?`<div class="warn"><small>Sem valor</small><b>${semV.length}</b></div>`:""}</div>
+${semV.length?`<div class="sec rel-sem"><h4>Entregues sem valor <span class="mono">${semV.length}</span></h4><span class="hint">Não entram no total. Toque para abrir e colocar o valor final.</span>${semV.map(o=>`<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"")}<small>${esc(o.aparelho||"")} · entregue ${fmtDia(o.statusDesde)}</small></span><b>colocar valor ›</b></button>`).join("")}</div>`:""}
+${porTipo.length?`<div class="sec"><h4>Por tipo de atendimento</h4>${barras(porTipo)}</div>`:""}
+${porTec.length?`<div class="sec"><h4>Por técnico</h4>${barras(porTec)}</div>`:""}
+<div class="sec"><h4>Entregues no mês <span class="mono">${l.length}</span></h4>${l.length?l.map(o=>{const v=valorDe(o);return `<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"")}<small>${esc(o.aparelho||"")} · ${fmtDia(o.statusDesde)} · ${esc(tipoOf(o.tipo).t)}</small></span><b class="mono">${v==null?"—":fmtR(v)}</b></button>`}).join(""):`<span class="hint">Nenhuma entrega neste mês.</span>`}</div>
+${l.length?`<div class="btnrow"><button type="button" class="btn btn-line" data-act="relcsv">Baixar planilha do mês</button></div>`:""}`);
+}
+function relCSV(){
+const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);ini.setMonth(ini.getMonth()+relMes);const fim=new Date(ini);fim.setMonth(fim.getMonth()+1);
+const l=osList.filter(o=>o.status==="entregue"&&scopeMatch(o)&&(o.statusDesde||0)>=ini.getTime()&&(o.statusDesde||0)<fim.getTime()).sort((a,b)=>(a.statusDesde||0)-(b.statusDesde||0));
+const cel=v=>{v=v==null?"":String(v);if(/^[=+\-@]/.test(v))v="'"+v;return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+const rows=[["Entregue em","OS","Cliente","Aparelho","Tipo","Técnico","Valor final"].join(";")].concat(l.map(o=>[fmtDia(o.statusDesde),cel(o.num),cel(o.cliente),cel(o.aparelho),cel(tipoOf(o.tipo).t),cel(firstName(ownerOf(o))),valorDe(o)==null?"":String(valorDe(o)).replace(".",",")].join(";")));
+const blob=new Blob(["﻿"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="relatorio-"+ini.getFullYear()+"-"+String(ini.getMonth()+1).padStart(2,"0")+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast("Planilha baixada");
+}
+document.addEventListener("click",e=>{const t=e.target.closest('[data-act="rel"],[data-relmes],[data-act="relcsv"]');if(!t)return;
+if(t.dataset.relmes){relMes=Math.min(0,relMes+(+t.dataset.relmes));openRel();return}
+if(t.dataset.act==="relcsv"){relCSV();return}
+relMes=0;openRel();});
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
