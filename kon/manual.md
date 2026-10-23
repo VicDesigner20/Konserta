@@ -8,6 +8,7 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Para mudar o status: abra a OS (toque no cartão) e toque no status novo em "Status".
 - As OS ficam em ordem do número maior para o menor, e as urgentes ficam no topo.
 - Filtros por tipo de atendimento: Todos, Particular, Garantia de Fábrica, Garantia da loja e Seguradora (os tipos dependem do ramo, em Conta → Ramo e atendimentos).
+- Coluna "Entregue": mostra só as OS entregues nos últimos 7 dias. As mais antigas ficam no "Histórico de entregues" (botão no fim da coluna Entregue), com busca e separadas por mês. A busca do quadro também encontra as antigas. Nada é apagado.
 - Busca: campo "Buscar cliente, nº da OS, marca…".
 - "Meus aparelhos": cada pessoa vê o próprio quadro. Quem tem permissão pode trocar para o quadro de outra pessoa ou "Toda a equipe".
 - O cartão mostra: cliente, aparelho e defeito, tipo, há quantos dias está na loja, fotos, valor do orçamento, prioridade e tempo estimado.

@@ -647,6 +647,11 @@ body.estq-on{overflow:hidden}
 .etq-folha i.usada{background:repeating-linear-gradient(45deg,#e4dfd4 0 3px,#fff 3px 6px)}
 .etq-folha i.ini{background:var(--brand);border-color:var(--brand)}
 @media (max-width:760px){.eq-modal{padding:0}.eq-card{border-radius:0;min-height:100%;width:100%}}
+.hist-btn{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:11px 13px;border-radius:14px;border:1.5px dashed var(--line);background:transparent;margin-top:2px}
+.hist-btn b{font-size:14px}.hist-btn small{color:var(--muted);font-size:12px}
+.hist-btn:hover{border-color:var(--brand);background:var(--brand-soft)}
+.hist-i{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.hist-i b{margin-left:auto;white-space:nowrap}
 </style>
 </head>
 <body style="margin:0">
@@ -934,12 +939,15 @@ function renderBoard(){
 const vis=osList.filter(matches);
 const by={};STATUS.forEach(s=>by[s.k]=[]);
 vis.forEach(o=>(by[o.status]||by.fila).push(o));
+const entTodas=by.entregue.length;let entAntigas=0;
+if(!q){const lim=Date.now()-ENT_DIAS*DAY;const rec=by.entregue.filter(o=>(o.statusDesde||o.criadoEm||0)>=lim);entAntigas=entTodas-rec.length;by.entregue=rec}
 $("#tabs").innerHTML=STATUS.map(s=>`<button type="button" role="tab" class="tab" data-tab="${s.k}" aria-selected="${activeTab===s.k}">${esc(s.t.split(" / ")[0])}<span class="tn">${by[s.k].length}</span></button>`).join("");
 $("#board").innerHTML=STATUS.map(s=>{
 const items=sortList(by[s.k]);
 const body=!loaded?`<div class="empty-col">Carregando…</div>`:
 items.length?items.map(cardHTML).join(""):`<div class="empty-col">${osList.some(scopeMatch)?"Nenhuma OS aqui.":scope==="me"?"Seu quadro está vazio. Toque em + para adicionar seu primeiro "+seg().noun+".":"Nenhuma OS neste quadro."}</div>`;
-return `<section class="col ${activeTab===s.k?"active":""}" data-col="${s.k}"><div class="col-h"><h2>${esc(s.t)}</h2><span class="n">${items.length}</span></div><div class="col-b">${body}</div></section>`;
+const hist=s.k==="entregue"&&loaded&&osList.some(o=>o.status==="entregue"&&scopeMatch(o))?`<button type="button" class="hist-btn" data-act="hist"><b>Histórico de entregues</b><small>${q?"A busca já inclui as antigas.":entAntigas?`Mais ${entAntigas} entregue${entAntigas===1?"":"s"} há mais de ${ENT_DIAS} dias`:`Aqui ficam só as dos últimos ${ENT_DIAS} dias`}</small></button>`:"";
+return `<section class="col ${activeTab===s.k?"active":""}" data-col="${s.k}"><div class="col-h"><h2>${esc(s.t)}</h2><span class="n">${items.length}</span></div><div class="col-b">${body}${hist}</div></section>`;
 }).join("");
 renderNowBar();if(sheetMode==="now")openNow();
 const nb=shopItems().filter(i=>i.p.status==="comprar").length;
@@ -2709,6 +2717,28 @@ if(e.target.id==="eq_custo"||e.target.id==="eq_preco")eqMgUpdate();
 document.addEventListener("submit",e=>{if(e.target.id==="eqForm"){e.preventDefault();eqSalvar()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#estq")&&!$("#estq").hidden){if(EQ.form||EQ.etq){EQ.form=null;EQ.etq=false;renderEstq()}else fecharEstq()}});
 setTimeout(()=>{if(location.hash==="#estoque"){const tt=setInterval(()=>{if(me&&scol){clearInterval(tt);openEstq()}},400);setTimeout(()=>clearInterval(tt),15000)}},500);
+/* ---------- Histórico de entregues ---------- */
+const ENT_DIAS=7;
+let histQ="",histMax=60;
+function openHist(){
+sheetMode="hist";
+const qq=norm(histQ);
+const l=osList.filter(o=>o.status==="entregue"&&scopeMatch(o)&&(!qq||norm([o.num,o.cliente,o.aparelho,o.defeito,o.marca,o.telefone].join(" ")).includes(qq)))
+.sort((a,b)=>(b.statusDesde||0)-(a.statusDesde||0));
+const vis=l.slice(0,histMax);const grupos=[];let atual=null;
+vis.forEach(o=>{const d=new Date(o.statusDesde||o.criadoEm||Date.now());let m=d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});m=m.charAt(0).toUpperCase()+m.slice(1);if(!atual||atual.m!==m){atual={m,l:[]};grupos.push(atual)}atual.l.push(o)});
+const val=o=>full()&&pode("orcamentos")&&o.orc&&(o.orc.itens||[]).length?`<b class="mono">${fmtR(orcTotal(o))}</b>`:"";
+$("#layer").innerHTML=shell("Histórico de entregues",`
+<input class="inp" id="histQ" type="search" placeholder="Buscar cliente, nº da OS, aparelho, telefone…" value="${esc(histQ)}">
+<span class="hint">${l.length} entregue${l.length===1?"":"s"}${histQ?" encontrada"+(l.length===1?"":"s"):""}. No quadro ficam só as dos últimos ${ENT_DIAS} dias; aqui fica tudo.</span>
+${grupos.map(g=>`<div class="sec"><h4>${esc(g.m)} <span class="mono">${g.l.length}</span></h4>${g.l.map(o=>`<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"Sem nome")}<small>${esc([o.aparelho,o.defeito].filter(Boolean).join(" · "))} · entregue ${fmtDia(o.statusDesde||o.criadoEm)}</small></span>${val(o)}</button>`).join("")}</div>`).join("")
+||`<div class="sec"><span class="hint">${histQ?"Nada encontrado.":"Nenhuma OS entregue ainda."}</span></div>`}
+${l.length>histMax?`<button type="button" class="btn btn-line" data-act="histmais">Mostrar mais (${l.length-histMax})</button>`:""}`);
+}
+document.addEventListener("click",e=>{const t=e.target.closest('[data-act="hist"],[data-act="histmais"]');if(!t)return;
+if(t.dataset.act==="hist"){histMax=60;openHist();return}
+if(t.dataset.act==="histmais"){histMax+=100;const sh=document.querySelector(".sheet"),k=sh?sh.scrollTop:0;openHist();const s2=document.querySelector(".sheet");if(s2)s2.scrollTop=k}});
+document.addEventListener("input",e=>{if(e.target.id==="histQ"){histQ=e.target.value;const p=e.target.selectionStart;openHist();const i=$("#histQ");if(i){i.focus();try{i.setSelectionRange(p,p)}catch(_){}}}});
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
