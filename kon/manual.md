@@ -23,7 +23,8 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 ## Agenda de atendimentos
 - Para marcar dia e hora com o cliente: garantias de fábrica, visitas na casa do cliente, particulares que ligam. Abre pelo botão "Agenda" no topo (computador) ou pelo + → "Agenda" / "Novo agendamento".
 - No agendamento: dia, horário, duração, tipo (garantia de fábrica com marca e protocolo, garantia da loja, seguradora, particular), onde (na loja ou na casa do cliente, com endereço), cliente, telefone, aparelho, defeito, quem vai atender e observações.
-- A página tem calendário do mês (com a quantidade por dia) e as abas Hoje, Amanhã, Próximos 7 dias e Atrasados. "Só os meus" filtra pelos seus.
+- A página tem calendário do mês (com a quantidade de atendimentos em aberto por dia) e as abas Hoje, Amanhã, Próximos 7 dias, Atrasados e Histórico. "Só os meus" filtra pelos seus.
+- Ao marcar Atendido, Não compareceu ou Cancelado, o atendimento sai das listas e vai para o Histórico (separado por mês, com busca por cliente, telefone, aparelho ou protocolo). Para trazer de volta, abra e mude o "Como foi?" para Agendado.
 - Em cada atendimento: "Confirmar no WhatsApp" (manda a confirmação e marca como Confirmado), Ligar, Ver no mapa, "📅 Lembrar no meu celular" (adiciona ao calendário do celular com alarme 1 dia antes e 1 hora antes, toca mesmo com o app fechado; no Android use "Google Agenda"), "Como foi?" (Agendado, Confirmado, Atendido, Não compareceu, Cancelado), "Criar OS com estes dados" e "Editar / remarcar".
 - No topo do quadro aparece "Hoje na agenda" com os horários do dia, e os avisos de amanhã e de atendimentos passados sem resposta. Com o app aberto, ele avisa 1 hora e 15 minutos antes; em "🔔 Avisar neste aparelho" dá para liberar a notificação do navegador.
 - O técnico vê só os atendimentos dele (e os sem responsável); quem vê todas as OS vê a agenda toda.

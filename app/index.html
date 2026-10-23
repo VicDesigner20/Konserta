@@ -2911,7 +2911,7 @@ sheetSujo=true;
 document.addEventListener("click",e=>{const t=e.target.closest('[data-act="rascdesc"]');if(!t)return;rascunhoLimpar();sheetSujo=false;openNew();toast("Rascunho descartado")});
 /* ---------- Agenda de atendimentos (página própria) ---------- */
 let agList=[],agCol=null;
-const AG={vista:"proximos",dia:null,mesOff:0,form:null,det:null,meus:false};
+const AG={vista:"proximos",dia:null,mesOff:0,form:null,det:null,meus:false,hq:"",hmax:60};
 const AG_ST={agendado:{t:"Agendado",c:"ag-s-ag"},confirmado:{t:"Confirmado",c:"ag-s-cf"},feito:{t:"Atendido",c:"ag-s-ok"},faltou:{t:"Não compareceu",c:"ag-s-ft"},cancelado:{t:"Cancelado",c:"ag-s-cc"}};
 const agAberto=a=>a.status!=="feito"&&a.status!=="cancelado"&&a.status!=="faltou";
 const diaIni=ts=>{const d=new Date(ts);d.setHours(0,0,0,0);return d.getTime()};
@@ -2921,11 +2921,12 @@ function agTipoTxt(a){const t=tipoOf(a.tipo).t;return a.tipo==="fabrica"&&a.marc
 function agVisiveis(){return agList.filter(a=>!AG.meus||!a.resp||a.resp===(me&&me.id))}
 function agFiltrados(){
 const hoje=diaIni(Date.now());let l=agVisiveis();
-if(AG.vista==="hoje")l=l.filter(a=>diaIni(a.quando)===hoje);
-else if(AG.vista==="amanha")l=l.filter(a=>diaIni(a.quando)===hoje+DAY);
-else if(AG.vista==="proximos")l=l.filter(a=>a.quando>=hoje&&a.quando<hoje+8*DAY);
+if(AG.vista==="hoje")l=l.filter(a=>agAberto(a)&&diaIni(a.quando)===hoje);
+else if(AG.vista==="amanha")l=l.filter(a=>agAberto(a)&&diaIni(a.quando)===hoje+DAY);
+else if(AG.vista==="proximos")l=l.filter(a=>agAberto(a)&&a.quando>=hoje&&a.quando<hoje+8*DAY);
 else if(AG.vista==="atrasados")l=l.filter(a=>agAberto(a)&&a.quando<Date.now()-60*60000);
 else if(AG.vista==="dia")l=l.filter(a=>diaIni(a.quando)===AG.dia);
+else if(AG.vista==="hist"){const q=norm(AG.hq);l=l.filter(a=>!agAberto(a)&&(!q||norm([a.cliente,a.telefone,a.aparelho,a.defeito,a.marca,a.protocolo,a.endereco].join(" ")).includes(q)));return l.sort((a,b)=>b.quando-a.quando)}
 return l.sort((a,b)=>a.quando-b.quando);
 }
 function openAgd(dia){
@@ -2943,7 +2944,7 @@ function agCalendario(){
 const base=new Date();base.setDate(1);base.setHours(0,0,0,0);base.setMonth(base.getMonth()+AG.mesOff);
 const ano=base.getFullYear(),mes=base.getMonth();const prim=(new Date(ano,mes,1).getDay()+6)%7;const dias=new Date(ano,mes+1,0).getDate();
 const hoje=diaIni(Date.now());const vis=agVisiveis();
-const cont={};vis.forEach(a=>{if(a.status==="cancelado")return;const k=diaIni(a.quando);cont[k]=(cont[k]||0)+1});
+const cont={};vis.forEach(a=>{if(!agAberto(a))return;const k=diaIni(a.quando);cont[k]=(cont[k]||0)+1});
 let nm=base.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});nm=nm.charAt(0).toUpperCase()+nm.slice(1);
 let cells="";for(let i=0;i<prim;i++)cells+=`<span></span>`;
 for(let d=1;d<=dias;d++){const k=new Date(ano,mes,d).getTime();const n=cont[k]||0;
@@ -2959,14 +2960,20 @@ return `<button type="button" class="ag-i ${agAberto(a)?"":"fechado"} ${atras?"a
 <span class="ag-c"><b>${esc(a.cliente||"Sem nome")}</b><small>${esc([a.aparelho,a.defeito].filter(Boolean).join(" · "))}</small>
 <span class="ag-tags"><span class="pill p-tipo">${esc(agTipoTxt(a))}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita${a.endereco?" · "+esc(a.endereco):""}</span>`:`<span class="pill pn">Na loja</span>`}${a.protocolo?`<span class="pill pn mono">Prot. ${esc(a.protocolo)}</span>`:""}${resp&&activeUsers().length>1?`<span class="pill pn">${esc(resp.nome.split(" ")[0])}</span>`:""}<span class="pill ${st.c}">${atras?"Atrasado":st.t}</span></span></span></button>`;
 }
+function agItemHist(a){const st=AG_ST[a.status]||AG_ST.agendado;const os=a.osId&&osList.find(o=>o.id===a.osId);
+return `<button type="button" class="ag-i ag-hi" data-agdet="${a.id}"><span class="ag-h"><b>${new Date(a.quando).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</b><small>${fmtHora(a.quando)}</small></span>
+<span class="ag-c"><b>${esc(a.cliente||"Sem nome")}</b><small>${esc([agTipoTxt(a),a.aparelho,a.defeito].filter(Boolean).join(" · "))}</small>
+<span class="ag-tags"><span class="pill ${st.c}">${st.t}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita</span>`:""}${a.protocolo?`<span class="pill pn mono">Prot. ${esc(a.protocolo)}</span>`:""}${os?`<span class="pill pg">OS ${esc(os.num||"")}</span>`:""}</span></span></button>`}
 function renderAgd(){
 const el=$("#agd");if(!el||el.hidden)return;
 const hoje=diaIni(Date.now()),vis=agVisiveis();
-const nH=vis.filter(a=>diaIni(a.quando)===hoje&&a.status!=="cancelado").length,nA=vis.filter(a=>diaIni(a.quando)===hoje+DAY&&a.status!=="cancelado").length;
+const nH=vis.filter(a=>diaIni(a.quando)===hoje&&agAberto(a)).length,nA=vis.filter(a=>diaIni(a.quando)===hoje+DAY&&agAberto(a)).length;
 const nAt=vis.filter(a=>agAberto(a)&&a.quando<Date.now()-60*60000).length;
-const l=agFiltrados();const grupos=[];let g=null;l.forEach(a=>{const k=diaIni(a.quando);if(!g||g.k!==k){g={k,l:[]};grupos.push(g)}g.l.push(a)});
+const lTodos=agFiltrados(),hist=AG.vista==="hist";const l=hist?lTodos.slice(0,AG.hmax):lTodos;const grupos=[];let g=null;
+l.forEach(a=>{const k=hist?(()=>{const d=new Date(a.quando);return new Date(d.getFullYear(),d.getMonth(),1).getTime()})():diaIni(a.quando);if(!g||g.k!==k){g={k,l:[]};grupos.push(g)}g.l.push(a)});
+const nmMes=k=>{let m=new Date(k).toLocaleDateString("pt-BR",{month:"long",year:"numeric"});return m.charAt(0).toUpperCase()+m.slice(1)};
 const podeCriar=pode("editar_os");
-const chips=[["hoje","Hoje",nH],["amanha","Amanhã",nA],["proximos","Próximos 7 dias",null],["atrasados","Atrasados",nAt]];
+const chips=[["hoje","Hoje",nH],["amanha","Amanhã",nA],["proximos","Próximos 7 dias",null],["atrasados","Atrasados",nAt],["hist","Histórico",null]];
 const notif=("Notification" in window)&&Notification.permission!=="granted"&&Notification.permission!=="denied";
 el.innerHTML=`<header class="eq-top"><button type="button" class="btn btn-line" data-ag="fechar">← Voltar</button><h2>Agenda</h2>
 <div class="eq-acts">${notif?`<button type="button" class="btn btn-line" data-ag="notif">🔔 Avisar neste aparelho</button>`:""}${podeCriar?`<button type="button" class="btn btn-accent" data-ag="novo">+ Novo agendamento</button>`:""}</div></header>
@@ -2975,8 +2982,9 @@ el.innerHTML=`<header class="eq-top"><button type="button" class="btn btn-line" 
 <p class="hint">Dica: use <b>Lembrar no celular</b> em cada atendimento para o alarme tocar mesmo com o app fechado.</p></aside>
 <main>
 <div class="lj-tabs ag-tabs">${chips.map(([k,t,n])=>`<button type="button" data-agvista="${k}" aria-selected="${AG.vista===k}">${t}${n?` <span class="badge-n ${k==="atrasados"?"":"ag-n"}">${n}</span>`:""}</button>`).join("")}${AG.vista==="dia"?`<button type="button" aria-selected="true">${esc(fmtDiaLongo(AG.dia))}</button>`:""}</div>
-${grupos.length?grupos.map(gr=>`<div class="ag-gr"><h4>${esc(fmtDiaLongo(gr.k))} <span class="mono">${gr.l.length}</span></h4>${gr.l.map(agItem).join("")}</div>`).join("")
-:`<div class="sec"><span class="hint">${AG.vista==="atrasados"?"Nada atrasado. 👍":"Nenhum atendimento "+({hoje:"hoje",amanha:"amanhã",proximos:"nos próximos 7 dias",dia:"neste dia"}[AG.vista]||"")+"."}</span>${podeCriar?`<button type="button" class="btn btn-line" data-ag="novo" style="align-self:flex-start">+ Agendar</button>`:""}</div>`}
+${hist?`<input class="inp" id="agHQ" type="search" placeholder="Buscar no histórico: cliente, telefone, aparelho, protocolo…" value="${esc(AG.hq)}"><span class="hint">${lTodos.length} atendimento${lTodos.length===1?"":"s"} finalizado${lTodos.length===1?"":"s"} (atendidos, não compareceu e cancelados). Para trazer de volta, abra e mude o "Como foi?".</span>`:""}
+${grupos.length?grupos.map(gr=>`<div class="ag-gr"><h4>${esc(hist?nmMes(gr.k):fmtDiaLongo(gr.k))} <span class="mono">${gr.l.length}</span></h4>${gr.l.map(a=>hist?agItemHist(a):agItem(a)).join("")}</div>`).join("")+(hist&&lTodos.length>AG.hmax?`<button type="button" class="btn btn-line" data-ag="hmais">Mostrar mais (${lTodos.length-AG.hmax})</button>`:"")
+:`<div class="sec"><span class="hint">${AG.vista==="atrasados"?"Nada atrasado. 👍":AG.vista==="hist"?(AG.hq?"Nada encontrado no histórico.":"Ainda não há atendimentos finalizados."):"Nenhum atendimento "+({hoje:"hoje",amanha:"amanhã",proximos:"nos próximos 7 dias",dia:"neste dia"}[AG.vista]||"")+" em aberto."}</span>${podeCriar?`<button type="button" class="btn btn-line" data-ag="novo" style="align-self:flex-start">+ Agendar</button>`:""}</div>`}
 </main>
 </div>${AG.form?agFormHTML():""}${AG.det?agDetHTML():""}`;
 }
@@ -3073,9 +3081,10 @@ if(t.dataset.agmes){AG.mesOff+= +t.dataset.agmes;renderAgd();return}
 if(t.dataset.agvista){if(t.dataset.agvista)AG.vista=t.dataset.agvista;renderAgd();return}
 if(t.dataset.agdet){AG.det=t.dataset.agdet;renderAgd();return}
 if(t.dataset.openOs){const id=t.dataset.openOs;fecharAgd();setTimeout(()=>openOS(id),60);return}
-if(t.dataset.agst){const a=agList.find(x=>x.id===t.dataset.id);if(!a)return;const {id:_i,...b}=a;try{await agCol.doc(a.id).set({...b,status:t.dataset.agst,atualizadoEm:Date.now()});toast(AG_ST[t.dataset.agst].t)}catch(_){toast("Não salvou. Tente de novo.")}renderAgd();renderBoard();return}
+if(t.dataset.agst){const a=agList.find(x=>x.id===t.dataset.id);if(!a)return;const {id:_i,...b}=a;const nv=t.dataset.agst;try{await agCol.doc(a.id).set({...b,status:nv,atualizadoEm:Date.now()});if(["feito","faltou","cancelado"].includes(nv)){AG.det=null;toast(AG_ST[nv].t+" · foi para o Histórico")}else toast(AG_ST[nv].t)}catch(_){toast("Não salvou. Tente de novo.")}renderAgd();renderBoard();return}
 const k=t.dataset.ag;if(!k)return;
 if(k==="fechar"){fecharAgd();return}
+if(k==="hmais"){AG.hmax+=100;renderAgd();return}
 if(k==="novo"){AG.form={id:null};AG.det=null;renderAgd();setTimeout(()=>$("#ag_cli")?.focus(),50);return}
 if(k==="formx"){AG.form=null;renderAgd();return}
 if(k==="detx"){AG.det=null;renderAgd();return}
@@ -3092,6 +3101,7 @@ if(t.id==="ag_tipo"){const w=$("#ag_w_marca");if(w)w.hidden=t.value!=="fabrica";
 if(t.name==="ag_local"){const w=$("#ag_w_end");if(w)w.hidden=t.value!=="cliente";return}
 if(t.dataset&&t.dataset.ag==="meus"){AG.meus=t.checked;renderAgd();return}
 });
+document.addEventListener("input",e=>{if(e.target.id==="agHQ"){AG.hq=e.target.value;const p=e.target.selectionStart;renderAgd();const i=$("#agHQ");if(i){i.focus();try{i.setSelectionRange(p,p)}catch(_){}}}});
 document.addEventListener("submit",e=>{if(e.target.id==="agForm"){e.preventDefault();agSalvar()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#agd")&&!$("#agd").hidden){if(AG.form||AG.det){AG.form=null;AG.det=null;renderAgd()}else fecharAgd()}});
 /* aviso no topo do quadro */
