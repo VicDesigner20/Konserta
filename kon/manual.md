@@ -38,7 +38,7 @@ O Konserta organiza a bancada de assistências técnicas, oficinas mecânicas, m
 - Dentro da OS, em "Imprimir / PDF": OS de entrada, Orçamento e comprovante de entrega. Garantia, prazo de retirada e termo ficam em Conta → OS impressa.
 
 ## Liberar a loja
-- Cartão escuro "Liberar a loja" no topo do quadro, botão "Ver o que fazer". Mostra o que pode sair já (prontos e devolvidos esperando retirada, com botão para avisar o cliente no WhatsApp) e sugere consertos rápidos para fazer primeiro e esvaziar a loja.
+- Cartão escuro "Liberar a loja" no topo do quadro, botão "Ver o que fazer". Mostra o que pode sair já (prontos e devolvidos esperando retirada, com botão para avisar o cliente no WhatsApp) e sugere consertos rápidos para fazer primeiro e liberar espaço na prateleira.
 
 ## Conta (botão com seu nome no computador, "Conta" no celular)
 - Seu nome, sair, assinatura/teste grátis.
