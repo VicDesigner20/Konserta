@@ -1835,7 +1835,7 @@ ${resetMode?`<form id="wipeForm" autocomplete="off" style="display:flex;flex-dir
 `<span class="hint">Apaga as OS para começar o quadro do zero.</span>
 <div style="display:flex;gap:8px;flex-wrap:wrap">${pode("apagar_os")?`<button type="button" class="btn btn-danger" data-act="wipeMine">Apagar todas as minhas OS</button>`:`<span class="hint">Quem apaga OS é o dono ou o gerente.</span>`}${pode("apagar_os")&&pode("equipe")?`<button type="button" class="btn btn-danger" data-act="wipeAll">Apagar todas as OS da empresa</button>`:""}</div>`}</div>
 ${KS.superadmin?`<div class="sec"><h4>Painel do Konserta</h4><span class="hint">Só você vê isto: todas as empresas, testes, planos e módulos em teste.</span><a class="btn btn-accent" style="align-self:flex-start" href="/admin">Abrir painel</a></div>`:""}
-<div class="sec"><h4>Precisa de ajuda?</h4><span class="hint">Cada pessoa entra com o próprio e-mail e senha. Esqueceu a senha? Use "Esqueci minha senha" na tela de entrada.</span></div>`);
+<div class="sec"><h4>Precisa de ajuda?</h4><span class="hint">Cada pessoa entra com o próprio e-mail e senha. Esqueceu a senha? Use "Esqueci minha senha" na tela de entrada.</span><span class="hint"><a href="/termos" target="_blank">Termos de uso</a> · <a href="/privacidade" target="_blank">Política de privacidade</a></span></div>`);
 }
 let resetMode=null;
 async function wipeOS(){
