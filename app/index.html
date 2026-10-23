@@ -663,6 +663,11 @@ body.estq-on{overflow:hidden}
 .rel-v{grid-column:2;font-size:12.5px;color:var(--muted)}.rel-v b{color:var(--ink)}
 .rel-sem{border-left:4px solid var(--warn)}
 .eq-link-ic{font-family:var(--f-display);font-weight:800;font-size:14px}
+.vf-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.vf-row .fld{flex:1 1 200px}
+.vf-gar{white-space:nowrap;padding:11px 14px}
+.vf-gar[aria-pressed="true"]{background:#2f6fd6;color:#fff;border-color:#2f6fd6}
+.vf-gbtn{align-self:flex-start}
+.p-gar{background:color-mix(in srgb,#2f6fd6 15%,var(--surface));color:#2f6fd6}
 </style>
 </head>
 <body style="margin:0">
@@ -973,7 +978,8 @@ const nm=(o.midia||[]).length;const tw=twinsOf(o).length;
 const pr=priOf(o.prioridade);
 let meta=pr.k==="urgente"?`<span class="pill p-urg">Urgente</span>`:pr.k==="alta"?`<span class="pill p-alta">Prioridade alta</span>`:"";
 meta+=prazoPill(o);
-if(o.valorFinal!=null&&o.valorFinal!==""&&pode("orcamentos")&&!(full()&&o.orc&&(o.orc.itens||[]).length))meta+=`<span class="pill p-vf mono">${fmtR(o.valorFinal)}</span>`;
+if(o.garantiaSemCusto&&pode("orcamentos"))meta+=`<span class="pill p-gar">Garantia</span>`;
+else if(o.valorFinal!=null&&o.valorFinal!==""&&pode("orcamentos")&&!(full()&&o.orc&&(o.orc.itens||[]).length))meta+=`<span class="pill p-vf mono">${fmtR(o.valorFinal)}</span>`;
 meta+=`<span class="pill p-tipo">${esc(o.tipo==="fabrica"&&o.marca?"Fábrica · "+o.marca:tp.t)}</span>`;
 if(o.status!=="entregue")meta+=`<span class="pill p-days ${dc}" title="${w?"Dias aguardando retirada":"Dias desde que chegou"}">${w?(d===0?"pronto hoje":plural(d,"dia","dias")+" aguardando"):(d===0?"chegou hoje":plural(d,"dia","dias")+" na loja")}</span>`;
 if(buy)meta+=`<span class="pill p-buy">${buy} a comprar</span>`;
@@ -1636,7 +1642,9 @@ if(act==="copywa"){copy($("#waText").textContent,$("#waText"));return}
 if(act==="copyshop"){const g=shopItems().filter(i=>i.p.status==="comprar");const r=lowStock();const lines=g.map(i=>"- "+i.p.nome+(i.o.aparelho?" ("+i.o.aparelho+")":"")).concat(r.map(i=>"- "+i.nome+" (repor estoque)"));copy(lines.length?"Peças para comprar:\n"+lines.join("\n"):"Nenhuma peça para comprar.");return}
 if(act==="logodel"){const old=empresa.logoId;await saveEmpresa({logoId:"",logoUrl:""});try{if(old&&assets)await assets.delete(old)}catch(_){}toast("Logo removido");return}
 if(act==="finalizar"&&o){if(pode("orcamentos")&&valorDe(o)==null){pedirValor=o.id;openOS(o.id);setTimeout(()=>{const i=$("#vf_ask");if(i){i.scrollIntoView({block:"center"});i.focus()}},60);return}setStatus(o,"entregue");closeSheet();renderBoard();toast("OS finalizada");return}
-if((act==="vf_ok"||act==="vf_pular")&&o){if(act==="vf_ok"){const v=($("#vf_ask")||{}).value||"";if(!v.trim()){$("#vf_ask")?.focus();toast("Coloque o valor ou toque em Finalizar sem valor");return}o.valorFinal=parseMoney(v)}pedirValor=null;setStatus(o,"entregue");closeSheet();renderBoard();toast(act==="vf_ok"?"OS finalizada · "+fmtR(o.valorFinal):"OS finalizada sem valor");return}
+if(act==="vf_gartoggle"&&o){o.garantiaSemCusto=!o.garantiaSemCusto;if(o.garantiaSemCusto)o.valorFinal=0;else o.valorFinal=null;saveSoon(o);openOS(o.id);renderBoard();toast(o.garantiaSemCusto?"Marcada como garantia, sem valor":"Garantia desmarcada");return}
+if(act==="vf_gar"&&o){o.garantiaSemCusto=true;o.valorFinal=0;pedirValor=null;setStatus(o,"entregue");closeSheet();renderBoard();toast("OS finalizada como garantia");return}
+if((act==="vf_ok"||act==="vf_pular")&&o){if(act==="vf_ok"){const v=($("#vf_ask")||{}).value||"";if(!v.trim()){$("#vf_ask")?.focus();toast("Coloque o valor, ou escolha Garantia");return}o.valorFinal=parseMoney(v);o.garantiaSemCusto=false}pedirValor=null;setStatus(o,"entregue");closeSheet();renderBoard();toast(act==="vf_ok"?"OS finalizada · "+fmtR(o.valorFinal):"OS finalizada sem valor");return}
 if(act==="del1"&&pode("apagar_os")){delConfirm=true;openOS(o.id);return}
 if(act==="del0"){delConfirm=false;openOS(o.id);return}
 if(act==="del2"&&o){
@@ -1683,7 +1691,7 @@ if(e.target.id==="o_desc")r.desconto=parseMoney(e.target.value);else if(e.target
 const tt=$("#orcTot");if(tt)tt.textContent=fmtR(orcTotal(o));const ot=$("#orcText");if(ot)ot.textContent=orcMsg(o);saveSoon(o);return}
 if(["ct_cli","ct_tel","ct_ap","ct_def"].includes(e.target.id)){const o=curObj();if(!isCot(o))return;o[{ct_cli:"cliente",ct_tel:"telefone",ct_ap:"aparelho",ct_def:"defeito"}[e.target.id]]=e.target.value;saveSoon(o);return}
 if(e.target.id==="stockQ"){stockQ=e.target.value;renderStockList();return}
-if(e.target.id==="o_vf"){const o=osList.find(x=>x.id===openId);if(o){const v=e.target.value.trim();o.valorFinal=v===""?null:parseMoney(v);saveSoon(o);renderBoard();toast(v===""?"Valor removido":"Valor final: "+fmtR(o.valorFinal))}return}
+if(e.target.id==="o_vf"){const o=osList.find(x=>x.id===openId);if(o){const v=e.target.value.trim();o.valorFinal=v===""?null:parseMoney(v);if(v!=="")o.garantiaSemCusto=false;saveSoon(o);renderBoard();toast(v===""?"Valor removido":"Valor final: "+fmtR(o.valorFinal))}return}
 if(e.target.id==="f_prazo"){const o=osList.find(x=>x.id===openId);if(o){o.prazo=fromISO(e.target.value)||null;saveSoon(o);renderBoard();toast(o.prazo?"Prazo: "+fmtDia(o.prazo):"Prazo removido")}return}
 if(e.target.id==="f_ent"){const o=osList.find(x=>x.id===openId);const ts=fromISO(e.target.value);if(o&&ts){o.entrada=ts;
 if((o.historico||[]).length<=1&&ts<(o.statusDesde||0))o.statusDesde=ts;saveSoon(o);renderBoard()}return}
@@ -2761,17 +2769,19 @@ if(t.dataset.act==="histmais"){histMax+=100;const sh=document.querySelector(".sh
 document.addEventListener("input",e=>{if(e.target.id==="histQ"){histQ=e.target.value;const p=e.target.selectionStart;openHist();const i=$("#histQ");if(i){i.focus();try{i.setSelectionRange(p,p)}catch(_){}}}});
 /* ---------- Valor final e Relatório do mês ---------- */
 let pedirValor=null,relMes=0;
-function valorDe(o){if(o.valorFinal!=null&&o.valorFinal!=="")return +o.valorFinal||0;if(full()&&o.orc&&o.orc.status==="aprovado"&&(o.orc.itens||[]).length)return orcTotal(o);return null}
+function valorDe(o){if(o.garantiaSemCusto)return 0;if(o.valorFinal!=null&&o.valorFinal!=="")return +o.valorFinal||0;if(full()&&o.orc&&o.orc.status==="aprovado"&&(o.orc.itens||[]).length)return orcTotal(o);return null}
 function valorSec(o){
 if(!pode("orcamentos"))return "";
 const temOrc=full()&&o.orc&&(o.orc.itens||[]).length;
-const v=o.valorFinal!=null&&o.valorFinal!==""?fmtMoneyIn(o.valorFinal):"";
-return `<div class="sec vf-sec"><h4>Valor final</h4><div class="fld"><label for="o_vf">Quanto foi cobrado do cliente (R$)</label><input id="o_vf" class="mono" inputmode="decimal" value="${esc(v)}" placeholder="${temOrc?"Vazio = usa o orçamento ("+esc(fmtR(orcTotal(o)))+")":"0,00"}"></div>
-<span class="hint">Entra no Relatório do mês quando a OS for entregue.${temOrc?" Preencha só se o valor final for diferente do orçamento.":""}</span></div>`;
+const g=!!o.garantiaSemCusto;const v=!g&&o.valorFinal!=null&&o.valorFinal!==""?fmtMoneyIn(o.valorFinal):"";
+return `<div class="sec vf-sec"><h4>Valor final</h4><div class="vf-row"><div class="fld"><label for="o_vf">Quanto foi cobrado do cliente (R$)</label><input id="o_vf" class="mono" inputmode="decimal" value="${esc(v)}" ${g?'disabled placeholder="Garantia: sem valor"':`placeholder="${temOrc?"Vazio = usa o orçamento ("+esc(fmtR(orcTotal(o)))+")":"0,00"}"`}></div>
+<button type="button" class="st-btn vf-gar" data-act="vf_gartoggle" aria-pressed="${g}">${g?"✓ ":""}Garantia (sem valor)</button></div>
+<span class="hint">${g?"Conta como garantia no Relatório do mês, sem valor.":"Entra no Relatório do mês quando a OS for entregue."+(temOrc?" Preencha só se o valor final for diferente do orçamento.":"")}</span></div>`;
 }
 function vfAsk(o){
 return `<div class="finish vf-ask"><b>Quanto foi cobrado?</b><div class="addrow"><input class="inp mono" id="vf_ask" inputmode="decimal" placeholder="0,00" aria-label="Valor final"><button type="button" class="btn btn-ok" data-act="vf_ok">✓ Finalizar</button></div>
-<button type="button" class="linkbtn" data-act="vf_pular">Finalizar sem valor</button><span class="hint">O valor entra no Relatório do mês.</span></div>`;
+<button type="button" class="btn ${["fabrica","pedroso"].includes(o.tipo)?"btn-accent":"btn-line"} vf-gbtn" data-act="vf_gar">🛡 Garantia — finalizar sem valor</button>
+<button type="button" class="linkbtn" data-act="vf_pular">Finalizar sem valor (coloco depois)</button><span class="hint">O valor entra no Relatório do mês.</span></div>`;
 }
 function openRel(){
 if(!pode("orcamentos")){toast("Sua função não vê valores.");return}
@@ -2781,7 +2791,7 @@ const ant=new Date(ini);ant.setMonth(ant.getMonth()-1);
 const noMes=(a,b)=>osList.filter(o=>o.status==="entregue"&&scopeMatch(o)&&(o.statusDesde||0)>=a.getTime()&&(o.statusDesde||0)<b.getTime());
 const l=noMes(ini,fim).sort((a,b)=>(b.statusDesde||0)-(a.statusDesde||0)),la=noMes(ant,ini);
 const soma=arr=>arr.reduce((s,o)=>s+(valorDe(o)||0),0);
-const tot=soma(l),totA=soma(la),comV=l.filter(o=>valorDe(o)!=null),semV=l.filter(o=>valorDe(o)==null);
+const tot=soma(l),totA=soma(la),gar=l.filter(o=>o.garantiaSemCusto),comV=l.filter(o=>valorDe(o)!=null&&!o.garantiaSemCusto),semV=l.filter(o=>valorDe(o)==null);
 const tick=comV.length?tot/comV.length:0;
 const varP=totA?Math.round((tot-totA)/totA*100):null;
 let nm=ini.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});nm=nm.charAt(0).toUpperCase()+nm.slice(1);
@@ -2791,18 +2801,18 @@ const maxV=Math.max(1,...porTipo.map(x=>x.v),...porTec.map(x=>x.v));
 const barras=arr=>arr.map(x=>`<div class="rel-b"><span class="rel-n">${esc(x.t)}</span><span class="rel-bar"><i style="width:${Math.max(2,Math.round(x.v/maxV*100))}%"></i></span><span class="rel-v"><b class="mono">${fmtR(x.v)}</b> · ${plural(x.n,seg().noun,seg().nouns)}</span></div>`).join("");
 $("#layer").innerHTML=shell("Relatório do mês",`
 <div class="mesnav"><button type="button" class="btn btn-line" data-relmes="-1" aria-label="Mês anterior">‹</button><b>${esc(nm)}</b><button type="button" class="btn btn-line" data-relmes="1" aria-label="Próximo mês" ${relMes>=0?"disabled":""}>›</button></div>
-<div class="lj-stats"><div><small>${seg().nouns.charAt(0).toUpperCase()+seg().nouns.slice(1)} entregues</small><b>${l.length}</b></div><div><small>Faturado</small><b>${fmtR(tot)}</b>${varP!=null?`<small class="${varP>=0?"up":"down"}">${varP>=0?"▲":"▼"} ${Math.abs(varP)}% vs. mês anterior</small>`:""}</div><div><small>Ticket médio</small><b>${fmtR(tick)}</b></div>${semV.length?`<div class="warn"><small>Sem valor</small><b>${semV.length}</b></div>`:""}</div>
+<div class="lj-stats"><div><small>${seg().nouns.charAt(0).toUpperCase()+seg().nouns.slice(1)} entregues</small><b>${l.length}</b></div><div><small>Faturado</small><b>${fmtR(tot)}</b>${varP!=null?`<small class="${varP>=0?"up":"down"}">${varP>=0?"▲":"▼"} ${Math.abs(varP)}% vs. mês anterior</small>`:""}</div><div><small>Ticket médio</small><b>${fmtR(tick)}</b></div>${gar.length?`<div><small>Garantias (sem valor)</small><b>${gar.length}</b></div>`:""}${semV.length?`<div class="warn"><small>Sem valor</small><b>${semV.length}</b></div>`:""}</div>
 ${semV.length?`<div class="sec rel-sem"><h4>Entregues sem valor <span class="mono">${semV.length}</span></h4><span class="hint">Não entram no total. Toque para abrir e colocar o valor final.</span>${semV.map(o=>`<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"")}<small>${esc(o.aparelho||"")} · entregue ${fmtDia(o.statusDesde)}</small></span><b>colocar valor ›</b></button>`).join("")}</div>`:""}
 ${porTipo.length?`<div class="sec"><h4>Por tipo de atendimento</h4>${barras(porTipo)}</div>`:""}
 ${porTec.length?`<div class="sec"><h4>Por técnico</h4>${barras(porTec)}</div>`:""}
-<div class="sec"><h4>Entregues no mês <span class="mono">${l.length}</span></h4>${l.length?l.map(o=>{const v=valorDe(o);return `<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"")}<small>${esc(o.aparelho||"")} · ${fmtDia(o.statusDesde)} · ${esc(tipoOf(o.tipo).t)}</small></span><b class="mono">${v==null?"—":fmtR(v)}</b></button>`}).join(""):`<span class="hint">Nenhuma entrega neste mês.</span>`}</div>
+<div class="sec"><h4>Entregues no mês <span class="mono">${l.length}</span></h4>${l.length?l.map(o=>{const v=valorDe(o);return `<button type="button" class="u-row hist-i" data-open="${o.id}"><span class="nm">${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"")}<small>${esc(o.aparelho||"")} · ${fmtDia(o.statusDesde)} · ${esc(tipoOf(o.tipo).t)}</small></span><b class="mono">${o.garantiaSemCusto?"Garantia":v==null?"—":fmtR(v)}</b></button>`}).join(""):`<span class="hint">Nenhuma entrega neste mês.</span>`}</div>
 ${l.length?`<div class="btnrow"><button type="button" class="btn btn-line" data-act="relcsv">Baixar planilha do mês</button></div>`:""}`);
 }
 function relCSV(){
 const ini=new Date();ini.setDate(1);ini.setHours(0,0,0,0);ini.setMonth(ini.getMonth()+relMes);const fim=new Date(ini);fim.setMonth(fim.getMonth()+1);
 const l=osList.filter(o=>o.status==="entregue"&&scopeMatch(o)&&(o.statusDesde||0)>=ini.getTime()&&(o.statusDesde||0)<fim.getTime()).sort((a,b)=>(a.statusDesde||0)-(b.statusDesde||0));
 const cel=v=>{v=v==null?"":String(v);if(/^[=+\-@]/.test(v))v="'"+v;return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
-const rows=[["Entregue em","OS","Cliente","Aparelho","Tipo","Técnico","Valor final"].join(";")].concat(l.map(o=>[fmtDia(o.statusDesde),cel(o.num),cel(o.cliente),cel(o.aparelho),cel(tipoOf(o.tipo).t),cel(firstName(ownerOf(o))),valorDe(o)==null?"":String(valorDe(o)).replace(".",",")].join(";")));
+const rows=[["Entregue em","OS","Cliente","Aparelho","Tipo","Técnico","Valor final"].join(";")].concat(l.map(o=>[fmtDia(o.statusDesde),cel(o.num),cel(o.cliente),cel(o.aparelho),cel(tipoOf(o.tipo).t),cel(firstName(ownerOf(o))),o.garantiaSemCusto?"Garantia":valorDe(o)==null?"":String(valorDe(o)).replace(".",",")].join(";")));
 const blob=new Blob(["﻿"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="relatorio-"+ini.getFullYear()+"-"+String(ini.getMonth()+1).padStart(2,"0")+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast("Planilha baixada");
 }
 document.addEventListener("click",e=>{const t=e.target.closest('[data-act="rel"],[data-relmes],[data-act="relcsv"]');if(!t)return;

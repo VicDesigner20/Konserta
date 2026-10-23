@@ -40,7 +40,8 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 
 ## Valor final e Relatório do mês
 - Toda OS tem o campo "Valor final" (quanto foi cobrado do cliente), dentro da OS. Serve principalmente para quem usa o Konserta só como organizador de bancada, sem o orçamento detalhado. Na OS completa, se o campo ficar vazio, vale o total do orçamento aprovado.
-- Ao tocar em "Finalizar OS — cliente retirou", o app pergunta "Quanto foi cobrado?". Dá para finalizar sem valor, mas aí a OS não entra no total.
+- Ao tocar em "Finalizar OS — cliente retirou", o app pergunta "Quanto foi cobrado?". Se foi garantia, toque em "Garantia — finalizar sem valor" (fica em destaque nas OS de garantia de fábrica e garantia da loja). Também dá para "Finalizar sem valor (coloco depois)"; essas aparecem no relatório como "sem valor" para completar.
+- Dentro da OS, ao lado do Valor final, o botão "Garantia (sem valor)" marca ou desmarca a OS como garantia. No relatório, garantias aparecem contadas à parte e não entram no ticket médio.
 - Relatório do mês: no menu + (Relatório do mês), no Histórico de entregues ou no Painel da Loja. Mostra quantos aparelhos foram entregues, quanto faturou, o ticket médio, a comparação com o mês anterior, os entregues sem valor (para completar), o total por tipo de atendimento e por técnico, e a lista do mês. Tem "Baixar planilha do mês". Dá para ver meses anteriores.
 - Só quem tem a permissão de ver valores (orçamentos) vê o valor final e o relatório.
 
