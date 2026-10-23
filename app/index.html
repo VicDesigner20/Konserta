@@ -600,6 +600,53 @@ body.kon-on .kon-fab{display:none}
 #konHumBtn.novo::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bad);margin-left:6px}
 .kon-fab.tem-resposta::after{content:"1";position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--bad);color:#fff;font:800 12px/20px var(--f-body);text-align:center;box-shadow:0 0 0 2px var(--bg)}
 @media (max-width:420px){.kon-h .kx button[data-kon="limpar"]{display:none}}
+/* ===== Estoque completo ===== */
+.eq-link{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:13px 14px;border-radius:16px;border:1.5px solid color-mix(in srgb,var(--brand) 60%,var(--line));background:var(--brand-soft)}
+.eq-link b{display:block;font-family:var(--f-display);font-size:15.5px}.eq-link small{display:block;color:var(--muted);font-size:12.5px}
+.eq-link .go{margin-left:auto;font-size:24px;color:var(--brand-fg)}
+.eq-link-ic{width:40px;height:40px;border-radius:12px;background:var(--graf);color:var(--brand);display:grid;place-items:center;flex:0 0 auto}.eq-link-ic svg{stroke:currentColor}
+body.estq-on{overflow:hidden}
+.estq{position:fixed;inset:0;z-index:42;background:var(--bg);overflow-y:auto;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}
+.estq[hidden]{display:none}
+.eq-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px max(16px,env(safe-area-inset-left,0px));padding-top:calc(12px + env(safe-area-inset-top,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+.eq-top h2{font-family:var(--f-display);font-weight:800;font-size:21px;letter-spacing:-.02em;margin:0}
+.eq-acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.eq-wrap{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.eq-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.eq-stats>*{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;text-align:left;font:inherit;color:inherit}
+.eq-stats small{display:block;color:var(--muted);font-size:12px;font-weight:700}
+.eq-stats b{display:block;font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin-top:2px}
+.eq-stats button{cursor:pointer}.eq-stats button.on{border-color:var(--bad);box-shadow:0 0 0 3px color-mix(in srgb,var(--bad) 20%,transparent)}
+.eq-stats .bad,.eq-tbl .bad{color:var(--bad)}
+.eq-bar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
+@media (max-width:760px){.eq-bar{grid-template-columns:1fr 1fr}.eq-bar #eqQ{grid-column:1/-1}}
+.eq-tbl{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow-x:auto}
+.eq-tbl table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+.eq-tbl th{position:sticky;top:0;text-align:left;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:10px;border-bottom:1px solid var(--line);background:var(--surface)}
+.eq-tbl td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.eq-tbl tr:last-child td{border-bottom:0}
+.eq-tbl tr.low td{background:color-mix(in srgb,var(--bad) 5%,transparent)}
+.eq-tbl .num{text-align:right;white-space:nowrap}.eq-tbl .ck{width:34px}.eq-tbl .ck input{width:18px;height:18px;accent-color:var(--graf)}
+.eq-tbl .cod{font-weight:700;white-space:nowrap}
+.eq-tbl .nm small{display:block;color:var(--muted);font-size:12.5px}
+.eq-nome{all:unset;cursor:pointer;font-weight:800}.eq-nome:hover{text-decoration:underline}
+.eq-tbl td.num small{display:block;color:var(--muted);font-size:11.5px}
+.eq-q{display:inline-flex;align-items:center;gap:6px}
+.eq-q button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;font-weight:800;cursor:pointer}
+.eq-q b{min-width:26px;text-align:center;font-family:var(--f-mono)}
+.mg{font-weight:800;font-size:12.5px;border-radius:8px;padding:3px 7px}.mg.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}.mg.md{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}.mg.bx{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.eq-modal{position:fixed;inset:0;z-index:43;background:rgba(12,12,11,.5);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 12px}
+.eq-card{background:var(--bg);border-radius:22px;padding:18px;width:min(640px,100%);display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow-lg)}
+.eq-mh{display:flex;align-items:center;justify-content:space-between}.eq-mh b{font-family:var(--f-display);font-size:19px}
+.eq-card .fld input,.eq-card .fld select,.eq-card .fld textarea{background:var(--surface);border:1px solid var(--line)}
+.etq-lista{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.etq-i{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:7px 10px;font-size:14px}
+.etq-prev{display:flex;justify-content:center;padding:6px 0}
+.etq-folha{position:relative;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.etq-folha i{position:absolute;border:1px solid #c9c3b6;border-radius:2px;background:#fff}
+.etq-folha i.usada{background:repeating-linear-gradient(45deg,#e4dfd4 0 3px,#fff 3px 6px)}
+.etq-folha i.ini{background:var(--brand);border-color:var(--brand)}
+@media (max-width:760px){.eq-modal{padding:0}.eq-card{border-radius:0;min-height:100%;width:100%}}
 </style>
 </head>
 <body style="margin:0">
@@ -1417,6 +1464,7 @@ let stockQ="";
 function openStock(){
 sheetMode="stock";
 $("#layer").innerHTML=shell("Estoque",`
+<button type="button" class="eq-link" data-act="estq"><span class="eq-link-ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg></span><span><b>Estoque completo</b><small>Códigos, custo e venda, valor em estoque e etiquetas para imprimir</small></span><span class="go">›</span></button>
 ${pode("estoque")?`<div class="sec"><h4>Adicionar ou atualizar item</h4>
 <form id="stockForm" class="grid2" autocomplete="off">
 <div class="fld full"><label for="k_nome">Item</label><input id="k_nome" list="stockNames" placeholder="${esc(seg().stockPh)}"><datalist id="stockNames">${estoque.map(i=>`<option value="${esc(i.nome)}"></option>`).join("")}</datalist></div>
@@ -1452,7 +1500,7 @@ const ex=estoque.find(i=>norm(i.nome)===norm(nome));
 const qv=$("#k_qtd").value,mv=$("#k_min").value,lv=$("#k_loc").value.trim();
 const d={nome:ex?ex.nome:nome,qtd:qv!==""?Math.max(0,parseInt(qv,10)||0):(ex?ex.qtd||0:0),minimo:mv!==""?Math.max(0,parseInt(mv,10)||0):(ex?ex.minimo||0:0),local:lv||(ex?ex.local||"":""),atualizadoEm:Date.now()};
 const pv=$("#k_preco")?$("#k_preco").value.trim():"";d.preco=pv!==""?parseMoney(pv):(ex?ex.preco||0:0);
-try{await scol.doc(ex?ex.id:"i"+uid()).set(d);toast(ex?"Item atualizado":"Item adicionado");["#k_nome","#k_qtd","#k_min","#k_loc","#k_preco"].forEach(s=>{if($(s))$(s).value=""});$("#k_nome").focus()}
+try{const {id:_e,...base}=ex||{};await scol.doc(ex?ex.id:"i"+uid()).set({...base,...d});toast(ex?"Item atualizado":"Item adicionado");["#k_nome","#k_qtd","#k_min","#k_loc","#k_preco"].forEach(s=>{if($(s))$(s).value=""});$("#k_nome").focus()}
 catch(e){toast(e&&e.code==="quota_exceeded"?"Estoque cheio":"Não salvou. Tente de novo.")}
 }
 async function pullFromStock(){
@@ -1763,7 +1811,7 @@ if(!id||!db){gate();return}
 const base="ws/"+id;
 unsubs.push(db.doc(base).onSnapshot(snap=>{if(cid!==id)return;empresa={nome:"",horario:"",logoId:"",logoUrl:"",...(snap.exists?snap.data():{})};applyBrand();applySeg();if(!me)gate();if(sheetMode==="acct")openAccount()},()=>{}));
 scol=db.collection(base+"/estoque");
-unsubs.push(scol.onSnapshot(snap=>{if(cid!==id)return;estoque=snap.docs.map(d=>({id:d.id,...d.data()}));updateStockBadge();renderStockList();const dl=$("#estoqueDL");if(dl)dl.innerHTML=estoque.filter(i=>(i.qtd||0)>0).map(i=>`<option value="${esc(i.nome)}">${esc(i.qtd)} em estoque</option>`).join("")},()=>{}));
+unsubs.push(scol.onSnapshot(snap=>{if(cid!==id)return;estoque=snap.docs.map(d=>({id:d.id,...d.data()}));updateStockBadge();renderStockList();if(window.EQ&&$("#estq")&&!$("#estq").hidden&&!EQ.form&&!EQ.etq)renderEstq();const dl=$("#estoqueDL");if(dl)dl.innerHTML=estoque.filter(i=>(i.qtd||0)>0).map(i=>`<option value="${esc(i.nome)}">${esc(i.qtd)} em estoque</option>`).join("")},()=>{}));
 ucol=db.collection(base+"/usuarios");
 unsubs.push(ucol.onSnapshot(snap=>{if(cid!==id)return;
 users=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.criadoEm||0)-(b.criadoEm||0));usersLoaded=true;
@@ -1803,6 +1851,7 @@ function openAccount(){
 if(!me)return;sheetMode="acct";
 const adm=pode("config");
 $("#layer").innerHTML=shell("Conta",`
+<button type="button" class="eq-link" data-act="estq"><span class="eq-link-ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg></span><span><b>Estoque completo</b><small>Códigos, valores e etiquetas</small></span><span class="go">›</span></button>
 ${pode("equipe")?`<button type="button" class="lj-card" data-act="loja"><span class="lj-card-ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20H3z"/><path d="M9 20v-6h6v6"/></svg></span><span><b>Painel da Loja</b><small>Equipe, funções, acessos e o resumo da loja${users.some(u=>u.pendente)?` · <em>${users.filter(u=>u.pendente).length} pedido(s) para entrar</em>`:""}</small></span><span class="go">›</span></button>`:""}
 <div class="sec"><h4>Você</h4><div class="u-row"><span class="nm">${esc(me.nome)}<small>${papelDe(me).t} · ${esc(KS.email)}</small></span><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="btn btn-line" data-act="logout">Sair</button></div></div>
 <form id="meForm" class="addrow" autocomplete="off"><input class="inp" id="me_nome" value="${esc(me.nome)}" aria-label="Seu nome"><button class="btn btn-line" type="submit">Trocar nome</button></form></div>
@@ -2249,6 +2298,7 @@ const KON_FAQ=[
 {k:["status","mudar status","mover os","passar para","coluna","bancada","pronto","aguardando"],r:"Pra mudar o status:\n1. Toque no cartão da OS.\n2. Em **Status**, toque no novo (Fila de Análise, Aguardando Aprovação, Aguardando Peças, Em Bancada, Pronto, Devolvido sem Reparo ou Entregue).\nNo celular, os status são as abas do topo; a selecionada fica amarela."},
 {k:["orcamento","orçamento","mao de obra","valor","preco do servico","mandar orcamento","enviar orcamento"],r:"O orçamento fica dentro da OS, em 3 passos:\n1. **Monte**: toque em **+ Mão de obra** ou **+ Peça** e coloque o valor (pode digitar 1200, 1.200 ou 1.200,00).\n2. **Envie** pro cliente por WhatsApp, imagem ou PDF. A OS vai sozinha pra Aguardando Aprovação.\n3. Marque se o cliente **aprovou** ou **recusou**. Aprovou, a OS vai pra Em Bancada (ou Aguardando Peças, se faltar peça).\nO orçamento aparece pra quem usa a OS completa do Konserta."},
 {k:["cotacao","cotação","preco antes","quanto fica","quanto custa"],r:"A cotação é pra quando o cliente quer saber o preço antes de deixar o aparelho:\n1. Toque em **Cotações** no topo (ou **+** → **Nova cotação**).\n2. Monte os itens e envie em PDF ou WhatsApp.\n3. Se ele aprovar, a cotação vira OS com um toque.",a:"cotacoes"},
+{k:["estoque completo","etiqueta","etiquetas","pimaco","imprimir etiqueta","codigo da peca","codigo de barras","valor do estoque","valor em estoque","custo","margem","planilha do estoque"],r:"O **Estoque completo** é a página própria do estoque. Abra **Estoque** e toque em **Estoque completo** (ou pela Conta).\n- Cada peça tem **código**, categoria, local, custo, venda e margem, e no topo aparece o valor total em estoque.\n- Para **etiquetas**: marque as peças, toque em **Etiquetas**, escolha a folha (Pimaco A4, Pimaco Carta ou A4 comum pra recortar) e imprima em **Tamanho real / 100%**.\n- Folha nova? Imprima antes a **Página de teste** em papel comum e confira contra a luz.",a:"estoque_completo"},
 {k:["estoque","peca no estoque","baixa","prateleira","item do estoque","repor"],r:"No **Estoque** você cadastra cada item com quantidade, mínimo e onde fica. Quando o item fica abaixo do mínimo, aparece o número vermelho.\nPra usar uma peça numa OS: abra a OS, vá em **Peças** e puxe do estoque. A baixa é automática.",a:"estoque"},
 {k:["compras","comprar","lista de compras","encomendada","encomendar","pecas que faltam","fornecedor lista"],r:"Em **Compras** ficam juntas todas as peças que precisam ser compradas, as encomendadas e as que chegaram, de todas as OS, mais o que está abaixo do mínimo no estoque. Use **Copiar lista para o fornecedor** pra mandar de uma vez.",a:"compras"},
 {k:["agenda","fornecedor","telefone do fornecedor","contato","vendedor","distribuidora"],r:"A **Agenda de fornecedores** guarda o contato de quem te vende peça: o que vende, vendedor, telefones e site, com botões **Ligar** e **WhatsApp**. Dá pra buscar pela peça (ex.: \"resistência\"). Fica no botão **Agenda**, no **+** ou dentro de Compras.",a:"agenda"},
@@ -2269,7 +2319,7 @@ const KON_FAQ=[
 {k:["prazo","cliente quer para","data de entrega","quando o cliente busca","aviso de retirada","lembrete","cliente vem buscar","dia que o cliente quer"],r:"Na hora de criar a OS, preencha **Cliente quer para** com a data que o cliente pediu (dá pra mudar depois, dentro da OS, em Dados).\nO cartão ganha um selo com o prazo e, **um dia antes**, aparece um aviso no topo do quadro: \"Amanhã o cliente vem buscar\", mostrando se o aparelho já está pronto ou ainda não. No dia, vira \"Hoje\", e se passar, fica em vermelho."},
 {k:["duas os","mesmo cliente","dois aparelhos","duplicada"],r:"Quando o mesmo cliente tem dois aparelhos na loja, as duas OS aparecem ligadas, pra você não esquecer de avisar das duas juntas."}
 ];
-const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
+const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],estoque_completo:["Abrir Estoque completo",()=>true,()=>openEstq()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
 cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Agenda",()=>true,()=>{agForm=null;openAgenda()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
 conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()]};
 let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
@@ -2405,6 +2455,260 @@ return `<div class="pz" role="status"><span class="pz-ic">📅</span><div class=
 }
 window.KSarqPronto=()=>{try{applyBrand()}catch(_){}};
 setInterval(()=>{try{applyBrand()}catch(_){}},3600*1000);
+/* ---------- Estoque completo (página própria) ---------- */
+var EQ=window.EQ={q:"",cat:"",loc:"",baixo:false,ord:"codigo",sel:new Set(),form:null,etq:false,etqQtd:{}};
+const podeVerCusto=()=>pode("estoque")||pode("financas");
+const podeMexerEstoque=()=>pode("estoque");
+const cmpCod=(a,b)=>String(a||"").localeCompare(String(b||""),"pt-BR",{numeric:true,sensitivity:"base"});
+function margemPct(i){const c=+i.custo||0,v=+i.preco||0;if(!c||!v)return null;return (v-c)/v*100}
+function proxCodigo(){
+let pre="P-",max=0,dig=4;
+estoque.forEach(i=>{const m=/^(.*?)(\d+)$/.exec(String(i.codigo||"").trim());if(m&&m[1]===pre){max=Math.max(max,+m[2]);dig=Math.max(dig,m[2].length)}});
+return pre+String(max+1).padStart(dig,"0");
+}
+function eqFiltrados(){
+const q=norm(EQ.q);
+let l=estoque.filter(i=>(!EQ.cat||(i.categoria||"")===EQ.cat)&&(!EQ.loc||(i.local||"")===EQ.loc)&&(!EQ.baixo||((i.minimo||0)>0&&(i.qtd||0)<=(i.minimo||0))));
+if(q)l=l.filter(i=>norm([i.codigo,i.nome,i.categoria,i.compat,i.local,i.ean,i.fornecedor].join(" ")).includes(q));
+const o=EQ.ord;
+l.sort((a,b)=>o==="nome"?norm(a.nome).localeCompare(norm(b.nome)):o==="qtd"?(a.qtd||0)-(b.qtd||0):o==="valor"?((+b.custo||0)*(b.qtd||0))-((+a.custo||0)*(a.qtd||0)):o==="local"?cmpCod(a.local,b.local)||cmpCod(a.codigo,b.codigo):(cmpCod(a.codigo,b.codigo)||norm(a.nome).localeCompare(norm(b.nome))));
+return l;
+}
+function openEstq(){
+let el=$("#estq");
+if(!el){el=document.createElement("section");el.id="estq";el.className="estq";el.setAttribute("aria-label","Estoque completo");document.body.appendChild(el)}
+el.hidden=false;document.body.classList.add("estq-on");
+if(location.hash!=="#estoque")try{history.pushState({estq:1},"","#estoque")}catch(_){}
+closeSheet();renderEstq();
+}
+function fecharEstq(viaHistorico){const el=$("#estq");if(el)el.hidden=true;document.body.classList.remove("estq-on");EQ.form=null;EQ.etq=false;
+if(!viaHistorico&&location.hash==="#estoque")try{history.back()}catch(_){}}
+window.addEventListener("popstate",()=>{const el=$("#estq");if(el&&!el.hidden&&location.hash!=="#estoque")fecharEstq(true)});
+function renderEstq(){
+const el=$("#estq");if(!el||el.hidden)return;
+const vc=podeVerCusto(),mx=podeMexerEstoque();
+const tot=estoque.reduce((a,i)=>{const q=+i.qtd||0;a.p+=q;a.c+=q*(+i.custo||0);a.v+=q*(+i.preco||0);return a},{p:0,c:0,v:0});
+const baixos=estoque.filter(i=>(i.minimo||0)>0&&(i.qtd||0)<=(i.minimo||0)).length;
+const cats=[...new Set(estoque.map(i=>i.categoria).filter(Boolean))].sort(cmpCod);
+const locs=[...new Set(estoque.map(i=>i.local).filter(Boolean))].sort(cmpCod);
+const l=eqFiltrados();
+const stats=[["Itens cadastrados",estoque.length],["Peças em estoque",tot.p]];
+if(vc)stats.push(["Valor em estoque (custo)",fmtR(tot.c)]);
+stats.push(["Valor de venda",fmtR(tot.v)]);
+if(vc&&tot.c)stats.push(["Lucro se vender tudo",fmtR(tot.v-tot.c)]);
+const linha=i=>{const low=(i.minimo||0)>0&&(i.qtd||0)<=(i.minimo||0);const mg=margemPct(i);const sel=EQ.sel.has(i.id);
+return `<tr class="${low?"low":""}">
+${mx?`<td class="ck"><input type="checkbox" data-eqsel="${i.id}" ${sel?"checked":""} aria-label="Selecionar ${esc(i.nome)}"></td>`:""}
+<td class="cod mono">${esc(i.codigo||"—")}</td>
+<td class="nm"><button type="button" class="eq-nome" data-eqed="${i.id}">${esc(i.nome)}</button><small>${esc([i.categoria,i.compat?"serve em "+i.compat:""].filter(Boolean).join(" · "))}</small></td>
+<td>${esc(i.local||"")}</td>
+<td class="num"><span class="eq-q">${mx?`<button type="button" data-eqq="${i.id}|-1" aria-label="Tirar um">−</button>`:""}<b class="${low?"bad":""}">${esc(i.qtd||0)}</b>${mx?`<button type="button" data-eqq="${i.id}|1" aria-label="Pôr um">+</button>`:""}</span>${i.minimo?`<small>mín. ${esc(i.minimo)}</small>`:""}</td>
+${vc?`<td class="num mono">${i.custo?fmtR(i.custo):"—"}</td>`:""}
+<td class="num mono">${i.preco?fmtR(i.preco):"—"}</td>
+${vc?`<td class="num">${mg==null?"—":`<span class="mg ${mg<20?"bx":mg<40?"md":"ok"}">${Math.round(mg)}%</span>`}</td>`:""}
+</tr>`};
+const cab=`<tr>${mx?`<th class="ck"><input type="checkbox" data-eqtodos ${l.length&&l.every(i=>EQ.sel.has(i.id))?"checked":""} aria-label="Selecionar todos"></th>`:""}<th>Código</th><th>Peça</th><th>Local</th><th class="num">Qtd</th>${vc?`<th class="num">Custo</th>`:""}<th class="num">Venda</th>${vc?`<th class="num">Margem</th>`:""}</tr>`;
+el.innerHTML=`<header class="eq-top"><button type="button" class="btn btn-line" data-eq="fechar">← Voltar</button><h2>Estoque</h2>
+<div class="eq-acts">${mx?`<button type="button" class="btn btn-line" data-eq="etiquetas">Etiquetas${EQ.sel.size?` (${EQ.sel.size})`:""}</button>`:""}<button type="button" class="btn btn-line" data-eq="csv">Exportar planilha</button>${mx?`<button type="button" class="btn btn-accent" data-eq="nova">+ Nova peça</button>`:""}</div></header>
+<div class="eq-wrap">
+<div class="eq-stats">${stats.map(([t,v])=>`<div><small>${t}</small><b>${v}</b></div>`).join("")}<button type="button" class="${EQ.baixo?"on":""}" data-eq="baixo"><small>Abaixo do mínimo</small><b class="${baixos?"bad":""}">${baixos}</b></button></div>
+<div class="eq-bar"><input class="inp" id="eqQ" type="search" placeholder="Buscar por código, nome, categoria, local, EAN…" value="${esc(EQ.q)}">
+<select class="inp" id="eqCat" aria-label="Categoria"><option value="">Todas as categorias</option>${cats.map(c=>`<option ${c===EQ.cat?"selected":""}>${esc(c)}</option>`).join("")}</select>
+<select class="inp" id="eqLoc" aria-label="Local"><option value="">Todos os locais</option>${locs.map(c=>`<option ${c===EQ.loc?"selected":""}>${esc(c)}</option>`).join("")}</select>
+<select class="inp" id="eqOrd" aria-label="Ordenar">${[["codigo","Ordem: código"],["nome","Ordem: nome"],["local","Ordem: local"],["qtd","Ordem: menor quantidade"],...(vc?[["valor","Ordem: maior valor parado"]]:[])].map(([k,t])=>`<option value="${k}" ${k===EQ.ord?"selected":""}>${t}</option>`).join("")}</select></div>
+${estoque.length?`<div class="eq-tbl"><table>${cab}${l.map(linha).join("")}</table>${l.length?"":`<p class="hint" style="padding:16px">Nada encontrado com esses filtros.</p>`}</div>`
+:`<div class="sec"><h4>Seu estoque está vazio</h4><span class="hint">Cadastre as peças com código, local, custo e preço. Depois imprima etiquetas para colar nas gavetas e prateleiras.</span>${mx?`<button type="button" class="btn btn-accent" data-eq="nova" style="align-self:flex-start">+ Cadastrar a primeira peça</button>`:""}</div>`}
+<p class="hint">Dica: a tela rápida de Estoque continua igual. Tudo que você muda aqui aparece lá, e vice-versa.</p>
+</div>
+${EQ.form?eqFormHTML():""}${EQ.etq?eqEtqHTML():""}`;
+}
+function eqFormHTML(){
+const ed=EQ.form.id?(estoque.find(i=>i.id===EQ.form.id)||{}):{codigo:proxCodigo()};
+const vc=podeVerCusto();
+const cats=[...new Set(estoque.map(i=>i.categoria).filter(Boolean))],locs=[...new Set(estoque.map(i=>i.local).filter(Boolean))];
+const fz=[...new Set([...(typeof fornList!=="undefined"?fornList.map(f=>f.nome):[]),...estoque.map(i=>i.fornecedor).filter(Boolean)])];
+const f=(id,lbl,val,extra="")=>`<div class="fld"><label for="${id}">${lbl}</label><input id="${id}" value="${esc(val??"")}" ${extra}></div>`;
+return `<div class="eq-modal" role="dialog" aria-modal="true" aria-label="Peça"><form class="eq-card" id="eqForm" autocomplete="off">
+<div class="eq-mh"><b>${EQ.form.id?"Editar peça":"Nova peça"}</b><button type="button" class="btn btn-line" data-eq="formx">✕</button></div>
+<div class="grid2">
+${f("eq_cod","Código (para organizar)",ed.codigo,'class="mono" required placeholder="Ex.: P-0001"')}
+${f("eq_nome","Nome da peça",ed.nome,`required placeholder="${esc(seg().stockPh)}"`)}
+${f("eq_cat","Categoria",ed.categoria,'list="eqCats" placeholder="Ex.: Telas, Baterias, Resistências"')}<datalist id="eqCats">${cats.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
+${f("eq_compat","Serve em (compatível com)",ed.compat,'placeholder="Ex.: Moto G8, G8 Play"')}
+${f("eq_loc","Local",ed.local,'list="eqLocs" placeholder="Ex.: Gaveta A3, Prateleira 2"')}<datalist id="eqLocs">${locs.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
+${f("eq_ean","Código de barras do fabricante (opcional)",ed.ean,'inputmode="numeric" class="mono"')}
+${f("eq_qtd","Quantidade",ed.qtd??0,'type="number" min="0" inputmode="numeric" class="mono"')}
+${f("eq_min","Mínimo (avisa para repor)",ed.minimo??"",'type="number" min="0" inputmode="numeric" class="mono" placeholder="0"')}
+${vc?f("eq_custo","Custo (R$)",ed.custo?fmtMoneyIn(ed.custo):"",'inputmode="decimal" class="mono" placeholder="0,00"'):""}
+${f("eq_preco","Preço de venda (R$)",ed.preco?fmtMoneyIn(ed.preco):"",'inputmode="decimal" class="mono" placeholder="0,00"')}
+${vc?`<div class="fld full"><span class="hint" id="eqMg"></span></div>`:""}
+${f("eq_forn","Fornecedor",ed.fornecedor,'list="eqForns" placeholder="De quem você compra"')}<datalist id="eqForns">${fz.map(c=>`<option value="${esc(c)}">`).join("")}</datalist>
+<div class="fld full"><label for="eq_obs">Observações</label><textarea id="eq_obs" rows="2">${esc(ed.obs||"")}</textarea></div>
+</div>
+<div class="err" id="eqErr"></div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Salvar</button>${EQ.form.id?`<button type="button" class="btn btn-line" data-eq="etq1" data-id="${EQ.form.id}">Imprimir etiqueta</button><button type="button" class="btn btn-danger" data-eq="apagar" data-id="${EQ.form.id}">Apagar peça</button>`:""}</div>
+</form></div>`;
+}
+function eqMgUpdate(){const h=$("#eqMg");if(!h)return;const c=parseMoney($("#eq_custo")?.value||""),v=parseMoney($("#eq_preco")?.value||"");
+h.textContent=c&&v?`Margem ${Math.round((v-c)/v*100)}% · lucro de ${fmtR(v-c)} por peça`:"Preencha custo e venda para ver a margem."}
+async function eqSalvar(){
+const err=$("#eqErr");err.textContent="";
+const cod=$("#eq_cod").value.trim(),nome=$("#eq_nome").value.trim();
+if(!nome){err.textContent="Coloque o nome da peça.";return}
+if(!cod){err.textContent="Coloque um código.";return}
+const id=EQ.form.id;
+if(estoque.some(i=>i.id!==id&&norm(i.codigo||"")===norm(cod))){err.textContent="Já existe outra peça com o código "+cod+".";return}
+if(estoque.some(i=>i.id!==id&&norm(i.nome)===norm(nome))){err.textContent="Já existe uma peça com esse nome. Use outro nome ou edite a existente.";return}
+const ex=id?(estoque.find(i=>i.id===id)||{}):{};const {id:_x,...base}=ex;
+const d={...base,codigo:cod,nome,categoria:$("#eq_cat").value.trim(),compat:$("#eq_compat").value.trim(),local:$("#eq_loc").value.trim(),ean:$("#eq_ean").value.trim(),
+qtd:Math.max(0,parseInt($("#eq_qtd").value,10)||0),minimo:Math.max(0,parseInt($("#eq_min").value,10)||0),preco:parseMoney($("#eq_preco").value),
+fornecedor:$("#eq_forn").value.trim(),obs:$("#eq_obs").value.trim(),atualizadoEm:Date.now()};
+if($("#eq_custo"))d.custo=parseMoney($("#eq_custo").value);
+try{await scol.doc(id||"i"+uid()).set(d);EQ.form=null;toast(id?"Peça atualizada":"Peça cadastrada");renderEstq()}
+catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+function eqCSV(){
+const vc=podeVerCusto();
+const cols=[["codigo","Código"],["nome","Peça"],["categoria","Categoria"],["compat","Serve em"],["local","Local"],["qtd","Quantidade"],["minimo","Mínimo"],...(vc?[["custo","Custo"]]:[]),["preco","Venda"],["fornecedor","Fornecedor"],["ean","Código de barras"],["obs","Observações"]];
+const cel=v=>{v=v==null?"":String(v);if(typeof v==="string"&&/^[=+\-@]/.test(v))v="'"+v;return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+const num=v=>v?String(v).replace(".",","):"";
+const rows=[cols.map(c=>c[1]).join(";")].concat(eqFiltrados().map(i=>cols.map(([k])=>["custo","preco"].includes(k)?num(i[k]):cel(i[k])).join(";")));
+const blob=new Blob(["﻿"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});
+const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="estoque-"+toISO(Date.now())+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+toast("Planilha baixada (abre no Excel)");
+}
+/* ---- Etiquetas ---- */
+const ETQ_MODELOS={
+"6180":{t:"Pimaco 6180 · Carta · 30 por folha (25,4 × 66,7 mm)",pw:215.9,ph:279.4,w:66.7,h:25.4,c:3,r:10,top:12.7,left:4.8,hp:69.85,vp:25.4},
+"6181":{t:"Pimaco 6181 · Carta · 20 por folha (25,4 × 101,6 mm)",pw:215.9,ph:279.4,w:101.6,h:25.4,c:2,r:10,top:12.7,left:4.0,hp:106.4,vp:25.4},
+"6182":{t:"Pimaco 6182 · Carta · 14 por folha (33,9 × 101,6 mm)",pw:215.9,ph:279.4,w:101.6,h:33.9,c:2,r:7,top:21.2,left:4.0,hp:106.4,vp:33.9},
+"A4251":{t:"Pimaco A4251 · A4 · 65 por folha (21,2 × 38,2 mm)",pw:210,ph:297,w:38.2,h:21.2,c:5,r:13,top:10.7,left:4.75,hp:40.6,vp:21.2},
+"A4256":{t:"Pimaco A4256 · A4 · 21 por folha (38,1 × 63,5 mm)",pw:210,ph:297,w:63.5,h:38.1,c:3,r:7,top:15.15,left:7.2,hp:66.0,vp:38.1},
+"A4260":{t:"Pimaco A4260 · A4 · 18 por folha (46,5 × 63,5 mm)",pw:210,ph:297,w:63.5,h:46.5,c:3,r:6,top:8.8,left:7.2,hp:66.0,vp:46.6},
+"A4262":{t:"Pimaco A4262 · A4 · 16 por folha (33,9 × 99,0 mm)",pw:210,ph:297,w:99.0,h:33.9,c:2,r:8,top:12.9,left:4.65,hp:101.6,vp:33.9},
+"A4263":{t:"Pimaco A4263 · A4 · 14 por folha (38,1 × 99,0 mm)",pw:210,ph:297,w:99.0,h:38.1,c:2,r:7,top:15.15,left:4.65,hp:101.6,vp:38.1},
+"a4comum":{t:"A4 comum para recortar · 24 por folha (35 × 66 mm)",pw:210,ph:297,w:66,h:35,c:3,r:8,top:8.5,left:6,hp:66,vp:35,corte:1},
+"custom":{t:"Personalizada (digite as medidas)",pw:210,ph:297,w:63.5,h:38.1,c:3,r:7,top:15,left:7,hp:66,vp:38.1}
+};
+let ETQ=(()=>{let s={};try{s=JSON.parse(localStorage.getItem("konserta.etq")||"{}")}catch(_){}
+return {modelo:"A4256",nome:true,codigo:true,barras:true,local:true,preco:false,inicio:1,dx:0,dy:0,custom:{...ETQ_MODELOS.custom},...s}})();
+function etqGuardar(){try{localStorage.setItem("konserta.etq",JSON.stringify(ETQ))}catch(_){}}
+function etqModelo(){return ETQ.modelo==="custom"?{...ETQ_MODELOS.custom,...ETQ.custom,t:ETQ_MODELOS.custom.t}:ETQ_MODELOS[ETQ.modelo]||ETQ_MODELOS.A4256}
+function eqEtqHTML(){
+const itens=estoque.filter(i=>EQ.sel.has(i.id)).sort((a,b)=>cmpCod(a.codigo,b.codigo));
+const M=etqModelo(),porFolha=M.c*M.r;
+const total=itens.reduce((a,i)=>a+(EQ.etqQtd[i.id]??1),0);
+const folhas=Math.ceil((total+Math.max(0,(ETQ.inicio||1)-1))/porFolha)||0;
+const ck=(k,t)=>`<label class="pt"><input type="checkbox" data-etqck="${k}" ${ETQ[k]?"checked":""}><span>${t}</span></label>`;
+const C=ETQ.custom||{};
+return `<div class="eq-modal" role="dialog" aria-modal="true" aria-label="Etiquetas"><div class="eq-card eq-etq">
+<div class="eq-mh"><b>Imprimir etiquetas</b><button type="button" class="btn btn-line" data-eq="etqx">✕</button></div>
+${itens.length?`<div class="etq-lista">${itens.map(i=>`<div class="etq-i"><span><b class="mono">${esc(i.codigo||"")}</b> ${esc(i.nome)}</span><span class="eq-q"><button type="button" data-etqq="${i.id}|-1" aria-label="Menos">−</button><b>${EQ.etqQtd[i.id]??1}</b><button type="button" data-etqq="${i.id}|1" aria-label="Mais">+</button></span></div>`).join("")}</div>
+<div class="btnrow"><button type="button" class="btn btn-line" data-eq="etqum">1 de cada</button><button type="button" class="btn btn-line" data-eq="etqqtd">1 por peça em estoque</button></div>`
+:`<p class="hint">Marque as peças na lista (a caixinha do lado do código) e toque em Etiquetas.</p>`}
+<div class="fld"><label for="etqMod">Folha de etiquetas</label><select id="etqMod" class="inp">${Object.entries(ETQ_MODELOS).map(([k,m])=>`<option value="${k}" ${k===ETQ.modelo?"selected":""}>${m.t}</option>`).join("")}</select></div>
+${ETQ.modelo==="custom"?`<div class="grid2 etq-custom">${[["pw","Largura do papel"],["ph","Altura do papel"],["w","Largura da etiqueta"],["h","Altura da etiqueta"],["c","Colunas"],["r","Linhas"],["top","Margem de cima"],["left","Margem da esquerda"],["hp","Distância horizontal (início a início)"],["vp","Distância vertical (início a início)"]].map(([k,t])=>`<div class="fld"><label for="etqc_${k}">${t}${["c","r"].includes(k)?"":" (mm)"}</label><input id="etqc_${k}" data-etqc="${k}" class="mono" inputmode="decimal" value="${esc(C[k]??"")}"></div>`).join("")}</div>`:""}
+<span class="lj-lbl">O que vai na etiqueta</span>
+<div class="pt-grid">${ck("nome","Nome da peça")}${ck("codigo","Código")}${ck("barras","Código de barras")}${ck("local","Local")}${ck("preco","Preço de venda")}</div>
+<div class="grid2">
+<div class="fld"><label for="etqIni">Começar na etiqueta nº</label><input id="etqIni" type="number" min="1" max="${porFolha}" value="${ETQ.inicio||1}" class="mono"><span class="hint">Para aproveitar folha já usada. Conta da esquerda para a direita, de cima para baixo.</span></div>
+<div class="fld"><label>Ajuste fino (mm)</label><div style="display:flex;gap:6px"><input id="etqDx" data-etqaj="dx" class="mono" inputmode="decimal" value="${ETQ.dx||0}" aria-label="Para a direita" title="+ para a direita"><input id="etqDy" data-etqaj="dy" class="mono" inputmode="decimal" value="${ETQ.dy||0}" aria-label="Para baixo" title="+ para baixo"></div><span class="hint">Se sair deslocado: + empurra para a direita / para baixo.</span></div>
+</div>
+<div class="etq-prev">${etqPrevia(M)}</div>
+<p class="hint">${itens.length?`${total} etiqueta${total===1?"":"s"} · ${folhas} folha${folhas===1?"":"s"}. `:""}Na impressão, escolha <b>Tamanho real / 100%</b> (sem "ajustar à página") e o papel <b>${M.pw<212?"A4":"Carta"}</b>.</p>
+<div class="btnrow"><button type="button" class="btn btn-accent" data-eq="imprimir" ${itens.length?"":"disabled"}>Imprimir etiquetas</button><button type="button" class="btn btn-line" data-eq="teste">Página de teste</button></div>
+<span class="hint">Primeira vez com uma folha nova? Imprima a <b>página de teste</b> em papel comum e coloque contra a luz sobre a folha de etiquetas. Se as caixas baterem, pode imprimir.</span>
+</div></div>`;
+}
+function etqPrevia(M){
+const s=150/M.pw;const ini=(ETQ.inicio||1)-1;let h="";
+for(let r=0;r<M.r;r++)for(let c=0;c<M.c;c++){const n=r*M.c+c;h+=`<i style="left:${(M.left+c*M.hp)*s}px;top:${(M.top+r*M.vp)*s}px;width:${M.w*s}px;height:${M.h*s}px" class="${n<ini?"usada":n===ini?"ini":""}"></i>`}
+return `<div class="etq-folha" style="width:${M.pw*s}px;height:${M.ph*s}px">${h}</div>`;
+}
+/* Code 128 (conjunto B) em SVG */
+const C128=["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"];
+function code128(txt){
+txt=String(txt||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\x20-\x7e]/g,"");if(!txt)return "";
+const vals=[104];for(const ch of txt)vals.push(ch.charCodeAt(0)-32);
+let sum=104;for(let i=1;i<vals.length;i++)sum+=vals[i]*i;vals.push(sum%103);vals.push(106);
+let x=10,bars="";
+for(const v of vals){const p=C128[v];for(let k=0;k<p.length;k++){const w=+p[k];if(k%2===0)bars+=`M${x} 0h${w}v1h-${w}z`;x+=w}}
+return `<svg class="bc" viewBox="0 0 ${x+10} 1" preserveAspectRatio="none" aria-hidden="true"><path d="${bars}" fill="#000"/></svg>`;
+}
+function etqHTML(itens,teste){
+const M=etqModelo(),porFolha=M.c*M.r,ini=teste?0:Math.max(0,Math.min(porFolha-1,(ETQ.inicio||1)-1));
+const lista=[];if(!teste)itens.forEach(i=>{for(let k=0;k<(EQ.etqQtd[i.id]??1);k++)lista.push(i)});
+const slots=teste?Array(porFolha).fill(null):Array(ini).fill(undefined).concat(lista);
+const folhas=[];for(let i=0;i<slots.length;i+=porFolha)folhas.push(slots.slice(i,i+porFolha));
+const hmm=M.h,pad=Math.min(2.5,Math.max(1.2,hmm*0.07));
+const fsNome=Math.max(6,Math.min(11,hmm*0.36)),fsCod=Math.max(7,Math.min(16,hmm*0.48)),bh=Math.max(4,Math.min(11,hmm*0.3));
+const dx=+String(ETQ.dx||0).replace(",",".")||0,dy=+String(ETQ.dy||0).replace(",",".")||0;
+const conteudo=i=>{if(!i)return "";const pr=ETQ.preco&&i.preco?fmtR(i.preco):"";
+return `${ETQ.nome?`<div class="n">${esc(i.nome)}</div>`:""}${ETQ.barras&&(i.codigo||i.nome)?code128(i.codigo||i.nome):""}<div class="r">${ETQ.codigo&&i.codigo?`<b>${esc(i.codigo)}</b>`:""}${ETQ.local&&i.local?`<span>${esc(i.local)}</span>`:""}${pr?`<span class="p">${pr}</span>`:""}</div>`};
+const pg=f=>`<section class="pg">${f.map((it,n)=>{const r=Math.floor(n/M.c),c=n%M.c;return `<div class="e${teste?" t":""}" style="left:${M.left+c*M.hp+dx}mm;top:${M.top+r*M.vp+dy}mm">${teste?`<span>${n+1}</span>`:conteudo(it)}</div>`}).join("")}</section>`;
+return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Etiquetas · ${esc(empresa.nome||"Konserta")}</title><style>
+@page{size:${M.pw}mm ${M.ph}mm;margin:0}*{box-sizing:border-box;margin:0}
+html,body{background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{position:relative;width:${M.pw}mm;height:${M.ph}mm;overflow:hidden;page-break-after:always;break-after:page}
+.pg:last-child{page-break-after:auto;break-after:auto}
+.e{position:absolute;width:${M.w}mm;height:${M.h}mm;padding:${pad}mm ${pad+0.6}mm;display:flex;flex-direction:column;justify-content:center;gap:${Math.min(1.2,hmm*0.04)}mm;overflow:hidden${M.corte?";outline:0.2mm dashed #999":""}}
+.e.t{outline:0.3mm solid #000;align-items:center;font-size:12pt;color:#555}
+.n{font-size:${fsNome}pt;font-weight:700;line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bc{display:block;width:100%;height:${bh}mm}
+.r{display:flex;align-items:baseline;gap:2mm;white-space:nowrap;overflow:hidden}
+.r b{font-size:${fsCod}pt;letter-spacing:.3pt}.r span{font-size:${Math.max(6,fsNome*0.9)}pt;color:#333;overflow:hidden;text-overflow:ellipsis}.r .p{margin-left:auto;font-weight:700;color:#000}
+@media screen{body{background:#888;padding:10px}.pg{background:#fff;margin:0 auto 10px;box-shadow:0 2px 10px rgba(0,0,0,.4)}}
+</style></head><body>${folhas.map(pg).join("")}<script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`;
+}
+function etqAbrir(html){
+const w=window.open("","_blank");
+if(!w){toast("O navegador bloqueou a janela. Permita pop-ups para o Konserta.");return}
+w.document.open();w.document.write(html);w.document.close();
+}
+document.addEventListener("click",async e=>{
+const t=e.target.closest("[data-eq],[data-eqed],[data-eqq],[data-etqq],[data-eqsel],[data-eqtodos],[data-act='estq']");if(!t)return;
+if(t.dataset.act==="estq"){openEstq();return}
+if(t.dataset.eqed){if(!podeMexerEstoque()){toast("Só quem gerencia o estoque edita as peças.");return}EQ.form={id:t.dataset.eqed};renderEstq();setTimeout(eqMgUpdate,0);return}
+if(t.dataset.eqq){const [id,d]=t.dataset.eqq.split("|");await stockAdd(id,+d);renderEstq();return}
+if(t.dataset.etqq){const [id,d]=t.dataset.etqq.split("|");EQ.etqQtd[id]=Math.max(0,Math.min(500,(EQ.etqQtd[id]??1)+(+d)));renderEstq();return}
+if(t.dataset.eqsel){return}
+if(t.hasAttribute("data-eqtodos")){return}
+const a=t.dataset.eq;
+if(a==="fechar"){fecharEstq();return}
+if(a==="nova"){EQ.form={id:null};renderEstq();setTimeout(()=>{$("#eq_nome")?.focus();eqMgUpdate()},0);return}
+if(a==="formx"){EQ.form=null;renderEstq();return}
+if(a==="baixo"){EQ.baixo=!EQ.baixo;renderEstq();return}
+if(a==="csv"){eqCSV();return}
+if(a==="etiquetas"){EQ.etq=true;EQ.form=null;renderEstq();return}
+if(a==="etqx"){EQ.etq=false;renderEstq();return}
+if(a==="etq1"){EQ.sel=new Set([t.dataset.id]);EQ.etqQtd={};EQ.form=null;EQ.etq=true;renderEstq();return}
+if(a==="etqum"){estoque.forEach(i=>{if(EQ.sel.has(i.id))EQ.etqQtd[i.id]=1});renderEstq();return}
+if(a==="etqqtd"){estoque.forEach(i=>{if(EQ.sel.has(i.id))EQ.etqQtd[i.id]=Math.max(1,+i.qtd||0)});renderEstq();return}
+if(a==="imprimir"){const itens=estoque.filter(i=>EQ.sel.has(i.id)).sort((x,y)=>cmpCod(x.codigo,y.codigo));if(!itens.length)return;etqAbrir(etqHTML(itens,false));return}
+if(a==="teste"){etqAbrir(etqHTML([],true));return}
+if(a==="apagar"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Confirmar: apagar";return}
+try{await scol.doc(t.dataset.id).delete();EQ.sel.delete(t.dataset.id);EQ.form=null;toast("Peça apagada");renderEstq()}catch(_){toast("Não apagou. Tente de novo.")}return}
+});
+document.addEventListener("change",e=>{
+const t=e.target;
+if(t.dataset.eqsel){t.checked?EQ.sel.add(t.dataset.eqsel):EQ.sel.delete(t.dataset.eqsel);const b=document.querySelector('[data-eq="etiquetas"]');if(b)b.textContent="Etiquetas"+(EQ.sel.size?` (${EQ.sel.size})`:"");return}
+if(t.hasAttribute("data-eqtodos")){eqFiltrados().forEach(i=>t.checked?EQ.sel.add(i.id):EQ.sel.delete(i.id));renderEstq();return}
+if(t.id==="eqCat"){EQ.cat=t.value;renderEstq();return}
+if(t.id==="eqLoc"){EQ.loc=t.value;renderEstq();return}
+if(t.id==="eqOrd"){EQ.ord=t.value;renderEstq();return}
+if(t.id==="etqMod"){ETQ.modelo=t.value;ETQ.inicio=1;etqGuardar();renderEstq();return}
+if(t.dataset.etqck){ETQ[t.dataset.etqck]=t.checked;etqGuardar();return}
+if(t.id==="etqIni"){ETQ.inicio=Math.max(1,parseInt(t.value,10)||1);etqGuardar();renderEstq();return}
+if(t.dataset.etqaj){ETQ[t.dataset.etqaj]=t.value.trim()||"0";etqGuardar();return}
+if(t.dataset.etqc){const v=parseFloat(String(t.value).replace(",","."));if(v>0){ETQ.custom=ETQ.custom||{};ETQ.custom[t.dataset.etqc]=["c","r"].includes(t.dataset.etqc)?Math.round(v):v;etqGuardar();renderEstq()}return}
+});
+document.addEventListener("input",e=>{
+if(e.target.id==="eqQ"){EQ.q=e.target.value;const pos=e.target.selectionStart;renderEstq();const i=$("#eqQ");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(_){}}return}
+if(e.target.id==="eq_custo"||e.target.id==="eq_preco")eqMgUpdate();
+});
+document.addEventListener("submit",e=>{if(e.target.id==="eqForm"){e.preventDefault();eqSalvar()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#estq")&&!$("#estq").hidden){if(EQ.form||EQ.etq){EQ.form=null;EQ.etq=false;renderEstq()}else fecharEstq()}});
+setTimeout(()=>{if(location.hash==="#estoque"){const tt=setInterval(()=>{if(me&&scol){clearInterval(tt);openEstq()}},400);setTimeout(()=>clearInterval(tt),15000)}},500);
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}

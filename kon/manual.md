@@ -24,6 +24,13 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Estoque (botão Estoque): cadastre item, quantidade, mínimo para avisar reposição, preço de venda e onde fica. O número vermelho mostra itens abaixo do mínimo.
 - Compras (botão Compras): junta todas as peças que precisam ser compradas, encomendadas e que chegaram, de todas as OS, mais os itens do estoque abaixo do mínimo. Tem o botão "Copiar lista para o fornecedor".
 
+## Estoque completo (página própria)
+- Abre em Estoque → "Estoque completo" (ou em Conta). A tela rápida de Estoque continua igual; as duas mostram os mesmos itens.
+- Cada peça tem: código (gerado automático, tipo P-0001, pode trocar), nome, categoria, "serve em" (compatibilidade), local, código de barras do fabricante, quantidade, mínimo, custo, preço de venda, margem, fornecedor e observações.
+- No topo: itens cadastrados, peças em estoque, valor em estoque (custo), valor de venda, lucro se vender tudo e itens abaixo do mínimo. Filtros por categoria e local, busca e ordem. "Exportar planilha" baixa um arquivo que abre no Excel.
+- Custo e margem só aparecem para quem gerencia o estoque ou as finanças. Só quem gerencia o estoque edita.
+- Etiquetas: marque as peças, toque em "Etiquetas", escolha quantas de cada, a folha (Pimaco Carta 6180, 6181, 6182; Pimaco A4 A4251, A4256, A4260, A4262, A4263; A4 comum para recortar; ou personalizada com as medidas), o que vai na etiqueta (nome, código, código de barras, local, preço) e em qual etiqueta começar (para aproveitar folha já usada). Imprima em "Tamanho real / 100%". Antes de usar uma folha nova, imprima a "Página de teste" em papel comum e confira contra a luz; se sair deslocado, use o "Ajuste fino".
+
 ## Orçamento (para quem usa a OS completa do Konserta)
 - Dentro da OS, em Orçamento, siga 3 passos: 1) Monte o orçamento com "+ Mão de obra" e "+ Peça" (valor aceita 1200, 1.200 ou 1.200,00); 2) Envie para o cliente (tela com logo, CNPJ, itens e total, por WhatsApp, imagem ou PDF); 3) Marque se o cliente aprovou ou recusou.
 - Ao enviar, a OS vai sozinha para "Aguardando Aprovação". Ao aprovar, vai para "Em Bancada" (ou "Aguardando Peças" se faltar peça).
