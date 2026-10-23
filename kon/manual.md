@@ -1,6 +1,6 @@
 # Konserta: como funciona (manual do Kon)
 
-O Konserta organiza a bancada de assistências técnicas, oficinas mecânicas, marcenarias e instaladores de ar-condicionado. Funciona no navegador do computador e do celular (dá para instalar como aplicativo). Endereço: konserta.vercel.app. Teste grátis de 14 dias, sem cartão.
+O Konserta organiza a bancada de assistências técnicas, assistências de celulares, oficinas mecânicas e instaladores de ar-condicionado. Funciona no navegador do computador e do celular (dá para instalar como aplicativo). Endereço: konserta.vercel.app. Teste grátis de 14 dias, sem cartão.
 
 ## Quadro e status
 - Cada aparelho/veículo/móvel é uma OS (ordem de serviço) num quadro com colunas de status: Fila de Análise, Aguardando Aprovação, Aguardando Peças, Em Bancada, Pronto / Aguardando Retirada, Devolvido sem Reparo e Entregue.

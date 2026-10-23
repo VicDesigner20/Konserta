@@ -109,7 +109,7 @@ const D=86400000;
 // Módulos que podem ser ligados por empresa. Para criar um novo, adicione aqui e no app.
 const MODULOS=[{k:"financas",t:"Finanças"}];
 const PLANOS=["Bancada","Completo","Equipe"];
-const RAMOS={assistencia:"Assistência técnica",mecanica:"Mecânica",marcenaria:"Marcenaria",ar:"Ar-condicionado"};
+const RAMOS={assistencia:"Assistência técnica",mecanica:"Mecânica",celular:"Celulares",ar:"Ar-condicionado"};
 let lista=[];
 const fmt=t=>t?new Date(t).toLocaleDateString("pt-BR"):"—";
 function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200)}
