@@ -20,6 +20,15 @@ O Konserta organiza a bancada de assistências técnicas, assistências de celul
 - Duas OS do mesmo cliente aparecem ligadas (o cliente tem 2 aparelhos na loja).
 - "Cliente quer para": data que o cliente pediu (na criação da OS, ou depois em Dados, dentro da OS). O cartão mostra o prazo; um dia antes aparece no topo do quadro o aviso "Amanhã o cliente vem buscar", dizendo se o aparelho já está pronto. No dia vira "Hoje o cliente vem buscar" e, se passar, "Prazo já passou", em vermelho.
 
+## Fábricas (garantia de fábrica)
+- Página só para quem marcou "Atendo garantias de fábrica" em Conta → Ramo e atendimentos. Abre pelo botão "Fábricas" no topo (computador) ou pelo + → "Fábricas". No computador, quando Fábricas está ligado, Cotações fica só no +.
+- Aba "Prazos (30 dias)": toda OS do tipo Garantia de Fábrica que ainda não foi entregue, com os dias que faltam para o prazo legal de 30 dias (Código de Defesa do Consumidor, art. 18). A contagem começa na data que o aparelho chegou na loja (campo "Chegou em" da OS). Verde: tranquilo; amarelo: 10 dias ou menos; vermelho: 5 dias ou menos ou vencido.
+- No quadro, o cartão da OS de fábrica mostra "30 dias: faltam X" e, quando faltam 5 dias ou menos, aparece um aviso no topo do quadro.
+- "+ Lançar nota fiscal": número da nota, fábrica/marca, data que chegou e as peças (nome, código opcional, quantidade e para qual OS). A peça entra na OS como "Chegou" (se a OS já tinha a peça como "Precisa comprar" ou "Encomendada", ela é atualizada).
+- Aba "Peças a usar": peças que chegaram e ainda não foram usadas. Botão "Usei" tira a peça da lista e marca como Aplicada na OS. Marcar como Aplicada dentro da OS também tira da lista.
+- Aba "Notas fiscais": todas as notas ficam registradas mesmo depois das peças usadas, com busca por número da nota, peça, código, número da OS ou cliente. Dá para editar ou apagar a nota.
+- Quem pode lançar nota: quem pode editar OS ou mexer no estoque.
+
 ## Agenda de atendimentos
 - Para marcar dia e hora com o cliente: garantias de fábrica, visitas na casa do cliente, particulares que ligam. Abre pelo botão "Agenda" no topo (computador) ou pelo + → "Agenda" / "Novo agendamento".
 - No agendamento: dia, horário, duração, tipo (garantia de fábrica com marca e protocolo, garantia da loja, seguradora, particular), onde (na loja ou na casa do cliente, com endereço), cliente, telefone, aparelho, defeito, quem vai atender e observações.

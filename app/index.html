@@ -715,6 +715,34 @@ body.estq-on{overflow:hidden}
 .ag-onde{position:relative;white-space:nowrap;padding:10px 16px}
 .ag-onde input{position:absolute;opacity:0;pointer-events:none}
 .ag-onde:has(input:focus-visible){outline:2px solid var(--brand)}
+/* Fábricas */
+.fb-os,.fb-pc,.fb-nf{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;font:inherit;color:inherit;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.fb-os{cursor:pointer;border-left:5px solid var(--ok)}
+.fb-os:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+.fb-os.fb-aten{border-left-color:var(--warn)}.fb-os.fb-crit,.fb-os.fb-venc{border-left-color:var(--bad)}
+.fb-os.fb-venc{background:color-mix(in srgb,var(--bad) 6%,var(--surface))}
+.fb-d{display:flex;flex-direction:column;align-items:center;min-width:62px}
+.fb-d b{font-family:var(--f-display);font-size:26px;letter-spacing:-.03em;line-height:1}
+.fb-d small{color:var(--muted);font-size:11.5px;text-align:center}
+.fb-aten .fb-d b{color:var(--warn)}.fb-crit .fb-d b,.fb-venc .fb-d b{color:var(--bad)}.fb-ok .fb-d b{color:var(--ok)}
+.fb-pc{justify-content:space-between;flex-wrap:wrap}.fb-pc .btnrow{margin:0}
+.fb-nf{flex-direction:column;gap:6px}
+.fb-nf-h{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;width:100%}
+.fb-nf-h .linkbtn{margin-left:auto}
+.fb-it{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;width:100%;padding:6px 0;border-top:1px dashed var(--line)}
+.fb-it>span:first-child{flex:1;min-width:160px;font-weight:600}
+.fb-itens{display:flex;flex-direction:column;gap:10px}
+.fb-row{position:relative;display:grid;grid-template-columns:2fr 1.2fr 70px 2fr;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2)}
+.fb-row .x{position:absolute;top:4px;right:6px}
+@media (max-width:640px){.fb-row{grid-template-columns:1fr 80px}.fb-row .fld:first-child,.fb-row .fb-o{grid-column:1/-1}}
+.fb-p{font-family:var(--f-mono);font-weight:600}
+.fb-p.fb-ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.fb-p.fb-aten{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.fb-p.fb-crit{color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.fb-p.fb-venc{color:#fff;background:var(--bad)}
+.eq-stats b.warn{color:var(--warn)}.eq-stats b.bad{color:var(--bad)}
+.fbpg>.eq-wrap{display:flex;flex-direction:column;gap:12px}
+.fbpg .eq-card{width:min(860px,100%)}
 </style>
 </head>
 <body style="margin:0">
@@ -723,6 +751,7 @@ body.estq-on{overflow:hidden}
 <div class="brand"><span class="mark" id="brandMark">B</span><img class="logo" id="brandLogo" alt="" hidden><h1><span id="brandName">&nbsp;</span><span id="brandTitle">Controle de Bancada</span></h1></div>
 <div class="navtop">
 <button class="btn btn-ghost" id="btnLoja" type="button" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5V20H3z"/><path d="M9 20v-6h6v6"/></svg>Painel da Loja</button>
+<button class="btn btn-ghost" id="btnFab" type="button" hidden><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V10l6 4V10l6 4V5h6v16z"/><path d="M7 17h2M12 17h2M17 17h2"/></svg>Fábricas <span class="badge-n" id="fabN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnAgd" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda <span class="badge-n" id="agdN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnStock" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg>Estoque <span class="badge-n" id="stockN" hidden>0</span></button>
 <button class="btn btn-ghost" id="btnShop" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Compras <span class="badge-n" id="shopN" hidden>0</span></button>
@@ -772,7 +801,7 @@ const snapOf=rows=>({docs:rows.map(r=>({id:r.id,exists:true,data:()=>r.d})),size
 const nowIso=()=>new Date().toISOString();
 const rnd=()=>Math.random().toString(36).slice(2,8);
 function docsCol(eid,col){
-const TB=col==="compromissos"?"compromissos":["funcionarios","ausencias","fornecedores"].includes(col)?"cadastros":"docs";
+const TB=col==="notas_fabrica"?"notas_fabrica":col==="compromissos"?"compromissos":["funcionarios","ausencias","fornecedores"].includes(col)?"cadastros":"docs";
 const map=new Map();
 return {
 doc(id){return {
@@ -1012,7 +1041,7 @@ items.length?items.map(cardHTML).join(""):`<div class="empty-col">${osList.some(
 const hist=s.k==="entregue"&&loaded&&osList.some(o=>o.status==="entregue"&&scopeMatch(o))?`<button type="button" class="hist-btn" data-act="hist"><b>Histórico de entregues</b><small>${q?"A busca já inclui as antigas.":entAntigas?`Mais ${entAntigas} entregue${entAntigas===1?"":"s"} há mais de ${ENT_DIAS} dias`:`Aqui ficam só as dos últimos ${ENT_DIAS} dias`}</small></button>`:"";
 return `<section class="col ${activeTab===s.k?"active":""}" data-col="${s.k}"><div class="col-h"><h2>${esc(s.t)}</h2><span class="n">${items.length}</span></div><div class="col-b">${body}${hist}</div></section>`;
 }).join("");
-renderNowBar();if(sheetMode==="now")openNow();
+renderNowBar();if(sheetMode==="now")openNow();if($("#fab")&&!$("#fab").hidden&&!FB.form)renderFab();
 const nb=shopItems().filter(i=>i.p.status==="comprar").length;
 ["#shopN","#shopN2"].forEach(x=>{const b=$(x);b.textContent=nb;b.hidden=!nb});
 }
@@ -1024,7 +1053,7 @@ const buy=pecas.filter(p=>p.status==="comprar").length, enc=pecas.filter(p=>p.st
 const nm=(o.midia||[]).length;const tw=twinsOf(o).length;
 const pr=priOf(o.prioridade);
 let meta=pr.k==="urgente"?`<span class="pill p-urg">Urgente</span>`:pr.k==="alta"?`<span class="pill p-alta">Prioridade alta</span>`:"";
-meta+=prazoPill(o);
+meta+=prazoPill(o)+fabPill(o);
 if(o.garantiaSemCusto&&pode("orcamentos"))meta+=`<span class="pill p-gar">Garantia</span>`;
 else if(o.valorFinal!=null&&o.valorFinal!==""&&pode("orcamentos")&&!(full()&&o.orc&&(o.orc.itens||[]).length))meta+=`<span class="pill p-vf mono">${fmtR(o.valorFinal)}</span>`;
 meta+=`<span class="pill p-tipo">${esc(o.tipo==="fabrica"&&o.marca?"Fábrica · "+o.marca:tp.t)}</span>`;
@@ -1088,6 +1117,7 @@ sheetMode="plus";
 $("#layer").innerHTML=shell("Criar",`
 <div class="seg-list">
 ${pode("editar_os")?`<button type="button" class="seg-opt" data-act="newos"><span class="sn">+</span><span><b>Nova OS</b><br><small class="hint">O ${esc(seg().noun)} chegou na loja</small></span></button>`:""}
+${atendeFabrica()?`<button type="button" class="seg-opt" data-act="fab"><span class="sn">🏭</span><span><b>Fábricas</b><br><small class="hint">${(()=>{const n=fabOS().filter(o=>fabDias(o).falta<=5).length;return n?plural(n,"OS perto do prazo de 30 dias","OS perto do prazo de 30 dias"):"Notas fiscais e prazo de 30 dias"})()}</small></span></button>`:""}
 <button type="button" class="seg-opt" data-act="agd"><span class="sn">🗓</span><span><b>Agenda</b><br><small class="hint">${(()=>{const h=diaIni(Date.now());const n=agList.filter(a=>diaIni(a.quando)===h&&agAberto(a)).length;return n?plural(n,"atendimento","atendimentos")+" hoje":"Garantias e visitas marcadas"})()}</small></span></button>
 ${pode("editar_os")?`<button type="button" class="seg-opt" data-act="agdnovo"><span class="sn">+</span><span><b>Novo agendamento</b><br><small class="hint">Marcar dia e hora com o cliente</small></span></button>`:""}
 ${pode("cotacoes")?`<button type="button" class="seg-opt" data-act="newcot"><span class="sn">$</span><span><b>Nova cotação</b><br><small class="hint">O cliente quer saber o preço antes</small></span></button>
@@ -1517,7 +1547,7 @@ return {sair,resp,rap,semTempo:cand.filter(o=>!o.tempo).length,travadas:mine.fil
 function renderNowBar(){
 const bar=$("#nowbar");if(!me||!loaded){bar.hidden=true;return}
 const L=nowLists();const n=L.sair.length+Math.min(L.rap.length,5);
-const PZ=agendaHTML()+prazosHTML();agBadge();
+const PZ=agendaHTML()+fabricaHTML()+prazosHTML();fabBadge();agBadge();
 if(!L.total&&!PZ){bar.hidden=true;return}
 bar.hidden=false;
 bar.innerHTML=PZ+`<button type="button" class="nowbtn" data-act="now"><span class="ic">⚡</span><span><b>Liberar a loja</b><span class="s">${L.total} ${L.total===1?seg().noun:seg().nouns} na loja · ${L.sair.length} podem sair já · ${Math.min(L.rap.length,5)} consertos rápidos</span></span><span class="go">Ver<span class="go-x"> o que fazer</span> →</span></button>`;
@@ -1905,8 +1935,8 @@ users=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.criadoEm||0)-(b.c
 if(sessId){me=users.find(u=>u.id===sessId&&!u.pendente)||null;if(!me&&users.length)logout(true)}
 gate();renderScope();if(me)renderBoard();if(sheetMode==="acct")openAccount();if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();
 },()=>{usersLoaded=true;gate()}));
-for(const [c,setv] of [["funcionarios",v=>funcList=v],["ausencias",v=>ausList=v],["fornecedores",v=>fornList=v],["compromissos",v=>agList=v]]){const cc=db.collection(base+"/"+c);cadCols[c]=cc;if(c==="compromissos")agCol=cc;
-unsubs.push(cc.onSnapshot(snap=>{if(cid!==id)return;setv(snap.docs.map(d=>({id:d.id,...d.data()})));if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();if(sheetMode==="agenda"&&!agForm)renderAgenda();if(c==="compromissos"){renderNowBar();if($("#agd")&&!$("#agd").hidden&&!AG.form)renderAgd()}},()=>{}))}
+for(const [c,setv] of [["funcionarios",v=>funcList=v],["ausencias",v=>ausList=v],["fornecedores",v=>fornList=v],["compromissos",v=>agList=v],["notas_fabrica",v=>nfList=v]]){const cc=db.collection(base+"/"+c);cadCols[c]=cc;if(c==="compromissos")agCol=cc;if(c==="notas_fabrica")nfCol=cc;
+unsubs.push(cc.onSnapshot(snap=>{if(cid!==id)return;setv(snap.docs.map(d=>({id:d.id,...d.data()})));if(sheetMode==="loja"&&!lj.form&&!lj.add&&lj.edit==null)openLoja();if(sheetMode==="agenda"&&!agForm)renderAgenda();if(c==="notas_fabrica"&&$("#fab")&&!$("#fab").hidden&&!FB.form)renderFab();if(c==="compromissos"){renderNowBar();if($("#agd")&&!$("#agd").hidden&&!AG.form)renderAgd()}},()=>{}))}
 ccol=db.collection(base+"/cotacoes");
 unsubs.push(ccol.onSnapshot(snap=>{if(cid!==id)return;cotList=snap.docs.map(d=>({id:d.id,...d.data()}))},()=>{}));
 col=db.collection(base+"/os");
@@ -2069,7 +2099,7 @@ function pode(p){return !!me&&(me.papel==="dono"||!!(me.permissoes&&me.permissoe
 function papelDe(u){return PAPEIS[u&&u.papel]||PAPEIS.tecnico}
 function applyPerms(){
 const vis=(sel,ok)=>{const el=document.querySelector(sel);if(el)el.hidden=!ok};
-vis("#btnNew",pode("editar_os"));vis("#btnCot",pode("cotacoes"));vis("#btnShop",pode("compras"));
+vis("#btnNew",pode("editar_os"));vis("#btnCot",pode("cotacoes")&&!atendeFabrica());vis("#btnFab",atendeFabrica());vis("#btnShop",pode("compras"));
 vis('.bn[data-nav="shop"]',pode("compras"));vis("#btnLoja",pode("equipe"));konMostrar();
 vis("#btnFin",!!(KS.recursos&&KS.recursos.financas)&&pode("financas"));
 }
@@ -2391,6 +2421,7 @@ const KON_FAQ=[
 {k:["estoque","peca no estoque","baixa","prateleira","item do estoque","repor"],r:"No **Estoque** você cadastra cada item com quantidade, mínimo e onde fica. Quando o item fica abaixo do mínimo, aparece o número vermelho.\nPra usar uma peça numa OS: abra a OS, vá em **Peças** e puxe do estoque. A baixa é automática.",a:"estoque"},
 {k:["compras","comprar","lista de compras","encomendada","encomendar","pecas que faltam","fornecedor lista"],r:"Em **Compras** ficam juntas todas as peças que precisam ser compradas, as encomendadas e as que chegaram, de todas as OS, mais o que está abaixo do mínimo no estoque. Use **Copiar lista para o fornecedor** pra mandar de uma vez.",a:"compras"},
 {k:["agendar","agendamento","marcar horario","marcar atendimento","marcar visita","visita","agenda de atendimento","esqueci o atendimento","lembrete","lembrar","garantia marcada","horario com cliente","compromisso"],r:"Use a **Agenda**: botão **Agenda** no topo ou **+** → **Novo agendamento**.\n1. Coloque dia, horário, tipo (garantia de fábrica com marca e protocolo, particular…), se é **na loja** ou **na casa do cliente**, e os dados do cliente.\n2. No atendimento, toque em **Confirmar no WhatsApp** pra mandar a confirmação pro cliente.\n3. Toque em **📅 Lembrar no meu celular**: o alarme toca 1 dia antes e 1 hora antes, mesmo com o app fechado.\nOs atendimentos de hoje aparecem no topo do quadro. Depois, marque **Atendido** ou **Não compareceu**, e dá pra **criar a OS** com os dados.",a:"agd"},
+{k:["fabrica","fabricas","nota fiscal","nf","30 dias","prazo da garantia","prazo de fabrica","peca da fabrica","peca de garantia","chegou peca","lancar nota"],r:"A página **Fábricas** aparece pra quem marcou **Atendo garantias de fábrica** (Conta → Ramo e atendimentos). Abre pelo botão **Fábricas** no topo ou pelo **+**.\n1. **Prazos (30 dias)**: toda OS de garantia de fábrica em aberto, com quantos dias faltam. A contagem começa na data que o aparelho chegou (pela lei, até 30 dias).\n2. Quando chegar peça, toque em **+ Lançar nota fiscal**: número da nota, fábrica e, pra cada peça, **para qual OS** é. A peça já entra na OS como **Chegou**.\n3. Em **Peças a usar**, toque em **Usei** quando colocar a peça: ela sai da lista, mas a nota fica guardada em **Notas fiscais** (com busca por número, peça ou cliente).",a:"fab"},
 {k:["fornecedor","telefone do fornecedor","contato","vendedor","distribuidora"],r:"Em **Fornecedores** ficam o contato de quem te vende peça: o que vende, vendedor, telefones e site, com botões **Ligar** e **WhatsApp**. Dá pra buscar pela peça (ex.: \"resistência\"). Fica no botão **Fornecedores** (no topo), no **+** ou dentro de Compras.",a:"agenda"},
 {k:["liberar a loja","loja cheia","cheia","lotada","lotado","espaco","sem espaco","esvaziar","acumulado","muito aparelho","o que fazer primeiro","consertos rapidos","prioridade do dia"],r:"O **Liberar a loja** é o cartão escuro no topo do quadro. Toque em **Ver o que fazer**:\n1. **Pode sair hoje**: prontos e devolvidos esperando retirada, com botão pra avisar o cliente no WhatsApp.\n2. **Consertos rápidos**: o que dá pra fazer agora pra abrir espaço.\nMarcar o tempo estimado (Rápido, Médio, Demorado) nas OS deixa a sugestão mais certeira.",a:"liberar"},
 {k:["funcionario","adicionar pessoa","cadastrar tecnico","cadastro tecnico","cadastrar pessoa","equipe","convidar","pai","filho","irmao","colega","novo usuario","acesso","login para"],r:"Quem cadastra a equipe é o dono (ou quem tem a permissão Gerenciar a equipe):\n1. Abra o **Painel da Loja** → aba **Acessos**.\n2. Toque em **Adicionar pessoa**: nome, e-mail e função.\n3. Escolha como mandar o acesso: **convite por e-mail** (mais seguro) ou **senha provisória** pro WhatsApp, que vale só 5 minutos.\nNo primeiro acesso, a pessoa é obrigada a criar a própria senha.",a:"loja"},
@@ -2412,7 +2443,7 @@ const KON_FAQ=[
 {k:["duas os","mesmo cliente","dois aparelhos","duplicada"],r:"Quando o mesmo cliente tem dois aparelhos na loja, as duas OS aparecem ligadas, pra você não esquecer de avisar das duas juntas."}
 ];
 const KON_ACOES={nova_os:["Abrir Nova OS",()=>pode("editar_os"),()=>openNew()],estoque:["Abrir Estoque",()=>true,()=>openStock()],estoque_completo:["Abrir Estoque completo",()=>true,()=>openEstq()],compras:["Abrir Compras",()=>pode("compras"),()=>openShop()],
-cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Fornecedores",()=>true,()=>{agForm=null;openAgenda()}],agd:["Abrir a Agenda",()=>true,()=>{AG.vista="proximos";openAgd()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
+cotacoes:["Abrir Cotações",()=>pode("cotacoes"),()=>openCots()],agenda:["Abrir Fornecedores",()=>true,()=>{agForm=null;openAgenda()}],fab:["Abrir Fábricas",()=>atendeFabrica(),()=>{FB.aba="prazos";openFab()}],agd:["Abrir a Agenda",()=>true,()=>{AG.vista="proximos";openAgd()}],loja:["Abrir Painel da Loja",()=>pode("equipe"),()=>{lj.edit=null;lj.add=false;lj.resultado=null;openLoja()}],
 conta:["Abrir Conta",()=>true,()=>openAccount()],liberar:["Ver o que fazer",()=>true,()=>openNow()],sug:["Abrir Sugestões",()=>true,()=>window.open("/sugestoes","_blank","noopener")],relatorio:["Abrir Relatório do mês",()=>podeFaturamento(),()=>{relMes=0;openRel()}]};
 let kon={aberto:false,msgs:[],ocupado:false,ia:null,modo:"kon",hum:null,humMsgs:[],humNovas:0};
 function konChave(){return "konserta.kon."+(KS.uid||"")}
@@ -2960,12 +2991,12 @@ const atras=agAberto(a)&&a.quando<Date.now()-60*60000;
 return `<button type="button" class="ag-i ${agAberto(a)?"":"fechado"} ${atras?"atras":""}" data-agdet="${a.id}">
 <span class="ag-h"><b>${fmtHora(a.quando)}</b>${a.dur?`<small>${a.dur} min</small>`:""}</span>
 <span class="ag-c"><b>${esc(a.cliente||"Sem nome")}</b><small>${esc([a.aparelho,a.defeito].filter(Boolean).join(" · "))}</small>
-<span class="ag-tags"><span class="pill p-tipo">${esc(agTipoTxt(a))}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita${a.endereco?" · "+esc(a.endereco):""}</span>`:`<span class="pill pn">Na loja</span>`}${a.protocolo?`<span class="pill pn mono">Prot. ${esc(a.protocolo)}</span>`:""}${resp&&activeUsers().length>1?`<span class="pill pn">${esc(resp.nome.split(" ")[0])}</span>`:""}<span class="pill ${st.c}">${atras?"Atrasado":st.t}</span></span></span></button>`;
+<span class="ag-tags"><span class="pill p-tipo">${esc(agTipoTxt(a))}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita${a.endereco?" · "+esc(a.endereco):""}</span>`:`<span class="pill p-info">Na loja</span>`}${a.protocolo?`<span class="pill p-info mono">Prot. ${esc(a.protocolo)}</span>`:""}${resp&&activeUsers().length>1?`<span class="pill p-info">${esc(resp.nome.split(" ")[0])}</span>`:""}<span class="pill ${st.c}">${atras?"Atrasado":st.t}</span></span></span></button>`;
 }
 function agItemHist(a){const st=AG_ST[a.status]||AG_ST.agendado;const os=a.osId&&osList.find(o=>o.id===a.osId);
 return `<button type="button" class="ag-i ag-hi" data-agdet="${a.id}"><span class="ag-h"><b>${new Date(a.quando).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</b><small>${fmtHora(a.quando)}</small></span>
 <span class="ag-c"><b>${esc(a.cliente||"Sem nome")}</b><small>${esc([agTipoTxt(a),a.aparelho,a.defeito].filter(Boolean).join(" · "))}</small>
-<span class="ag-tags"><span class="pill ${st.c}">${st.t}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita</span>`:""}${a.protocolo?`<span class="pill pn mono">Prot. ${esc(a.protocolo)}</span>`:""}${os?`<span class="pill pg">OS ${esc(os.num||"")}</span>`:""}</span></span></button>`}
+<span class="ag-tags"><span class="pill ${st.c}">${st.t}</span>${a.local==="cliente"?`<span class="pill ag-vis">🏠 Visita</span>`:""}${a.protocolo?`<span class="pill p-info mono">Prot. ${esc(a.protocolo)}</span>`:""}${os?`<span class="pill p-arr">OS ${esc(os.num||"")}</span>`:""}</span></span></button>`}
 function renderAgd(){
 const el=$("#agd");if(!el||el.hidden)return;
 const hoje=diaIni(Date.now()),vis=agVisiveis();
@@ -3130,6 +3161,163 @@ setInterval(()=>{if(me)agAvisos()},60000);
 function agBadge(){const b=$("#agdN");if(!b)return;const h=diaIni(Date.now());const n=agVisiveis().filter(a=>diaIni(a.quando)===h&&agAberto(a)).length;b.textContent=n;b.hidden=!n}
 setInterval(agBadge,30000);
 setTimeout(()=>{if(location.hash==="#agenda"){const tt=setInterval(()=>{if(me&&agCol){clearInterval(tt);openAgd()}},400);setTimeout(()=>clearInterval(tt),15000)}},500);
+/* ---------- Fábricas: prazo de 30 dias, notas fiscais e peças de garantia ---------- */
+let nfList=[],nfCol=null;
+const FB={aba:"prazos",form:null,q:"",max:50};
+const FAB_DIAS=30;
+const atendeFabrica=()=>!!(empresa.atende&&empresa.atende.fabrica);
+const podeLancarNF=()=>pode("editar_os")||pode("estoque");
+function fabOS(){return osList.filter(o=>o.tipo==="fabrica"&&o.status!=="entregue"&&scopeMatch(o)||o.tipo==="fabrica"&&o.status!=="entregue"&&pode("ver_todas_os"))}
+function fabDias(o){const e=new Date(entradaOf(o));e.setHours(0,0,0,0);const lim=e.getTime()+FAB_DIAS*DAY;const h=new Date();h.setHours(0,0,0,0);return {lim,falta:Math.round((lim-h.getTime())/DAY),passou:Math.round((h.getTime()-e.getTime())/DAY)}}
+function fabNivel(f){return f.falta<0?"venc":f.falta<=5?"crit":f.falta<=10?"aten":"ok"}
+function fabPill(o){
+if(o.tipo!=="fabrica"||o.status==="entregue"||!atendeFabrica())return "";
+const f=fabDias(o),n=fabNivel(f);
+return `<span class="pill fb-p fb-${n}" title="Prazo legal de ${FAB_DIAS} dias da garantia de fábrica">${f.falta<0?`30 dias: venceu há ${-f.falta}d`:f.falta===0?"30 dias: vence hoje":`30 dias: faltam ${f.falta}`}</span>`;
+}
+function nfItensPendentes(){
+const out=[];
+nfList.forEach(nf=>(nf.itens||[]).forEach(it=>{if(nfItemUsado(nf,it))return;out.push({nf,it})}));
+return out.sort((a,b)=>(a.nf.data||0)-(b.nf.data||0));
+}
+function nfItemUsado(nf,it){if(it.usado)return true;if(!it.osId)return false;const o=osList.find(x=>x.id===it.osId);if(!o)return false;const p=(o.pecas||[]).find(p=>p.id===it.pecaId);return !!(p&&p.status==="aplicada")}
+function openFab(){
+if(!atendeFabrica()){toast("Ative \"Atendo garantias de fábrica\" em Conta → Ramo e atendimentos.");return}
+let el=$("#fab");
+if(!el){el=document.createElement("section");el.id="fab";el.className="estq fbpg";el.setAttribute("aria-label","Fábricas");document.body.appendChild(el)}
+el.hidden=false;document.body.classList.add("estq-on");
+if(location.hash!=="#fabricas")try{history.pushState({fab:1},"","#fabricas")}catch(_){}
+closeSheet(true);renderFab();
+}
+function fecharFab(viaHist){const el=$("#fab");if(el)el.hidden=true;if(![...document.querySelectorAll(".estq")].some(x=>x!==el&&!x.hidden))document.body.classList.remove("estq-on");FB.form=null;
+if(!viaHist&&location.hash==="#fabricas")try{history.back()}catch(_){}}
+window.addEventListener("popstate",()=>{const el=$("#fab");if(el&&!el.hidden&&location.hash!=="#fabricas"){if(FB.form){FB.form=null;try{history.pushState({fab:1},"","#fabricas")}catch(_){}renderFab();return}fecharFab(true)}});
+function renderFab(){
+const el=$("#fab");if(!el||el.hidden)return;
+const lista=fabOS().map(o=>({o,f:fabDias(o)})).sort((a,b)=>a.f.falta-b.f.falta);
+const venc=lista.filter(x=>x.f.falta<0).length,crit=lista.filter(x=>x.f.falta>=0&&x.f.falta<=5).length;
+const pend=nfItensPendentes();
+const abas=[["prazos","Prazos (30 dias)",venc+crit],["pecas","Peças a usar",pend.length],["notas","Notas fiscais",null]];
+let corpo="";
+if(FB.aba==="prazos"){
+corpo=`<div class="eq-stats"><div><small>OS de fábrica na loja</small><b>${lista.length}</b></div><div><small>Vencem em até 5 dias</small><b class="${crit?"warn":""}">${crit}</b></div><div><small>Prazo vencido</small><b class="${venc?"bad":""}">${venc}</b></div><div><small>Peças esperando uso</small><b>${pend.length}</b></div></div>
+<p class="hint">Pelo Código de Defesa do Consumidor (art. 18), o produto em garantia tem que ficar pronto em até <b>${FAB_DIAS} dias</b>. A contagem começa na <b>data que o aparelho chegou</b> na loja (campo da OS).</p>
+${lista.length?lista.map(({o,f})=>{const n=fabNivel(f);const pp=(o.pecas||[]).filter(p=>p.status!=="aplicada");const falta=pp.filter(p=>p.status==="comprar"||p.status==="encomendada").length;
+return `<button type="button" class="fb-os fb-${n}" data-fbos="${o.id}"><span class="fb-d"><b>${f.falta<0?"+"+(-f.falta):f.falta}</b><small>${f.falta<0?"dias vencido":f.falta===1?"dia":"dias"}</small></span>
+<span class="ag-c"><b>${o.num?`<span class="mono">#${esc(o.num)}</span> · `:""}${esc(o.cliente||"")}</b><small>${esc([o.marca,o.aparelho,o.defeito].filter(Boolean).join(" · "))}</small>
+<span class="ag-tags"><span class="pill p-info">Chegou ${fmtDia(entradaOf(o))} · há ${f.passou} dia${f.passou===1?"":"s"}</span><span class="pill p-info">Prazo ${fmtDia(f.lim)}</span><span class="pill p-info">${esc(stOf(o.status).t)}</span>${falta?`<span class="pill p-alta">${falta} peça${falta>1?"s":""} a chegar</span>`:pp.length?`<span class="pill p-arr">peças chegaram</span>`:""}</span></span></button>`}).join("")
+:`<div class="sec"><span class="hint">Nenhuma OS de garantia de fábrica em aberto. Quando criar uma OS com o tipo "Garantia de Fábrica", ela aparece aqui com o prazo.</span></div>`}`;
+}else if(FB.aba==="pecas"){
+corpo=`<p class="hint">Peças que chegaram da fábrica e ainda não foram usadas. Ao usar, ela sai daqui, mas a nota fiscal continua registrada em "Notas fiscais".</p>
+${pend.length?pend.map(({nf,it})=>{const o=it.osId&&osList.find(x=>x.id===it.osId);
+return `<div class="fb-pc"><div class="ag-c"><b>${it.qtd>1?it.qtd+"× ":""}${esc(it.peca)}${it.codigo?` <span class="mono hint">${esc(it.codigo)}</span>`:""}</b><small>NF <b class="mono">${esc(nf.numero)}</b> · ${esc(nf.marca||"")} · chegou ${fmtDia(nf.data||nf.criadoEm)}</small>
+<small>${o?`Para a OS <b>${esc(o.num||"")}</b> · ${esc(o.cliente||"")}${o.aparelho?" · "+esc(o.aparelho):""}`:"Sem OS definida"}</small></div>
+<div class="btnrow">${podeLancarNF()?`<button type="button" class="btn btn-ok" data-fbusar="${nf.id}|${it.id}">✓ Usei</button>`:""}${o?`<button type="button" class="btn btn-line" data-fbos="${o.id}">Abrir OS</button>`:""}</div></div>`}).join("")
+:`<div class="sec"><span class="hint">Nenhuma peça de fábrica esperando uso.</span></div>`}`;
+}else{
+const q=norm(FB.q);
+const nfs=nfList.filter(nf=>!q||norm([nf.numero,nf.marca,nf.obs,...(nf.itens||[]).flatMap(it=>{const o=it.osId&&osList.find(x=>x.id===it.osId);return [it.peca,it.codigo,o&&o.num,o&&o.cliente]})].join(" ")).includes(q)).sort((a,b)=>(b.data||0)-(a.data||0));
+corpo=`<input class="inp" id="fbQ" type="search" placeholder="Buscar por nº da nota, peça, código, OS ou cliente…" value="${esc(FB.q)}">
+${nfs.length?nfs.slice(0,FB.max).map(nf=>`<div class="fb-nf"><div class="fb-nf-h"><b>NF <span class="mono">${esc(nf.numero)}</span></b><span>${esc(nf.marca||"")}</span><span class="hint">chegou ${fmtDia(nf.data||nf.criadoEm)}${nf.criadoPor?" · lançada por "+esc(nf.criadoPor):""}</span>${podeLancarNF()?`<button type="button" class="linkbtn" data-fbed="${nf.id}">Editar</button>`:""}</div>
+${(nf.itens||[]).map(it=>{const o=it.osId&&osList.find(x=>x.id===it.osId);const u=nfItemUsado(nf,it);return `<div class="fb-it"><span>${it.qtd>1?it.qtd+"× ":""}${esc(it.peca)}${it.codigo?` <span class="mono hint">${esc(it.codigo)}</span>`:""}</span><span class="hint">${o?`OS ${esc(o.num||"")} · ${esc(o.cliente||"")}`:"sem OS"}</span><span class="pill ${u?"p-arr":"p-alta"}">${u?"usada":"aguardando uso"}</span></div>`}).join("")}
+${nf.obs?`<span class="hint">${esc(nf.obs)}</span>`:""}</div>`).join("")+(nfs.length>FB.max?`<button type="button" class="btn btn-line" data-fb="mais">Mostrar mais</button>`:"")
+:`<div class="sec"><span class="hint">${FB.q?"Nada encontrado.":"Nenhuma nota fiscal lançada ainda."}</span></div>`}`;
+}
+el.innerHTML=`<header class="eq-top"><button type="button" class="btn btn-line" data-fb="fechar">← Voltar</button><h2>Fábricas</h2>
+<div class="eq-acts">${podeLancarNF()?`<button type="button" class="btn btn-accent" data-fb="nova">+ Lançar nota fiscal</button>`:""}</div></header>
+<div class="eq-wrap"><div class="lj-tabs ag-tabs">${abas.map(([k,t,n])=>`<button type="button" data-fbaba="${k}" aria-selected="${FB.aba===k}">${t}${n?` <span class="badge-n">${n}</span>`:""}</button>`).join("")}</div>${corpo}</div>
+${FB.form?fbFormHTML():""}`;
+}
+function fbOSOpcoes(sel){
+const l=osList.filter(o=>o.tipo==="fabrica"&&(o.status!=="entregue"||o.id===sel)).sort((a,b)=>cmpOS(a,b));
+return `<option value="">Sem OS (vai para o estoque depois)</option>${l.map(o=>`<option value="${o.id}" ${o.id===sel?"selected":""}>OS ${esc(o.num||"s/n")} · ${esc(o.cliente||"")}${o.marca?" · "+esc(o.marca):""}${o.aparelho?" · "+esc(o.aparelho):""}</option>`).join("")}`;
+}
+function cmpOS(a,b){const na=parseInt(a.num,10),nb=parseInt(b.num,10);return (isNaN(nb)?-1:nb)-(isNaN(na)?-1:na)}
+function fbFormHTML(){
+const nf=FB.form.id?(nfList.find(x=>x.id===FB.form.id)||{}):{data:Date.now(),itens:[]};
+const itens=FB.form.itens||(nf.itens&&nf.itens.length?nf.itens.map(x=>({...x})):[{id:uid(),peca:"",codigo:"",qtd:1,osId:FB.form.osId||""}]);FB.form.itens=itens;
+return `<div class="eq-modal" role="dialog" aria-modal="true" aria-label="Nota fiscal"><form class="eq-card" id="fbForm" autocomplete="off">
+<div class="eq-mh"><b>${FB.form.id?"Editar nota fiscal":"Lançar nota fiscal da fábrica"}</b><button type="button" class="btn btn-line" data-fb="formx">✕</button></div>
+<div class="grid2">
+<div class="fld"><label for="fb_num">Número da nota fiscal</label><input id="fb_num" class="mono" inputmode="numeric" value="${esc(nf.numero||"")}" required></div>
+<div class="fld"><label for="fb_marca">Fábrica / marca</label><input id="fb_marca" list="fbMarcas" value="${esc(nf.marca||"")}" placeholder="Ex.: Mondial"><datalist id="fbMarcas">${(empresa.marcas||[]).map(m=>`<option value="${esc(m)}">`).join("")}</datalist></div>
+<div class="fld"><label for="fb_data">Chegou em</label><input id="fb_data" type="date" value="${toISO(nf.data||Date.now())}"></div>
+</div>
+<span class="lj-lbl">Peças desta nota</span>
+<div class="fb-itens">${itens.map((it,i)=>`<div class="fb-row" data-fbrow="${i}">
+<div class="fld"><label>Peça</label><input data-fbi="peca" value="${esc(it.peca||"")}" placeholder="Ex.: Resistência 1500W"></div>
+<div class="fld"><label>Código (opcional)</label><input data-fbi="codigo" class="mono" value="${esc(it.codigo||"")}"></div>
+<div class="fld fb-q"><label>Qtd</label><input data-fbi="qtd" type="number" min="1" class="mono" value="${it.qtd||1}"></div>
+<div class="fld fb-o"><label>Para qual OS</label><select data-fbi="osId">${fbOSOpcoes(it.osId)}</select></div>
+${itens.length>1?`<button type="button" class="x" data-fbdel="${i}" aria-label="Tirar peça">×</button>`:""}</div>`).join("")}</div>
+<button type="button" class="btn btn-line" data-fb="maisitem" style="align-self:flex-start">+ Outra peça</button>
+<div class="fld"><label for="fb_obs">Observações</label><input id="fb_obs" value="${esc(nf.obs||"")}" placeholder="Ex.: veio faltando o parafuso"></div>
+<span class="hint">A peça entra na OS escolhida como <b>Chegou</b>. Quando for usada, marque em "Peças a usar" ou na OS como Aplicada.</span>
+<div class="err" id="fbErr"></div>
+<div class="btnrow"><button class="btn btn-accent" type="submit">Salvar nota</button>${FB.form.id&&(pode("apagar_os")||pode("estoque"))?`<button type="button" class="btn btn-danger" data-fb="apagar" data-id="${FB.form.id}">Apagar nota</button>`:""}</div>
+</form></div>`;
+}
+function fbLerItens(){document.querySelectorAll("[data-fbrow]").forEach(r=>{const it=FB.form.itens[+r.dataset.fbrow];if(!it)return;r.querySelectorAll("[data-fbi]").forEach(i=>{it[i.dataset.fbi]=i.dataset.fbi==="qtd"?Math.max(1,parseInt(i.value,10)||1):i.value.trim()})})}
+async function fbSalvar(){
+fbLerItens();const err=$("#fbErr");err.textContent="";
+const numero=$("#fb_num").value.trim();if(!numero){err.textContent="Coloque o número da nota fiscal.";$("#fb_num").focus();return}
+const itens=FB.form.itens.filter(it=>it.peca);if(!itens.length){err.textContent="Coloque pelo menos uma peça.";return}
+const id=FB.form.id||"n"+uid();const ex=FB.form.id?(nfList.find(x=>x.id===FB.form.id)||{}):{};const {id:_i,...base}=ex;
+const tocadas=new Map();
+for(const it of itens){
+if(!it.osId){it.pecaId="";continue}
+const o=osList.find(x=>x.id===it.osId);if(!o)continue;o.pecas=o.pecas||[];
+let p=it.pecaId&&o.pecas.find(p=>p.id===it.pecaId);
+if(!p){p=o.pecas.find(p=>!p.nfId&&["comprar","encomendada"].includes(p.status)&&(norm(p.nome).includes(norm(it.peca))||norm(it.peca).includes(norm(p.nome))))}
+if(!p){p={id:uid(),nome:it.peca,status:"chegou"};o.pecas.push(p)}
+else if(p.status!=="aplicada")p.status="chegou";
+p.nome=p.nome||it.peca;p.qtd=it.qtd>1?it.qtd:p.qtd;p.nf=numero;p.nfId=id;it.pecaId=p.id;tocadas.set(o.id,o);
+}
+// peças que saíram da nota: tira o vínculo
+(ex.itens||[]).forEach(old=>{if(!itens.some(n=>n.id===old.id&&n.osId===old.osId)&&old.osId){const o=osList.find(x=>x.id===old.osId);const p=o&&(o.pecas||[]).find(p=>p.id===old.pecaId);if(p&&p.status==="chegou"&&p.nfId===id){o.pecas=o.pecas.filter(x=>x!==p);tocadas.set(o.id,o)}}});
+const d={...base,numero,marca:$("#fb_marca").value.trim(),data:fromISO($("#fb_data").value)||Date.now(),itens,obs:$("#fb_obs").value.trim(),criadoPor:ex.criadoPor||(me?me.nome:""),criadoEm:ex.criadoEm||Date.now(),atualizadoEm:Date.now()};
+try{await nfCol.doc(id).set(d);for(const o of tocadas.values())await save(o,true);FB.form=null;toast("Nota "+numero+" lançada"+(tocadas.size?" · peça marcada como Chegou na OS":""));renderFab();renderBoard()}
+catch(_){err.textContent="Não salvou. Tente de novo."}
+}
+async function fbUsar(nfId,itId){
+const nf=nfList.find(x=>x.id===nfId);if(!nf)return;const it=(nf.itens||[]).find(x=>x.id===itId);if(!it)return;
+const {id:_i,...b}=nf;const itens=nf.itens.map(x=>x.id===itId?{...x,usado:true,usadoEm:Date.now(),usadoPor:me?me.nome:""}:x);
+try{await nfCol.doc(nf.id).set({...b,itens,atualizadoEm:Date.now()});
+const o=it.osId&&osList.find(x=>x.id===it.osId);const p=o&&(o.pecas||[]).find(p=>p.id===it.pecaId);if(p&&p.status!=="aplicada"){p.status="aplicada";await save(o,true)}
+toast("Peça usada · a nota fica registrada");renderFab();renderBoard()}catch(_){toast("Não salvou. Tente de novo.")}
+}
+document.addEventListener("click",async e=>{
+const t=e.target.closest("[data-fb],[data-fbaba],[data-fbos],[data-fbusar],[data-fbed],[data-fbdel],#btnFab,[data-act='fab'],[data-fabbar]");if(!t)return;
+if(t.id==="btnFab"||t.dataset.act==="fab"){FB.aba="prazos";openFab();return}
+if(t.dataset.fabbar){FB.aba="prazos";openFab();return}
+if(t.dataset.fbaba){FB.aba=t.dataset.fbaba;renderFab();return}
+if(t.dataset.fbos){const id=t.dataset.fbos;fecharFab();setTimeout(()=>openOS(id),60);return}
+if(t.dataset.fbusar){const [n,i]=t.dataset.fbusar.split("|");t.disabled=true;await fbUsar(n,i);return}
+if(t.dataset.fbed){FB.form={id:t.dataset.fbed};renderFab();return}
+if(t.dataset.fbdel){fbLerItens();FB.form.itens.splice(+t.dataset.fbdel,1);renderFab();return}
+const k=t.dataset.fb;if(!k)return;
+if(k==="fechar"){fecharFab();return}
+if(k==="nova"){FB.form={id:null};renderFab();setTimeout(()=>$("#fb_num")?.focus(),50);return}
+if(k==="formx"){FB.form=null;renderFab();return}
+if(k==="maisitem"){fbLerItens();const last=FB.form.itens[FB.form.itens.length-1];FB.form.itens.push({id:uid(),peca:"",codigo:"",qtd:1,osId:last?last.osId:""});
+const n=$("#fb_num")?.value,m=$("#fb_marca")?.value,d=$("#fb_data")?.value,ob=$("#fb_obs")?.value;renderFab();if(n!=null){$("#fb_num").value=n;$("#fb_marca").value=m;$("#fb_data").value=d;$("#fb_obs").value=ob}
+const rows=document.querySelectorAll("[data-fbrow] [data-fbi=peca]");rows[rows.length-1]?.focus();return}
+if(k==="mais"){FB.max+=50;renderFab();return}
+if(k==="apagar"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Confirmar: apagar nota";return}try{await nfCol.doc(t.dataset.id).delete();FB.form=null;toast("Nota apagada");renderFab()}catch(_){toast("Não apagou. Tente de novo.")}return}
+});
+document.addEventListener("input",e=>{if(e.target.id==="fbQ"){FB.q=e.target.value;const p=e.target.selectionStart;renderFab();const i=$("#fbQ");if(i){i.focus();try{i.setSelectionRange(p,p)}catch(_){}}}});
+document.addEventListener("submit",e=>{if(e.target.id==="fbForm"){e.preventDefault();fbSalvar()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#fab")&&!$("#fab").hidden){if(FB.form){FB.form=null;renderFab()}else fecharFab()}});
+/* aviso no quadro */
+function fabricaHTML(){
+if(!atendeFabrica())return "";
+const l=fabOS().map(o=>({o,f:fabDias(o)})).filter(x=>x.f.falta<=5).sort((a,b)=>a.f.falta-b.f.falta);
+if(!l.length)return "";
+return `<div class="pz fb-bar" role="status"><span class="pz-ic">🏭</span><div class="pz-c"><div class="pz-g ${l.some(x=>x.f.falta<0)?"atr":"am"}"><b>Garantia de fábrica: prazo de ${FAB_DIAS} dias</b>${l.slice(0,4).map(({o,f})=>`<button type="button" class="pz-i" data-open="${o.id}"><span class="pz-n">${esc(o.cliente||"")}${o.num?` <small class="mono">#${esc(o.num)}</small>`:""}</span><span class="pz-s">${esc([o.marca,o.aparelho].filter(Boolean).join(" · "))} · <em class="falta">${f.falta<0?"venceu há "+(-f.falta)+" dia"+(f.falta===-1?"":"s"):f.falta===0?"vence hoje":"faltam "+f.falta+" dia"+(f.falta===1?"":"s")}</em></span></button>`).join("")}${l.length>4?`<button type="button" class="linkbtn" data-fabbar="1">Ver as ${l.length} na página Fábricas ›</button>`:`<button type="button" class="linkbtn" data-fabbar="1">Abrir Fábricas ›</button>`}</div></div></div>`;
+}
+function fabBadge(){const b=$("#fabN");if(!b)return;const n=atendeFabrica()?fabOS().filter(o=>fabDias(o).falta<=5).length:0;b.textContent=n;b.hidden=!n}
+setInterval(fabBadge,60000);
+setTimeout(()=>{if(location.hash==="#fabricas"){const tt=setInterval(()=>{if(me&&nfCol&&loaded){clearInterval(tt);openFab()}},400);setTimeout(()=>clearInterval(tt),15000)}},500);
 /* ---------- Início ---------- */
 renderChips();renderBoard();applyBrand();gate();
 async function minhasEmpresas(){const {data,error}=await sb.from("membros").select("empresa_id,pendente,admin,nome").eq("user_id",KS.uid);if(error)throw error;return data||[]}
